@@ -1,0 +1,183 @@
+```json
+{
+	"info": {
+		"_postman_id": "ef999799-2be1-4a23-bff8-a1e7a10f1563",
+		"name": "Official UnoPim APIs",
+		"description": "The UnoPim API brought to you!\n\nFind out how this Postman collection works by visiting link [here](https://documenter.getpostman.com/view/21990056/2sA3kXE17F).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38685236",
+		"_collection_link": "https://www.postman.com/unopim/unopim-apis/collection/kzy03uh/official-unopim-apis?action=share&source=collection_link&creator=38685236"
+	},
+	"item": [
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Get All Products",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/api/v1/rest/products",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"rest",
+								"products"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "100",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "filters",
+									"value": "{\"parent\":[{\"operator\":\"=\",\"value\": \"root\"}]}",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "In this section, we will see all the APIs which are related to Products.\n\n###"
+		},
+		{
+			"name": "Authentification by password",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"postman.setEnvironmentVariable(",
+							"    \"base64ClientIdSecret\", ",
+							"    btoa(postman.getEnvironmentVariable(\"clientId\") + ':' + postman.getEnvironmentVariable(\"secret\"))",
+							");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"token\", jsonData.access_token);",
+							"postman.setEnvironmentVariable(\"refreshToken\", jsonData.refresh_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic {{base64ClientIdSecret}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\" : \"{{username}}\",\n    \"password\" : \"{{password}}\",\n    \"grant_type\": \"password\"\n }"
+				},
+				"url": {
+					"raw": "{{url}}/oauth/token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"oauth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Authentification by Refresh token",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"postman.setEnvironmentVariable(",
+							"    \"base64ClientIdSecret\", ",
+							"    btoa(postman.getEnvironmentVariable(\"clientId\") + ':' + postman.getEnvironmentVariable(\"secret\"))",
+							");",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"token\", jsonData.access_token);",
+							"postman.setEnvironmentVariable(\"refreshToken\", jsonData.refresh_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic {{base64ClientIdSecret}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"refresh_token\" : \"{{refreshToken}}\",\n    \"grant_type\": \"refresh_token\"\n }"
+				},
+				"url": {
+					"raw": "{{url}}/oauth/token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"oauth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
+```
