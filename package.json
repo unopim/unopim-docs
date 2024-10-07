@@ -1,0 +1,28 @@
+{
+  "name": "unopim-docs",
+  "version": "0.1.0",
+  "description": "UnoPim Developer Documentation",
+  "main": "index.js",
+  "scripts": {
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs",
+    "docs:eject": "vuepress eject docs"
+  },
+  "keywords": [
+    "unopim",
+    "developer",
+    "documentation"
+  ],
+  "author": "UnoPim",
+  "license": "MIT",
+  "devDependencies": {
+    "@vuepress/plugin-back-to-top": "^1.9.10",
+    "@vuepress/plugin-pwa": "^1.9.10",
+    "vuepress": "^1.9.10",
+    "vuepress-plugin-auto-sidebar": "^2.3.2",
+    "vuepress-plugin-copy-code": "0.0.1"
+  },
+  "dependencies": {
+    "vuepress-bar": "^0.4.5"
+  }
+}
