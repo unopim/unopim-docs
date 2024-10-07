@@ -35,5 +35,3 @@ Make sure your PR follows all these points,
   ~~~
 
 - Open your browser and go to [http://localhost:8080](http://localhost:8080).
-
-  .
