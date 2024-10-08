@@ -13,7 +13,7 @@ echo 'devdocs.unopim.com' > CNAME
 
 git init
 git add -A
-git commit -m 'Deploy docs to GitHub'
+git commit -m 'Deploy docs to GitHub gh-pages'
 git push -f git@github.com:unopim/unopim-docs.git master:gh-pages
 
 cd -
