@@ -23,13 +23,7 @@ To limit the exposure of sensitive information in error messages, follow these s
 - Edit your Apache configuration file to avoid displaying server and operating system details.
 - Set **`ServerSignature`** to **`Off`** (by default, it is **`On`**).
 - Add **`ServerTokens Prod`** to display Apache only as the product.
-
-:::details Screenshot
-
-![limiting-error-messages](../../assets/2.x/images/advanced-topics/limiting-error-messages.png)
-
-:::
-
+ 
 ## Limiting Admin Access
 
 To restrict access to the admin area, modify the **`.htaccess`** file with the following code:

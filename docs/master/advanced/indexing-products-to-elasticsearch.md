@@ -195,11 +195,3 @@ curl -X GET 'http://localhost:9200/_cat/indices?v'
 ```
 
 The output will provide details about the product index:
-
-:::details Output
-
-![Product Index Information](../../assets/2.x/images/advanced-topics/product-index.png)
-
-:::
-
-By following these steps, you have successfully configured Elasticsearch and indexed your products.
