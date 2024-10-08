@@ -1,4 +1,4 @@
-## Package Development
+## Technical Codebase
 
 If you are looking to extend the functionalities of the UnoPim platform, creating a package is the way to go. A package is a self-contained module that adds specific features to the platform. It allows developers to introduce custom functionality without altering the core codebase of UnoPim.
 
