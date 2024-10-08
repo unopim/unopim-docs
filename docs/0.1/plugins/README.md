@@ -1,4 +1,4 @@
-## Plugin Development
+## Plugin Development 
 
 ### **Plugin Development for Third-Party eCommerce Import/Export**
 
@@ -92,7 +92,7 @@ plugins
 7. **Console Commands (`Console/Commands/`)**:
    - Create CLI commands to automate the import/export process and allow scheduling through Laravel's task scheduler.
 
-#### **Important Considerations:**
+#### **Important Considerations**:
 
 - **API Integration**: Your plugin will likely need to connect to third-party APIs (like Shopify, Magento, etc.) to fetch or send product data. Use Laravel's built-in HTTP client or other external libraries to interact with these APIs.
   
