@@ -29,4 +29,4 @@ UnoPim leverages the Blade template engine, integrated with [Laravel](https://la
 - **Template Inheritance**: Blade allows a modular structure through template inheritance.
 - **Directives**: Blade simplifies common tasks like loops and conditionals with its built-in directives.
 
-For more details on UnoPim's directory structure and configuration, visit the [official documentation](https://devdocs.unopim.com/2.x/packages/views.html#directory-structure).
+For more details on UnoPim's directory structure and configuration, visit the [official documentation](https://devdocs.unopim.com/0.1/packages/views.html#directory-structure).

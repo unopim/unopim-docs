@@ -41,7 +41,7 @@ When making changes to blade files that utilize Tailwind CSS classes, it's essen
 
 To determine how Tailwind CSS classes should be sorted, refer to the official Tailwind CSS documentation for guidelines on class ordering. 
 
-[Class Reordering](https://tailwindcss.com/example/automatic-class-sorting-with-prettier#how-classes-are-sorted)
+[Class Reordering](https://tailwindcss.com/blog/automatic-class-sorting-with-prettier#how-classes-are-sorted)
 
 
 ## Pint Tests

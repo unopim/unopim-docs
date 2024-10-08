@@ -6,7 +6,7 @@
 
 To ensure optimal user experience in **UnoPim** we have created several separate Blade components for the Admin packages. Now in **`UnoPim`** we have also merged the vue.js code inside the blade component to improve application performance.
 
-Additionally, To learn in detail about blade components, you can visit the Laravel documentation [here](https://laravel.com/docs/11.x/blade#introduction).
+Additionally, To learn in detail about blade components, you can visit the Laravel documentation [here](https://laravel.com/docs/10.x/blade#introduction).
 
 - Here are the list of Blade component that is available in **`UnoPim`**.
 

@@ -10,7 +10,7 @@ Laravel offers multiple approaches to validate incoming data in your application
 
 This method is easy to use and integrates seamlessly with Laravel's request lifecycle. By leveraging Laravel's built-in validation rules and custom validation logic, you can ensure your application handles data validation efficiently and effectively.
 
-For detailed information about validation in Laravel, refer to the [Laravel documentation](https://laravel.com/docs/11.x/validation).
+For detailed information about validation in Laravel, refer to the [Laravel documentation](https://laravel.com/docs/10.x/validation).
 
 ### Usage
 

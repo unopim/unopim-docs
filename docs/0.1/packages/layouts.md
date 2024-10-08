@@ -6,7 +6,7 @@
 
 Layouts in UnoPim are fundamental to structuring your application's views in a consistent and reusable way. They provide a template for rendering HTML across multiple pages, ensuring a unified design and user experience. By defining layouts, you can streamline development, improve maintainability, and enhance the overall aesthetics of your web application.
 
-To learn in detail about Layouts, you can visit the Laravel documentation [here](https://laravel.com/docs/11.x/blade).
+To learn in detail about Layouts, you can visit the Laravel documentation [here](https://laravel.com/docs/10.x/blade).
 
 ## Admin Layout
 

@@ -8,7 +8,7 @@ Views in Laravel are responsible for separating the application's logic from the
 
 By using views, you can create reusable templates and components, making your code more maintainable and easier to understand. Blade templates allow you to use control structures like loops and conditionals, as well as to include other templates, which helps to keep your views organized and modular.
 
-To learn in detail about Views, you can visit the Laravel documentation [here](https://laravel.com/docs/11.x/views).
+To learn in detail about Views, you can visit the Laravel documentation [here](https://laravel.com/docs/10.x/views).
 
 Here's a basic example of a Blade template:
 

@@ -12,14 +12,14 @@ To ensure that the side menu includes the necessary configuration, follow these 
 
 ### 1. **Create the Configuration File**
 
-- Navigate to your plugin's source directory, typically located at `plugins/Webkul/Example/src`.
+- Navigate to your plugin's source directory, typically located at `packages/Webkul/Example/src`.
 
 - Create a new directory named `Config` if it doesn't already exist.
 
 - Inside the `Config` directory, create a file named `menu.php`.
 
 ```
-└── plugins
+└── packages
     └── Webkul
         └── Example
             └── src

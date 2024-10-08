@@ -19,7 +19,7 @@ In UnoPim, the export functionality mirrors the import process, enabling you to 
 First, create a directory structure for your export functionality. The exporter logic should be placed in a specific directory under your plugin:
 
 ```
-└── plugins
+└── packages
     └── Webkul
         └── Example
             ├── ...
@@ -99,7 +99,7 @@ In your plugin's `Config` directory, create a new configuration file named `expo
 Directory structure:
 
 ```
-└── plugins
+└── packages
     └── Webkul
         └── Example
             ├── ...

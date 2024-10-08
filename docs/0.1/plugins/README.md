@@ -9,7 +9,7 @@ UnoPim allows for flexible plugin development through a modular approach, and yo
 Below is a detailed example of how you can organize your plugin with a focus on import/export functionalities:
 
 ```plaintext
-plugins
+packages
   └── Webkul
       └── Example
           └── src

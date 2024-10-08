@@ -6,9 +6,9 @@
 
 A plugin is a self-contained module that encapsulates specific features or functionality, allowing developers to add custom features without altering the core codebase. This approach not only preserves the integrity of the core system but also ensures that updates and maintenance can be carried out smoothly.
 
-By developing plugins, you can introduce new functionalities, integrate third-party services, or customize existing features to better meet your business requirements. Each plugin is isolated, promoting clean code practices and enabling easier debugging and testing.
+By developing packages, you can introduce new functionalities, integrate third-party services, or customize existing features to better meet your business requirements. Each plugin is isolated, promoting clean code practices and enabling easier debugging and testing.
 
-This guide will take you through the process of creating a plugin for UnoPim, from setting up the directory structure to defining configurations, routes, controllers, models, and views. By the end of this guide, you will have a solid understanding of how to develop and integrate plugins into the UnoPim platform, enhancing its capabilities while maintaining a robust and maintainable codebase.
+This guide will take you through the process of creating a plugin for UnoPim, from setting up the directory structure to defining configurations, routes, controllers, models, and views. By the end of this guide, you will have a solid understanding of how to develop and integrate packages into the UnoPim platform, enhancing its capabilities while maintaining a robust and maintainable codebase.
 
 ## Prerequisites
 
@@ -21,10 +21,10 @@ If you prefer to set up your plugin manually, follow these steps assuming you ar
 
 ### Create plugin Directory
 
-Inside the **`plugins/Webkul`** folder, create a folder with your plugin name. Your structure should look like this:
+Inside the **`packages/Webkul`** folder, create a folder with your plugin name. Your structure should look like this:
 
    ```
-   └── plugins
+   └── packages
        └── Webkul
            └── Example
    ```
@@ -32,7 +32,7 @@ Inside the **`plugins/Webkul`** folder, create a folder with your plugin name. Y
 In your plugin folder, create a folder named as **`src`**. This is where you'll put all your plugin-related files. Your updated structure will look like this:
 
    ```
-   └── plugins
+   └── packages
        └── Webkul
            └── Example
                └── src
@@ -43,7 +43,7 @@ In your plugin folder, create a folder named as **`src`**. This is where you'll 
 In the **`src`** folder, create a folder named as **`Providers`**. Inside that folder, create a file named as **`ExampleServiceProvider.php`**. Your structure should look like this:
 
    ```
-   └── plugins
+   └── packages
        └── Webkul
            └── Example
                └── src
@@ -93,7 +93,7 @@ Add your plugin's namespace to the **`psr-4`** section in the **`composer.json`*
        ...
        "psr-4": {
            // Other PSR-4 namespaces
-           "Webkul\\Example\\": "plugins/Webkul/Example/src"
+           "Webkul\\Example\\": "packages/Webkul/Example/src"
        }
    }
    ```
