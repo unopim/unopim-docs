@@ -22,4 +22,4 @@ By using the Repository Pattern with Prettus, UnoPim ensures a more structured a
 
 ## Eloquent ORM
 
-[Eloquent](https://laravel.com/docs/11.x/eloquent), the ORM in **Laravel**, simplifies database operations by letting developers work with objects instead of writing SQL queries, making data manipulation more intuitive.
+[Eloquent](https://laravel.com/docs/10.x/eloquent), the ORM in **Laravel**, simplifies database operations by letting developers work with objects instead of writing SQL queries, making data manipulation more intuitive.

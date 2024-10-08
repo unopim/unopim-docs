@@ -101,7 +101,7 @@ The **Datagrid** package provides a solution for displaying and managing tabular
 
 ### DataTransfer
 
-The **DataTransfer** package manages data imports and exports, facilitating bulk operations such as importing large volumes of product information. For more details, see the [DataTransfer documentation](/0.1/data-transfer/).
+The **DataTransfer** package manages data imports and exports, facilitating bulk operations such as importing large volumes of product information. For more details, see the [DataTransfer documentation](/0.1/packages/data-transfer).
 
 ### DebugBar
 
@@ -109,7 +109,7 @@ The **DebugBar** package includes essential tools for monitoring, analyzing, and
 
 ### FPC
 
-The **FPC (Full Page Cache)** package optimizes the platform’s performance by caching generated pages, reducing server load, and improving response times for administrators. For more details, see the [FPC documentation](https://unopim.com/en/optimizing-unopim-pim-a-deep-dive-into-full-page-cache-implementation/).
+The **FPC (Full Page Cache)** package optimizes the platform’s performance by caching generated pages, reducing server load, and improving response times for administrators.
 
 ### HistoryControl
 
@@ -121,7 +121,7 @@ The **Installer** package simplifies the installation process of the UnoPim plat
 
 ### MagicAI
 
-The **MagicAI** package integrates AI-based functionalities into UnoPim, offering tools to enhance efficiency and decision-making processes based on product data. For more details, see the [MagicAI documentation](https://unopim.com/en/laravel-unopim-2-1-0-ai-features/).
+The **MagicAI** package integrates AI-based functionalities into UnoPim, offering tools to enhance efficiency and decision-making processes based on product data.
 
 ### Notification
 

@@ -8,7 +8,7 @@ Routes in Laravel define the entry points of your application, mapping HTTP requ
 
 Routes can be defined to handle various HTTP methods (GET, POST, PUT, DELETE, etc.) and can include parameters and route parameters to capture dynamic values from the URL. Laravel's routing system is powerful and flexible, allowing for easy RESTful routing and middleware application to routes.
 
-For detailed information on Laravel routes, including how to define routes, use route parameters, and apply middleware, refer to the [Laravel Documentation on Routing](https://laravel.com/docs/11.x/routing).
+For detailed information on Laravel routes, including how to define routes, use route parameters, and apply middleware, refer to the [Laravel Documentation on Routing](https://laravel.com/docs/10.x/routing).
 
 ## Create a New Route
 

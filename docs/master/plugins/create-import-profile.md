@@ -19,7 +19,7 @@ The data import functionality allows you to integrate and process external data 
 To begin, create the directory structure for your import logic under the `Helpers/Importers` directory within your plugin. The structure should look like this:
 
 ```
-└── plugins
+└── packages
     └── Webkul
         └── Example
             ├── ...
@@ -167,7 +167,7 @@ In the `Config` directory of your plugin, create a new configuration file named 
 Directory structure:
 
 ```
-└── plugins
+└── packages
     └── Webkul
         └── Example
             ├── ...

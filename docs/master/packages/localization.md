@@ -8,7 +8,7 @@ Laravel's localization features provide a convenient way to retrieve strings in 
 
 Language strings may be stored in files within the application's lang directory. Within this directory, there may be subdirectories for each language supported by the application. This is the approach Laravel uses to manage translation strings for built-in Laravel features such as validation error messages:
 
-To learn in detail about Localization, you can visit the Laravel documentation [here](https://laravel.com/docs/11.x/localization).
+To learn in detail about Localization, you can visit the Laravel documentation [here](https://laravel.com/docs/10.x/localization).
 
 ## Publishing the Language Files
 

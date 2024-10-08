@@ -30,7 +30,7 @@ UnoPim benefits from a vibrant community of developers and contributors, offerin
 
 - **Explore UnoPim**: Learn more about UnoPim at [https://unopim.com](https://unopim.com) and experience a demo of its features.
   
-- **Stay Updated**: Follow the [UnoPim roadmap](https://unopim.com/roadmap) to stay informed about new features and updates.
+- **Stay Updated**: Follow the [UnoPim roadmap](#) to stay informed about new features and updates.
   
 - **GitHub Repository**: Access the UnoPim repository on [GitHub](https://github.com/unopim/unopim), where the platform is actively developed and maintained.
 

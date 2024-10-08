@@ -11,7 +11,7 @@ In this section, we will cover how to structure and publish your assets during d
 Your plugin should include a `publishable` directory to store assets that need to be copied to the `public` directory during deployment. The typical structure for this setup is as follows:
 
 ```
-└── plugins
+└── packages
     └── Webkul
         └── Example
             └── src
