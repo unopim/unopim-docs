@@ -1,4 +1,4 @@
-# Localization
+# Translations
 
 [[TOC]]
 
@@ -36,7 +36,7 @@ You may also configure a `"fallback language"`, which will be used when the defa
   |
   */
 
-  'locale' => env('APP_LOCALE', 'en'),
+  'locale' => env('APP_LOCALE', 'en_US'),
 
   /*
   |--------------------------------------------------------------------------
@@ -49,7 +49,7 @@ You may also configure a `"fallback language"`, which will be used when the defa
   |
   */
 
-  'fallback_locale' => 'en',
+  'fallback_locale' => 'en_US',
   ```
 
 ## Create a new Locale
@@ -61,11 +61,11 @@ To support localization in your package, you need to create language files. Foll
    - Create a folder named `lang`.
 
 #### Create Language Code Folders
-   - Inside the `lang` folder, create different folders for each language you want to support. For example, you can create folders for English (`en`), Hindi (`hi`), etc.
-   - For now, let's create a folder named `en` to represent English.
+   - Inside the `lang` folder, create different folders for each language you want to support. For example, you can create folders for English (`en_US`), Hindi (`hi_IN`), etc.
+   - For now, let's create a folder named `en_US` to represent English.
 
 #### Create the `app.php` File
-   - Inside the `en` folder, create a file named `app.php` for language translations.
+   - Inside the `en_US` folder, create a file named `app.php` for language translations.
 
 ### Directory Structure
 
@@ -80,16 +80,16 @@ The updated directory structure will look like this:
                   └── Resources
                       ├── ...
                       └── lang
-                          └── en
+                          └── en_US
                               └── app.php
   ```
 
 ### Writing a Translation in `app.php`
 
-To add translations for your package, you can edit the `app.php` file located in the language folder (`en` in this case). Below is an example of how you can define translations:
+To add translations for your package, you can edit the `app.php` file located in the language folder (`en_US` in this case). Below is an example of how you can define translations:
 
 #### Open the `app.php` File
-   - Navigate to `packages/Webkul/Example/src/Resources/lang/en`.
+   - Navigate to `packages/Webkul/Example/src/Resources/lang/en_US`.
    - Open the `app.php` file.
 
 #### Add the Translation

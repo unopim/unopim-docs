@@ -14,7 +14,7 @@ module.exports = {
         repoLabel: 'Contribute to UnoPim',
         docsRepo: 'unopim/unopim-docs',
         docsDir: 'docs',
-        docsBranch: 'master',
+        docsBranch: 'main',
         editLinks: true,
         editLinkText: 'Help us improve this page on Github.',
 

@@ -2,7 +2,7 @@
 
 ## UnoPim: A Powerful Open-Source PIM Platform
 
-UnoPim is a leading open-source Product Information Management (PIM) platform built on the robust Laravel PHP framework, Vue.js for a dynamic user interface, and Tailwind CSS for a sleek, modern design. It offers a comprehensive set of tools and features to help businesses manage their product data efficiently across various channels. UnoPim is backed by a growing community of developers, with over 50 stars on [GitHub](https://github.com/unopim/unopim).
+UnoPim is a leading open-source Product Information Management (PIM) platform built on the robust Laravel PHP framework, Vue.js for a dynamic user interface, and Tailwind CSS for a sleek, modern design. It offers a comprehensive set of tools and features to help businesses manage their product data efficiently across various channels. UnoPim is backed by a growing community of developers, with over 295 stars on [GitHub](https://github.com/unopim/unopim).
 
 ## Key Features of UnoPim
 

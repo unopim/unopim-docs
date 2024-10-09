@@ -1,4 +1,4 @@
-# Architecture Concepts
+# Architecture Overview
 
 **UnoPim** is designed to be an intuitive and easy-to-understand platform. This document provides an overview of the architecture and how UnoPim works.
 

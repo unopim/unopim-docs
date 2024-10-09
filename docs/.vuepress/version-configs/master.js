@@ -32,7 +32,7 @@ module.exports = [
         ])
     },
     {
-        title: 'Architecture concepts',
+        title: 'Architecture Overview',
         path: setVersionPrefix('architecture'),
         collapsable: true,
         children: setVersionPrefix([
@@ -43,7 +43,7 @@ module.exports = [
         ])
     },
     {
-        title: 'Package Development',
+        title: 'Technical Codebase',
         path: setVersionPrefix('packages'),
         collapsable: true,
         children: setVersionPrefix([
@@ -54,7 +54,7 @@ module.exports = [
             ['packages/controllers', 'Controllers'],
             ['packages/routes', 'Routes'],
             ['packages/views', 'Views'],
-            ['packages/localization', 'Localization'],
+            ['packages/localization', 'Translations'],
             ['packages/layouts', 'Layouts'],
             ['packages/blade-components', 'Blade Components'],
             ['packages/bundling-assets', 'Bundling Assets'],
