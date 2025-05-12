@@ -29,7 +29,7 @@ Use the [Common Headers](#common-headers).
 
 | Name        | Description                          | Type   |
 |-------------|--------------------------------------|--------|
-| `file`      | Path to the file being uploaded      | String |
+| `file`      | Path to the file being uploaded      | File   |
 | `sku`       | Product SKU to associate the file    | String |
 | `attribute` | Media attribute (e.g., `image`)      | String |
 | `channel`   | The applicable channel (e.g., `default`) | String |
@@ -46,6 +46,8 @@ Use the [Common Headers](#common-headers).
   "locale": null
 }
 ```
+> 🔔 **Note:**
+> The `"file"` field here represents the local file path on your system for illustrative purposes. In a real API call, the file is uploaded via `multipart/form-data`, not as JSON.
 
 ### Response
 
@@ -79,7 +81,7 @@ Use the [Common Headers](#common-headers).
 
 | Name            | Description                          | Type   |
 |-----------------|--------------------------------------|--------|
-| `file`          | Path to the file being uploaded      | String |
+| `file`          | Path to the file being uploaded      | File   |
 | `code`          | Category code to associate the file  | String |
 | `category_field`| Media attribute (e.g., `image`)      | String |
 | `scope`         | The applicable channel (e.g., `default`) | String |
@@ -96,6 +98,8 @@ Use the [Common Headers](#common-headers).
   "locale": "null"
 }
 ```
+> 🔔 **Note:**
+> The `"file"` field here represents the local file path on your system for illustrative purposes. In a real API call, the file is uploaded via `multipart/form-data`, not as JSON.
 
 ### Response
 
