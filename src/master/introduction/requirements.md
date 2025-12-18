@@ -1,236 +1,118 @@
-# Requirements
+# System Requirements
 
+This page lists the minimum system requirements needed to run UnoPim.  
+All requirements must be met before proceeding with any installation method.
 
+## Hardware Requirements
 
-## Server Configuration
+- **RAM**: 8 GB or higher
+- **CPU**: 4 cores or higher
+- **Disk Space**: 20 GB or higher
 
-- **Server**: Apache 2 or NGINX
-- **RAM**: 8GB or higher
-- **Node**: 18.12.0 LTS or higher
+## Operating System
+
+UnoPim can be installed on the following operating systems:
+
+- **Ubuntu**: 22.04 or higher
+- **Windows**: Windows 10 and Windows 11
+- **macOS**
+
+Linux-based operating systems are recommended for production environments.
+
+## Web Server
+
+UnoPim supports Apache and NGINX as web servers.
+
+- **Apache**: 2.4.52 or higher
+- **NGINX**: 1.28.0 or higher
+
+### Apache Requirements
+
+Apache must be configured to serve UnoPim’s `public/` directory  
+and to pass PHP requests to PHP-FPM.
+
+### NGINX Requirements
+
+NGINX must be configured to serve UnoPim’s `public/` directory  
+and to pass PHP requests to PHP-FPM using FastCGI.
+
+## PHP Runtime
+
 - **PHP**: 8.2 or higher
+- **PHP-FPM**: Required
+
+## Software Requirements
+
 - **Composer**: 2.2.0 or higher
+- **Node.js**: 18.12.0 LTS or higher
 
 ## PHP Extensions
 
-Ensure the following extensions are installed and enabled. You can check using the **`phpinfo()`** page or the **`php -m`** command.
+The following PHP extensions must be installed and enabled.
 
-- **php-curl extension**: This extension is required for making HTTP requests within UnoPim.
+### Required PHP Extensions
 
-- **php-fileinfo extension**: The **`fileinfo`** extension is used for file type detection, important for handling file uploads.
+- `curl` (`php-curl`)
+- `fileinfo` (`php-fileinfo`)
+- `gd` (`php-gd`)
+- `intl` (`php-intl`)
+- `mbstring` (`php-mbstring`)
+- `openssl` (`php-openssl`)
+- `pdo` (`php-pdo`)
+- `tokenizer` (`php-tokenizer`)
+- `zip` (`php-zip`)
 
-- **php-gd extension**: The **`php-gd`** extension must be properly installed to ensure correct image functionality in the project. If not installed correctly, image-related features may not work as expected.
+### Database Driver Extensions
 
-  ::: tip Note
-  It is important to ensure proper installation of the **`php-gd`** extension to avoid any issues with image manipulation in UnoPim.
-  :::
+Install **only the extension required for the selected database**:
 
-- **php-intl extension**: This extension is required for internationalization support in UnoPim, enabling features like locale settings.
+- **MySQL / MariaDB**
+  - `pdo_mysql` (`php-pdo-mysql`)
 
-- **php-mbstring extension**: **`mbstring`** is required for handling multibyte string operations, which is important when working with non-ASCII characters.
+- **PostgreSQL**
+  - `pdo_pgsql` (`php-pdo-pgsql`)
 
-- **php-openssl extension**: This extension enables secure communication using SSL/TLS protocols, required for encrypting data and secure file transfers.
+These extensions are part of PHP and must be enabled for database connectivity.
 
-- **php-pdo extension**: The **`PDO`** extension is necessary for database interactions, providing a consistent interface for working with different databases.
+## Database Requirements
 
-- **php-pdo_mysql extension**: Required when using a MySQL database. Enables PDO connections to MySQL in UnoPim.
+### Supported Database Servers
 
-- **php-pdo_pgsql extension**: Required when using a PostgreSQL database. Enables PDO connections to PostgreSQL in UnoPim.
+- **MySQL**: 8.0.32 or higher
+- **MariaDB**: 10.3 or higher
+- **PostgreSQL**: 14.x or higher
 
+### Database Collation
 
-- **php-tokenizer extension**: The **`tokenizer`** extension is needed for working with code parsing and analyzing tokens in the application.
-
-- **php-zip extension**: This extension enables file compression and extraction features, allowing UnoPim to handle zip file imports and exports.
-
-## How to Install PHP Extensions
-
-### On Windows
-
-1. **Locate the `php.ini` file**:
-   - This file is typically located in your PHP installation directory (e.g., `C:\php\php.ini` or `C:\xampp\php\php.ini`).
-2. **Enable the extensions**:
-   - Open the `php.ini` file in a text editor and find the extensions listed below.
-   - Uncomment the lines by removing the `;` at the beginning. If the extension is not listed, you'll need to download the corresponding `.dll` file.
-
-   ```ini
-   extension=curl
-   extension=fileinfo
-   extension=gd
-   extension=intl
-   extension=mbstring
-   extension=openssl
-   extension=pdo
-   extension=pdo_mysql       ; Enable this if using MySQL
-   extension=pdo_pgsql       ; Enable this if using PostgreSQL
-   extension=tokenizer
-   extension=zip
-   ```
-
-3. **Download missing `.dll` files** (if needed):
-   - If any extension is missing, visit the [PECL repository](https://pecl.php.net/) or download the `.dll` files from the [PHP Windows downloads page](https://windows.php.net/download/).
-
-4. **Restart your web server**:
-   - After saving the `php.ini` file, restart Apache or NGINX to apply the changes.
-### On Linux
-
-1. **Install common PHP extensions via the package manager**:
-
-   * Use the following commands based on your Linux distribution to install the required extensions.
-
-   **For Ubuntu/Debian:**
-
-   ```bash
-   sudo apt update
-   sudo apt install php-curl php-fileinfo php-gd php-intl php-mbstring php-openssl php-pdo php-tokenizer php-zip
-   ```
-
-   **For CentOS/RHEL:**
-
-   ```bash
-   sudo yum install php-curl php-fileinfo php-gd php-intl php-mbstring php-openssl php-pdo php-tokenizer php-zip
-   ```
-
-   **For Fedora:**
-
-   ```bash
-   sudo dnf install php-curl php-fileinfo php-gd php-intl php-mbstring php-openssl php-pdo php-tokenizer php-zip
-   ```
-
-2. **Install database-specific PHP extension**:
-
-   * **For MySQL:**
-
-     **Ubuntu/Debian:**
-
-     ```bash
-     sudo apt install php-pdo-mysql
-     ```
-
-     **CentOS/RHEL:**
-
-     ```bash
-     sudo yum install php-pdo_mysql
-     ```
-
-     **Fedora:**
-
-     ```bash
-     sudo dnf install php-pdo_mysql
-     ```
-
-   * **For PostgreSQL:**
-
-     **Ubuntu/Debian:**
-
-     ```bash
-     sudo apt install php-pdo-pgsql
-     ```
-
-     **CentOS/RHEL:**
-
-     ```bash
-     sudo yum install php-pdo_pgsql
-     ```
-
-     **Fedora:**
-
-     ```bash
-     sudo dnf install php-pdo_pgsql
-     ```
-
-2. **Restart the web server**:
-   - Once the extensions are installed, restart your Apache or NGINX server.
-
-   ```bash
-   sudo systemctl restart apache2  # For Ubuntu/Debian
-   sudo systemctl restart httpd    # For CentOS/RHEL/Fedora
-   sudo systemctl restart nginx    # If you're using NGINX
-   ```
-
-3. **Verify the extensions**:
-   - You can verify the installed extensions by running:
-
-   ```bash
-   php -m
-   ```
-
-### On macOS
-
-1. **Install PHP Extensions via Homebrew**:
-   ```bash
-   brew install php
-   brew install php-curl
-   brew install php-gd
-   brew install php-intl
-   brew install php-mbstring
-   brew install php-openssl
-   brew install php-pdo
-   brew install php-zip
-   ```
-
-2. **Verify PHP Version and Extensions**:
-   ```bash
-   # Check PHP version
-   php -v
-
-   # List installed PHP extensions
-   php -m
-   ```
-
-3. **Configure PHP Extensions**:
-   - Locate your `php.ini` file:
-   ```bash
-   php --ini
-   ```
-
-   - Edit the `php.ini` file to enable extensions:
-   ```ini
-   extension=curl
-   extension=fileinfo
-   extension=gd
-   extension=intl
-   extension=mbstring
-   extension=openssl
-   extension=pdo
-   extension=pdo_mysql       ; Enable this if using MySQL
-   extension=pdo_pgsql       ; Enable this if using PostgreSQL
-   extension=tokenizer
-   extension=zip
-   ```
-
-4. **Restart PHP-FPM** (if using):
-   ```bash
-   brew services restart php
-   ```
-
+- Recommended collation: `utf8mb4_unicode_ci`
 
 ## PHP Configuration
 
-Open your **`php.ini`** file and modify the following settings.
+The following PHP configuration values must be set:
 
-- **memory_limit**: Set the **`memory_limit`** directive to **`4G`** or higher to ensure sufficient memory allocation for the application.
+- **memory_limit**: 4G or higher
+- **max_execution_time**: 360 or higher
+- **date.timezone**: Set to the server timezone
 
-- **max_execution_time**: Adjust the **`max_execution_time`** directive to **`360`** or higher. This value determines the maximum time (in seconds) a script is allowed to run. Increasing this value ensures that longer operations, such as import/export processes, can be completed successfully.
+## File System Permissions
 
-- **date.timezone**: Set the **`date.timezone`** directive to your specific timezone. For example, **`Asia/Kolkata`**. This ensures that date and time-related functions work accurately based on the specified timezone.
+The following directories must be writable by the web server user:
 
-```ini
-memory_limit = 4G
-max_execution_time = 360
-date.timezone = Asia/Kolkata <- Change this to your own timezone.
-```
+- `storage/`
+- `bootstrap/cache/`
 
-::: tip Remember to restart your web server
-Whenever you make changes to the PHP configuration file, be sure to restart Apache or NGINX to apply the modifications.
-:::
+## Background Processing
 
-## Supported Database Servers
+- **Supervisor**: Recommended to manage and monitor queue workers.
 
-UnoPim supports the following database servers:
+## Optional Components
 
-- **MySQL**: Version 8.0.32 or higher is recommended for optimal performance and compatibility.
+- **Elasticsearch**: 8.x  
+  Recommended for faster search performance and large catalogs.
 
-- **MariaDB**: Version 10.3 or higher is recommended for optimal performance and compatibility.
+- **Redis**  
+  Recommended for handling background jobs in the queue system, currently uses the database driver.
 
-- **PostgreSQL**: Version 14.x or higher is recommended for optimal performance and compatibility
+## Next Steps
 
-- **Database Collation**: The recommended collation for the database is **`utf8mb4_unicode_ci`**, which ensures proper handling of Unicode characters and multilingual support.
+After verifying all system requirements, proceed to the installation guide for your selected setup.
