@@ -22,14 +22,61 @@ export default function getMasterSidebar(version: string) {
       text: 'Introduction',
       link: `/${version}/introduction/`,
       collapsed: false,
-      items: setVersionPrefix([
-        ['introduction/requirements', 'Requirements'],
-        ['introduction/installation', 'Installation'],
-        ['introduction/installation-with-postgresql', 'Installation With PostgreSql'],
-        ['introduction/creating-newuser', 'Creating a New User'],
-        ['introduction/configuring_supervisor', 'Configuring Supervisor'],
-      ])
+      items: [
+        {
+          text: 'Requirements',
+          link: `/${version}/introduction/requirements`
+        },
+
+        {
+          text: 'System Installation',
+          link: `/${version}/introduction/system-installation/`,
+          items: [
+            {
+              text: 'Ubuntu',
+              items: [
+                {
+                  text: 'Base Preparation',
+                  link: `/${version}/introduction/system-installation/ubuntu/preparation`
+                },
+                {
+                  text: 'Apache + MySQL',
+                  link: `/${version}/introduction/system-installation/ubuntu/apache-mysql`
+                },
+                {
+                  text: 'Apache + PostgreSQL',
+                  link: `/${version}/introduction/system-installation/ubuntu/apache-postgresql`
+                }
+              ]
+            }
+          ]
+        },
+
+        {
+          text: 'Creating a New User',
+          link: `/${version}/introduction/creating-newuser`
+        },
+        {
+          text: 'Configuring Supervisor',
+          link: `/${version}/introduction/configuring_supervisor`
+        }
+      ]
     },
+
+
+    // {
+    //   text: 'Introduction',
+    //   link: `/${version}/introduction/`,
+    //   collapsed: false,
+    //   items: setVersionPrefix([
+    //     ['introduction/requirements', 'Requirements'],
+    //     ['introduction/installation', 'Installation'],
+    //     ['introduction/installation-with-postgresql', 'Installation With PostgreSql'],
+    //     ['introduction/installation-with-mysql', 'Installation With MySql'],
+    //     ['introduction/creating-newuser', 'Creating a New User'],
+    //     ['introduction/configuring_supervisor', 'Configuring Supervisor'],
+    //   ])
+    // },
     {
       text: 'Architecture Overview',
       link: `/${version}/architecture/`,
