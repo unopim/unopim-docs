@@ -3,7 +3,7 @@
 This page lists the minimum system requirements needed to run UnoPim.  
 All requirements must be met before proceeding with any installation method.
 
-## Hardware Requirements
+## Minimum Hardware Requirements
 
 - **RAM**: 8 GB or higher
 - **CPU**: 4 cores or higher
@@ -11,7 +11,7 @@ All requirements must be met before proceeding with any installation method.
 
 ## Operating System
 
-UnoPim can be installed on the following operating systems:
+UnoPim can be installed on any of the following operating systems:
 
 - **Ubuntu**: 22.04 or higher
 - **Windows**: Windows 10 and Windows 11
@@ -21,7 +21,7 @@ Linux-based operating systems are recommended for production environments.
 
 ## Web Server
 
-UnoPim supports Apache and NGINX as web servers.
+UnoPim supports either Apache or NGINX as the web server.
 
 - **Apache**: 2.4.52 or higher
 - **NGINX**: 1.28.0 or higher
@@ -112,7 +112,3 @@ The following directories must be writable by the web server user:
 
 - **Redis**  
   Recommended for handling background jobs in the queue system, currently uses the database driver.
-
-## Next Steps
-
-After verifying all system requirements, proceed to the installation guide for your selected setup.

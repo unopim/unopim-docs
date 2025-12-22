@@ -244,3 +244,24 @@ Confirm PHP 8.2 and MySQL extensions are loaded, then remove the file.
 ```bash
 rm /home/unopim/unopim/public/info.php       # remove phpinfo file
 ```
+
+## Next steps — Install UnoPim
+
+Your system is now configured with **Apache, MySQL and PHP-FPM** and is ready
+for UnoPim installation.
+
+Choose **one** of the following installation methods:
+
+### Option 1: Install via Composer
+
+Use this method if you prefer a terminal-based installation experience.
+
+➡️ Continue with:
+[**Install UnoPim via Composer**](../../composer)
+
+### Option 2: Install via GUI Installer
+
+Use this method if you prefer a browser-based installation experience.
+
+➡️ Continue with:
+[**Install UnoPim via GUI Installer**](../../gui-installer)

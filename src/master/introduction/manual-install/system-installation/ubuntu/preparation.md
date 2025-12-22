@@ -194,5 +194,3 @@ After completing the base preparation, continue with **one** of the following gu
 
 * Installation on Ubuntu with [**Apache + MySQL**](./apache-mysql.md)
 * Installation on Ubuntu with [**Apache + PostgreSQL**](./apache-postgresql.md)
-
-Do not install both database stacks on the same system.
