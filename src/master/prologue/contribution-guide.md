@@ -61,52 +61,67 @@ vendor/bin/pint
 
 If you discover a security vulnerability within UnoPim, please notify us immediately by sending an email to Webkul at [support@webkul.in](mailto:support@webkul.in). We take security vulnerabilities seriously and will address them promptly.
 
-## Coding Style
 
-UnoPim follows the [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md) coding standard and the [PSR-4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md) autoloading standard. These standards ensure consistency and readability in the codebase, similar to Laravel.
+## Coding Standards & Developer Guidelines
 
-In addition to PSR-2 and PSR-4, here are some Laravel and UnoPim-specific coding practices that should be followed:
+UnoPim follows **[PSR-4](https://www.php-fig.org/psr/psr-4/) autoloading** and **[PSR-2](https://www.php-fig.org/psr/psr-2/) / [PSR-12](https://www.php-fig.org/psr/psr-12/) coding standards**, aligned
+with Laravel conventions.
 
-### 1. **Naming Conventions**
-   - **Classes**: Use `StudlyCaps` for class names (e.g., `ProductRepository`).
-   - **Variables**: Use `camelCase` for variable names (e.g., `$productName`).
-   - **Methods**: Method names should be written in `camelCase` (e.g., `getProductList()`).
-   - **Constants**: Use `ALL_CAPS` for constants (e.g., `MAX_ITEMS`).
+It is opinionated on purpose to keep the codebase consistent and predictable.
 
-### 2. **Controllers**
-   - Keep controller methods small and focused. Follow the Single Responsibility Principle (SRP).
-   - Utilize resource controllers to manage CRUD operations efficiently.
-   - Avoid placing business logic in controllers; instead, delegate it to service classes or repositories.
+If a pattern already exists in UnoPim, **reuse it** instead of introducing a new one.
 
-### 3. **Models**
-   - Use Eloquent models appropriately. Avoid querying the database directly in the controller.
-   - Leverage relationships between models to keep your queries clean and manageable.
+## Core Principles
 
-### 4. **Service Classes**
-   - Abstract your business logic into service classes where necessary. This helps keep controllers lean and maintainable.
-   - Use dependency injection to keep your code flexible and testable.
+* Follow PSR standards and Laravel conventions
+* Keep controllers thin
+* Move logic to repositories, services, or helpers
+* Prefer consistency over personal preference
+* Follow existing UnoPim patterns
 
-### 5. **Repositories**
-   - Follow the Repository Pattern to encapsulate database operations, making your code easier to test and refactor.
+## Project / Package Structure
 
-### 6. **Validation**
-   - Use form request classes for validation to keep your controller logic clean.
+UnoPim is modular. Each feature lives in its own package:
 
-### 7. **Comments and Documentation**
-   - Follow the PHPDoc standard for documenting your code.
-   - Ensure each function, class, and property has appropriate documentation explaining its purpose.
+```
 
-### 8. **Security**
-   - Always sanitize input and validate data to prevent security vulnerabilities such as SQL injection or XSS attacks.
-   - Use Laravel's built-in authentication and authorization mechanisms when applicable.
+packages/Webkul/<ModuleName>/
 
-By adhering to these coding practices along with PSR standards, developers can ensure clean, maintainable, and scalable code within UnoPim.
+```
+
+### Standard Package Layout
+
+```
+
+packages/Webkul/Example/src/
+├── Config/
+│   ├── acl.php
+│   └── menu.php
+├── Database/
+│   ├── Migrations/
+│   └── Seeders/
+├── DataGrids/
+│   └── ExampleDataGrid.php
+├── Http/
+│   ├── Controllers/
+│   ├── Requests/
+│   └── Routes/
+├── Models/
+├── Repositories/
+├── Providers/
+├── Resources/
+│   ├── views/
+│   └── lang/
+└── Contracts/
+
+```
 
 ## PHPDoc
 
 Below is an example of a valid UnoPim doc block that follows the coding style:
 
 ```php
+
 /**
  * Register a service with ExampleServiceProvider.
  */
@@ -115,3 +130,249 @@ protected function registerFacades(string|array $loader, string|null $concrete =
   //
 }
 ```
+
+## Naming Conventions
+
+* **Classes:** `StudlyCase`
+* **Controllers:** `ProductController`
+* **Repositories:** `ProductRepository`
+* **Requests:** `ProductRequest`
+* **Table Names**: Plural (`products`)
+* **DataGrids:** `ProductDataGrid`
+* **Models:** Singular (`Product`)
+* **Methods / variables:** `camelCase`
+* **Constants:** `SCREAMING_SNAKE_CASE`
+* **Blade views:** `kebab-case.blade.php`
+
+## Vue Component Naming
+
+All Vue components must follow a naming convention.
+
+### Rules
+
+* Use **kebab-case**
+* Prefix all components with `v-`
+* One component per file
+
+### Examples
+
+```vue
+<v-product-form />
+<v-category-tree />
+<v-media-uploader />
+```
+
+## Route → Controller → View → Translation Linking
+
+Linking between these layers keeps the code easily manageable and reviewable.
+
+| Layer       | Convention                                |
+| ----------- | ----------------------------------------- |
+| Route name  | `admin.catalog.products.index`            |
+| Controller  | `ProductController@index`                 |
+| View        | `catalog/products/index.blade.php`        |
+| Translation | `admin::app.catalog.products.index.title` |
+
+If one changes, **all others must be updated**.
+
+## Controllers
+
+* Handle HTTP concerns only
+* No business logic
+* Use resource controllers for CRUD
+* Delegate logic to repositories or services/helpers
+* Use Form Request classes for validation
+
+## Models & Repositories
+
+### Models
+
+* Contain relationships, scopes, accessors, mutators
+* Do not contain business logic
+
+### Repositories
+
+* Handle queries and persistence logic
+* Extend `Webkul\Core\Eloquent\Repository`
+* Inject into controllers or services
+
+## Raw Queries (Mandatory Rule)
+
+All raw SQL queries **must** use the table prefix helper.
+
+Correct:
+
+```php
+$tablePrefix = DB::getTablePrefix();
+DB::raw("SELECT * FROM {$tablePrefix}products");
+```
+
+Incorrect:
+
+```php
+DB::raw("SELECT * FROM products");
+```
+
+## DataGrids
+
+* Handle queries, filters, and actions
+* One DataGrid per resource
+
+## Views & Blade Templates
+
+* One folder per resource
+* Use `index`, `create`, `edit`
+* No hardcoded strings
+* Always use translations
+
+## Translations
+
+* Stored in `Resources/lang/{locale}/app.php`
+* Use nested keys
+* Always use `trans()` or `@lang()`
+
+## ACL (Access Control)
+
+* Defined in `Config/acl.php`
+* Keys must mirror route names
+* Each route must have an ACL entry
+* Separate permissions for CRUD actions
+
+## Menu Configuration
+
+* Defined in `Config/menu.php`
+* Menu keys must match ACL keys
+* Routes must exist
+* Sorting controls menu order
+
+## Validation
+
+* Use Form Request classes
+* Never validate inline in controllers
+* Keep rules reusable
+
+## Events & Extensibility
+
+* Fire events before and after create/update/delete
+* Enables plugin-based extensions
+* Keeps core logic clean
+
+## Testing
+
+Tests are mandatory for all new features and bug fixes.
+
+Run tests:
+
+```bash
+vendor/bin/pest
+```
+
+Run tests in parallel (recommended):
+
+```bash
+vendor/bin/pest --parallel
+```
+
+## Pint & Code Style
+
+Run Pint before opening a pull request:
+
+```bash
+vendor/bin/pint
+```
+
+All formatting issues must be fixed.
+
+## Common Pitfalls
+
+Avoid these common mistakes:
+
+* Business logic inside controllers
+* Skipping repositories and querying directly
+* Hardcoded UI strings
+* Missing ACL or menu entries
+* Raw SQL without table prefix
+* Broken route/controller/view consistency
+* Missing tests
+
+## PR Review Checklist
+
+Before submitting a pull request:
+
+* Routes follow naming conventions
+* Controller is thin
+* Repository or service used for logic
+* ACL entry added
+* Menu entry added (if UI change)
+* Translations added
+* No hardcoded strings
+* Raw queries use table prefix
+* Tests added and passing
+* `vendor/bin/pint` executed
+* `vendor/bin/pest --parallel` executed
+* No breaking changes or regressions
+
+## Git & Contribution Conventions
+
+### Branch Naming
+
+Format:
+
+```
+<type>/<short-description>
+```
+
+Examples:
+
+* `feature/add-product-media`
+* `bugfix/fix-product-filter`
+* `hotfix/fix-login-error`
+* `refactor/cleanup-review-processor`
+* `docs/update-installation-guide`
+* `test/add-review-tests`
+* `chore/update-dependencies`
+
+Rules:
+
+* One task per branch
+* Do not mix concerns
+* Delete branch after merge
+
+
+## Commit Messages
+
+Follow [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/#summary) format:
+
+```
+<type>: short description
+```
+
+Examples:
+
+```text
+feat: add product media upload support
+fix: resolve issue with product filter
+refactor: move logic to repository
+docs: update docker setup guide
+test: add tests for review attachments
+style: fix formatting using pint
+chore: update composer.lock
+perf: optimize product listing query
+ci: update github actions workflow
+revert: revert "feat: add product export"
+```
+
+Keep commits small and focused.
+
+
+## Summary
+
+UnoPim expects more than PSR compliance.
+
+It expects:
+
+* Consistent structure
+* Predictable patterns
+* Clean separation of concerns
+* Proper ACL, menu, and translations
+* Tests for every change
