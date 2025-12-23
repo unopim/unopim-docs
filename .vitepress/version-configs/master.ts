@@ -8,6 +8,7 @@ export default function getMasterSidebar(version: string) {
       link: `/${version}/${child[0]}`
     }))
   }
+
   return [
     {
       text: 'Prologue',
@@ -22,14 +23,74 @@ export default function getMasterSidebar(version: string) {
       text: 'Introduction',
       link: `/${version}/introduction/`,
       collapsed: false,
-      items: setVersionPrefix([
-        ['introduction/requirements', 'Requirements'],
-        ['introduction/installation', 'Installation'],
-        ['introduction/installation-with-postgresql', 'Installation With PostgreSql'],
-        ['introduction/creating-newuser', 'Creating a New User'],
-        ['introduction/configuring_supervisor', 'Configuring Supervisor'],
-      ])
+      items: [
+        {
+          text: 'Manual Installation',
+          link: `/${version}/introduction/manual-install/`,
+          collapsed: false,
+          items: [
+            {
+              text: 'Overview',
+              link: `/${version}/introduction/manual-install/`
+            },
+            {
+              text: 'Requirements',
+              link: `/${version}/introduction/manual-install/requirements`
+            },
+            {
+              text: 'System Installation',
+              link: `/${version}/introduction/manual-install/system-installation/`,
+              items: [
+                {
+                  text: 'Ubuntu',
+                  items: [
+                    {
+                      text: 'Base Preparation',
+                      link: `/${version}/introduction/manual-install/system-installation/ubuntu/preparation`
+                    },
+                    {
+                      text: 'Apache + MySQL',
+                      link: `/${version}/introduction/manual-install/system-installation/ubuntu/apache-mysql`
+                    },
+                    {
+                      text: 'Apache + PostgreSQL',
+                      link: `/${version}/introduction/manual-install/system-installation/ubuntu/apache-postgresql`
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              text: 'Install via Composer',
+              link: `/${version}/introduction/manual-install/composer`
+            },
+            {
+              text: 'Install via GUI Installer',
+              link: `/${version}/introduction/manual-install/gui-installer`
+            }
+          ]
+        },
+
+        {
+          text: 'Install via Docker',
+          link: `/${version}/introduction/install/docker`
+        },
+        {
+          text: 'Install via Amazon AMI',
+          link: `/${version}/introduction/install/amazon-ami`
+        },
+
+        {
+          text: 'Creating a New User',
+          link: `/${version}/introduction/creating-newuser`
+        },
+        {
+          text: 'Configuring Supervisor',
+          link: `/${version}/introduction/configuring_supervisor`
+        }
+      ]
     },
+
     {
       text: 'Architecture Overview',
       link: `/${version}/architecture/`,
