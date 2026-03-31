@@ -17,7 +17,7 @@ To install UnoPim using Composer, use the following steps:
 - Otherwise, to directly install UnoPim, run the following command in your terminal:
 
     ```sh
-    composer create-project unopim/unopim
+    composer create-project unopim/unopim:^0.1
     ```
 
 - Run the following command to complete the installation:
