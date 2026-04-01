@@ -89,6 +89,7 @@ export default [
             ['advanced/override-core-model', 'Override Core Models'],
             ['advanced/render-event', 'View Render Event'],
             ['advanced/security-practice', 'Best Security Practices'],
+            ['advanced/cli-commands', 'CLI Commands'],
             ['advanced/queue-management', 'Queue Management'],
             ['advanced/elasticsearch-configuration', 'Elasticsearch Configuration'],
             ['advanced/ai-agent', 'AI Agent Integration'],

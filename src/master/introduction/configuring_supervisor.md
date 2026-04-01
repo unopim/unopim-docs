@@ -44,7 +44,7 @@ Supervisor is used to manage the job queue daemon for UnoPIM. Follow these steps
 
    ```ini
     [program:unopim-worker]
-    command=/path/to/php /path/to/your/unopim/artisan queue:work --queue="default,system" --timeout=1800
+    command=/path/to/php /path/to/your/unopim/artisan queue:work --queue="default,system,completeness" --timeout=1800
     autostart=true
     autorestart=true
     user=my_user
