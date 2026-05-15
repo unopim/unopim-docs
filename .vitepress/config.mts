@@ -42,6 +42,7 @@ export default defineConfig({
     nav: [
       { text: 'Home', link: '/' },
       { text: 'User Guide', link: 'https://docs.unopim.com/' },
+      { text: 'Extensions Doc', link: 'http://docs-extensions.unopim.com/' },
       { text: 'Contact Us', link: 'https://unopim.com/en/contacts/' },
       { text: 'Contribute', link: 'https://github.com/unopim/unopim' },
     ],

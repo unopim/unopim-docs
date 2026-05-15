@@ -31,9 +31,9 @@ We welcome proposals for new features and enhancements to the existing UnoPim ap
 
 Before submitting a pull request, it's important to consider the following points to help you choose the appropriate branch:
 
-- **Bug Fixes**: If you're fixing a bug, make sure to port the fix to the master version.
-- **Critical Bug Fixes**: If you're fixing a critical bug, make sure to port the fix to the latest stable version that supports it (currently v1.0.0).
-- **Feature Requests**: If your request involves a feature with potential breaking changes, send it to the master branch, which corresponds to the upcoming release (v1.0.x).
+- **Bug Fixes**: If you're fixing a bug, send the fix to the `master` branch.
+- **Critical Bug Fixes**: If you're fixing a critical bug, also port the fix to the latest stable release branch (currently **v2.1.0**) so it can ship in the next patch release.
+- **Feature Requests**: If your request involves a feature with potential breaking changes, send it to the `master` branch, which corresponds to the upcoming release.
 
 ## Compiled Assets
 
@@ -135,6 +135,7 @@ In addition to PSR-2 and PSR-4, here are some Laravel and UnoPim-specific coding
 
 ### 8. **Security**
    - Always sanitize input and validate data to prevent security vulnerabilities such as SQL injection or XSS attacks.
+   - When rendering user-generated HTML content, sanitize it with the `clean_content()` helper (added in v2.1.0, backed by HTMLPurifier) rather than echoing raw input.
    - Use Laravel's built-in authentication and authorization mechanisms when applicable.
 
 By adhering to these coding practices along with PSR standards, developers can ensure clean, maintainable, and scalable code within UnoPim.

@@ -2,9 +2,10 @@
 
 ## Overview
 
-Use this guide for updates within the **same major version** — for example `2.0.0 → 2.0.3` or `2.0.x → 2.1.0`. These releases are backwards compatible: no breaking API changes, no PHP or database engine bumps, and no `bootstrap/app.php` rewrites.
+Use this guide as the repeatable checklist for applying patch releases within the **2.1.x line** — for example `2.1.0 → 2.1.1` or any future `2.1.x` release. These releases are backwards compatible: no breaking API changes, no PHP or database engine bumps, and no `bootstrap/app.php` rewrites.
 
-If you are upgrading across a major version (for example `1.x → 2.x`), follow the [Upgrade Guide](upgrade-guide) instead.
+- Moving up to the **v2.1.0** release from v2.0.x for the first time? Follow the version-specific [Upgrade Guide](upgrade-guide) instead — it lists the exact migrations, queue jobs, and configuration changes that release introduced.
+- Upgrading across a **major version** (for example `1.x → 2.x`)? Use the [2.0.x Upgrade Guide](/2.0.x/prologue/upgrade-guide) to reach v2.0.x first, then move up to v2.1.0.
 
 ::: tip
 Always read the [release notes](https://github.com/unopim/unopim/releases) for the target version before applying. Even a patch release may include a new migration, queue, or config key that requires action.
@@ -38,7 +39,7 @@ php artisan queue:restart
 ```bash
 cd /path/to/unopim
 git fetch --tags
-git checkout v2.0.x   # replace with the target tag
+git checkout v2.1.1   # replace with the target 2.1.x tag
 ```
 
 ### Composer-based installs
@@ -121,7 +122,7 @@ For Docker-based installs the flow collapses into a few commands:
 ```bash
 cd /path/to/unopim
 git fetch --tags
-git checkout v2.0.x
+git checkout v2.1.1   # replace with the target 2.1.x tag
 docker compose build
 docker compose up -d
 docker compose exec unopim-fpm php artisan migrate --force
