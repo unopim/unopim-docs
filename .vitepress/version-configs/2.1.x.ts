@@ -1,5 +1,5 @@
-// .vitepress/version-configs/2.0.x.ts
-let version = '2.0.x'
+// .vitepress/version-configs/2.1.x.ts
+let version = '2.1.x'
 
 function setVersionPrefix(children: [string, string][]) {
     return children.map(child => ({

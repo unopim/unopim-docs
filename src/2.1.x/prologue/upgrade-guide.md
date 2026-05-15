@@ -2,29 +2,30 @@
 
 ## Overview
 
-This guide walks you through upgrading your UnoPim installation from **v1.0.0 to v2.0.0**. This is a major release that upgrades the underlying framework from Laravel 10 to Laravel 12 and raises the minimum PHP version to 8.3. Several internal APIs have changed, so please read the [Breaking Changes](#breaking-changes) section carefully before you begin.
+This guide walks you through upgrading your UnoPim installation from **v2.0.x to v2.1.0**. This is a minor release within the same major version: it adds new features, performance improvements, and security hardening, but contains **no breaking changes** — no PHP or database engine bump, no Laravel framework upgrade, and no `bootstrap/app.php` rewrite.
 
 ::: tip
-Applying a same-major-version update (for example `2.0.0 → 2.0.3` or `2.0.x → 2.1.0`)? See the [Patch / Minor Update Guide](patch-update) instead — that flow is shorter and contains no breaking changes.
+Upgrading across a major version (for example `1.x → 2.x`)? Switch to the **2.0.x** documentation and follow its [Upgrade Guide](/2.0.x/prologue/upgrade-guide), which covers the Laravel 12 and PHP 8.3 migration. Once you are on v2.0.x, return here to move up to v2.1.0.
 :::
 
-::: warning
-UnoPim v2.0.0 contains breaking changes. If you have custom packages, middleware, or service providers, review every section of this guide before upgrading.
+::: tip
+For the generic same-major update process (any `2.0.0 → 2.0.x` patch), see the [Patch / Minor Update Guide](patch-update). This page is the version-specific guide for the **v2.1.0** release.
 :::
 
 ## Pre-upgrade Checklist
 
 Before starting the upgrade, verify the following:
 
-- [ ] **PHP 8.3+** is installed on your server (`php -v`)
-- [ ] **MySQL 8.0.32+** or **PostgreSQL 14.x** is available
-- [ ] **Elasticsearch 8.17+** is running (if you use search indexing)
-- [ ] **Composer 2.x** is installed
-- [ ] **Node.js 18+** and **npm** are installed (for frontend assets)
+- [ ] You are currently running **UnoPim v2.0.x** (check the version in `composer.json` or the admin panel footer)
+- [ ] **PHP 8.3+**, **Composer 2.x**, and **Node.js 18+** are installed (requirements are unchanged from v2.0.0)
 - [ ] You have a complete backup of your database
 - [ ] You have a complete backup of your project files (especially `.env`, `storage/`, and any custom packages)
 - [ ] All queue workers, cron jobs, and Supervisor processes are stopped
-- [ ] You have reviewed the [Breaking Changes](#breaking-changes) section below
+- [ ] You have reviewed the **New in v2.1.0** section below
+
+::: warning
+If you are still on **v1.0.0**, do not use this guide. Complete the [v1.x → v2.0.0 upgrade](/2.0.x/prologue/upgrade-guide) first, then return here to upgrade to v2.1.0.
+:::
 
 ## Upgrade Steps
 
@@ -34,56 +35,43 @@ Create a complete backup of your database and project files before proceeding.
 
 ```bash
 # Backup your database
-mysqldump -u your_db_user -p your_db_name > unopim_v1_backup.sql
+mysqldump -u your_db_user -p your_db_name > unopim_v2.0_backup.sql
 
 # Backup your project directory
-tar -czf unopim_v1_files_backup.tar.gz /path/to/current/unopim
+tar -czf unopim_v2.0_files_backup.tar.gz /path/to/current/unopim
 ```
 
-### 2. Download UnoPim v2.0.0
+### 2. Stop Queue Workers and Scheduler
+
+Stop queue workers and the scheduler so they do not pick up jobs against a half-updated codebase.
+
+```bash
+# If using Supervisor
+sudo supervisorctl stop unopim-worker
+
+# Or, if running queue:work directly, stop the process (Ctrl+C)
+```
+
+### 3. Download UnoPim v2.1.0
 
 Download the new release from one of these sources:
 
-- [GitHub Release v2.0.0](https://github.com/unopim/unopim/releases/tag/v2.0.0)
+- [GitHub Release v2.1.0](https://github.com/unopim/unopim/releases/tag/v2.1.0)
 - [Official Website](https://unopim.com/download)
 
+If you track UnoPim with Git, fetch and check out the tag instead:
+
 ```bash
-# Extract the new version
-unzip unopim-2.0.0.zip
+git fetch --tags
+git checkout v2.1.0
 ```
 
-### 3. Copy Configuration and Storage
+### 4. Update Dependencies
 
-Copy your existing `.env` file and storage directory from your current installation to the new `unopim-2.0.0` folder:
-
-```bash
-# Copy your environment file
-cp /path/to/current/unopim/.env unopim-2.0.0/
-
-# Copy storage directory (uploaded files, logs, etc.)
-cp -r /path/to/current/unopim/storage/* unopim-2.0.0/storage/
-```
-
-::: tip Note
-The upgrade will be completed inside the new `unopim-2.0.0` folder. After a successful upgrade and testing, you can either rename the new folder to replace your current installation, move it to your desired path, or update your web server configuration to point to the new directory.
-:::
-
-### 4. Update PHP Version
-
-UnoPim v2.0.0 requires **PHP 8.3 or higher**. If you are running PHP 8.2, you must upgrade PHP before continuing.
+Install the updated PHP and frontend dependencies, then rebuild assets:
 
 ```bash
-# Verify PHP version
-php -v
-# Expected output: PHP 8.3.x or higher
-```
-
-### 5. Install Dependencies
-
-Navigate to the new UnoPim directory and install all PHP and frontend dependencies:
-
-```bash
-cd unopim-2.0.0
+cd /path/to/unopim
 
 # Install PHP dependencies
 composer install
@@ -93,27 +81,29 @@ npm install
 npm run build
 ```
 
-### 6. Run Database Migrations
+v2.1.0 bumps a few dependencies — `phpseclib/phpseclib` to `3.0.52` and `phpoffice/phpspreadsheet` to `1.30.4`. `composer install` applies these automatically.
 
-UnoPim v2.0.0 introduces 8 new database tables. Run the migration command to update your database schema:
+### 5. Run Database Migrations
 
 ```bash
 php artisan migrate
 ```
 
-The following new tables will be created:
+v2.1.0 ships schema migrations focused on **query performance**. No tables are dropped and no data is modified:
 
-| Table | Purpose |
-|-------|---------|
-| `ai_agent_token_usage` | Tracks AI agent token consumption |
-| `ai_agent_conversations` | Stores AI agent chat conversations |
-| `ai_agent_messages` | Stores individual AI agent messages |
-| `ai_agent_memories` | Persists AI agent context memory |
-| `ai_agent_changesets` | Records changes made by AI agents |
-| `ai_agent_tasks` | Tracks AI agent task execution |
-| `magic_ai_platforms` | Stores MagicAI platform configurations |
+| Change | Purpose |
+|--------|---------|
+| Index on `channels.code` | Faster channel lookups by code |
+| Index on `locales.status` | Faster filtering of active locales |
+| Index on `currencies.status` | Faster filtering of active currencies |
+| Composite index on `core_config (code, channel_code, locale_code)` | Faster configuration resolution |
+| `webhook_logs.user_id` made nullable | Supports system-triggered webhooks with no associated user |
 
-### 7. Clear Cache and Optimize
+::: tip
+The `add_tone_to_magic_ai_prompts_table` migration now includes a proper `down()` method, so it can be rolled back cleanly if needed.
+:::
+
+### 6. Clear Cache and Optimize
 
 Clear all cached configurations and regenerate the storage link:
 
@@ -122,28 +112,31 @@ php artisan optimize:clear
 php artisan storage:link
 ```
 
-### 8. Update Queue Worker Configuration
+### 7. Update Environment Configuration (Optional)
 
-UnoPim v2.0.0 introduces a dedicated `completeness` queue for product data quality scoring. Update your queue worker command to include this new queue:
+v2.1.0 adds an optional **IP-based debug filter**. When `APP_DEBUG` is enabled, you can restrict detailed error pages to specific IP addresses by adding `APP_DEBUG_ALLOWED_IPS` to your `.env`:
+
+```ini
+APP_DEBUG=true
+APP_DEBUG_ALLOWED_IPS=127.0.0.1,203.0.113.10
+```
+
+If `APP_DEBUG_ALLOWED_IPS` is empty or omitted, behaviour is unchanged. Leaving it set in production lets you keep debugging enabled for your own IP while everyone else sees a generic error page.
+
+### 8. Restart Queue Workers and Services
+
+v2.1.0 moves two heavy operations onto the queue, so a running worker is now more important than before:
+
+- **`SendProductWebhook`** — product webhooks are dispatched asynchronously instead of blocking the save request.
+- **`ImportProductsJob`** — product imports run as a queued job, enabling reliable imports of 10,000+ products.
+
+Both jobs use UnoPim's existing queues, so no change to your `queue:work` command is required — just make sure a worker is running:
 
 ```bash
 php artisan queue:work --queue="system,completeness,default"
 ```
 
-If you are using **Supervisor**, update your Supervisor configuration file:
-
-```ini
-[program:unopim-worker]
-process_name=%(program_name)s_%(process_num)02d
-command=php /path/to/unopim-2.0.0/artisan queue:work --queue="system,completeness,default" --sleep=3 --tries=3
-autostart=true
-autorestart=true
-numprocs=1
-redirect_stderr=true
-stdout_logfile=/path/to/unopim-2.0.0/storage/logs/worker.log
-```
-
-Then restart Supervisor:
+If you use **Supervisor**, restart the worker:
 
 ```bash
 sudo supervisorctl reread
@@ -151,9 +144,7 @@ sudo supervisorctl update
 sudo supervisorctl restart unopim-worker
 ```
 
-### 9. Restart Services
-
-Restart your web server and any other related services:
+Then restart your web server and PHP-FPM:
 
 ```bash
 # If using Nginx
@@ -166,221 +157,55 @@ sudo systemctl restart apache2
 sudo systemctl restart php8.3-fpm
 ```
 
-## Breaking Changes
+## New in v2.1.0
 
-### PHP 8.3 Required
+v2.1.0 is a feature and hardening release. Highlights:
 
-UnoPim v2.0.0 requires PHP 8.3 as the minimum version. PHP 8.2 is no longer supported. Update your server's PHP installation before upgrading.
+### AI & MagicAI
 
-### Laravel 12 Bootstrap Changes
+- **ManageAssociations AI Agent tool** — manage product associations (related, cross-sell, up-sell) through natural language, with clickable product links in the responses.
+- **MagicAI Custom Provider** — connect any OpenAI-compatible endpoint through a hardened adapter.
+- **MagicAI ModelRecommender** — validates platform credentials and recommends compatible models.
+- **PrismErrorResolver** — translates raw AI provider errors into clear, user-friendly messages.
 
-Laravel 12 replaces the `Kernel.php`-based architecture with a fluent `Application::configure()` API in `bootstrap/app.php`. The following files have been removed:
+### Performance & Data Processing
 
-- `app/Http/Kernel.php`
-- `app/Console/Kernel.php`
-- Individual middleware files under `app/Http/Middleware/`
-- Legacy service providers under `app/Providers/`
+- **Async product webhooks** — the `SendProductWebhook` job keeps product save requests fast.
+- **Queued product imports** — the `ImportProductsJob` job makes large imports reliable.
+- **New database indexes** — faster channel, locale, currency, and configuration lookups.
 
-**Service providers** are now registered in `bootstrap/providers.php` instead of `config/app.php`.
+### Deployment
 
-#### Migrating Custom Middleware
+- **Production-ready Docker setup** — a multi-container stack (Nginx + PHP-FPM) with healthchecks, Redis, Elasticsearch, Mailpit, and OPcache tuning.
+- **Demo data seeding** — install sample catalog data with the `--with-demo-data` flag during installation, or via the standalone seeding command, for faster onboarding.
 
-If you registered custom middleware in `app/Http/Kernel.php`, you must move those registrations to `bootstrap/app.php`.
+### Security
 
-**Before (v1.0.0 — Laravel 10):**
+- **`clean_content()` helper** — XSS sanitisation of user-generated content via HTMLPurifier.
+- **IP-based debug filtering** — restrict detailed error output with `APP_DEBUG_ALLOWED_IPS`.
+- Fixes for 5 reported vulnerabilities and expanded automated test coverage.
 
-```php
-// app/Http/Kernel.php
-class Kernel extends HttpKernel
-{
-    protected $middleware = [
-        \App\Http\Middleware\CustomGlobalMiddleware::class,
-    ];
+### Dashboard & UX
 
-    protected $middlewareGroups = [
-        'admin' => [
-            \App\Http\Middleware\CustomAdminMiddleware::class,
-        ],
-    ];
+- **Clickable dashboard product stats** — the dashboard product counters now act as filter chips that link straight to the filtered product grid.
 
-    protected $middlewareAliases = [
-        'custom' => \App\Http\Middleware\CustomMiddleware::class,
-    ];
-}
-```
-
-**After (v2.0.0 — Laravel 12):**
-
-```php
-// bootstrap/app.php
-use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Configuration\Middleware;
-
-return Application::configure(basePath: dirname(__DIR__))
-    ->withMiddleware(function (Middleware $middleware) {
-        $middleware->append(\App\Http\Middleware\CustomGlobalMiddleware::class);
-
-        $middleware->appendToGroup('admin', [
-            \App\Http\Middleware\CustomAdminMiddleware::class,
-        ]);
-
-        $middleware->alias([
-            'custom' => \App\Http\Middleware\CustomMiddleware::class,
-        ]);
-    })
-    ->create();
-```
-
-#### Migrating Custom Service Providers
-
-If you registered custom service providers in `config/app.php`, move them to `bootstrap/providers.php`.
-
-**Before (v1.0.0):**
-
-```php
-// config/app.php
-'providers' => [
-    // ...
-    App\Providers\CustomServiceProvider::class,
-],
-```
-
-**After (v2.0.0):**
-
-```php
-// bootstrap/providers.php
-return [
-    App\Providers\AppServiceProvider::class,
-    App\Providers\CustomServiceProvider::class,
-];
-```
-
-### MagicAI Provider Classes Replaced
-
-The individual MagicAI provider classes have been removed and replaced by a unified adapter that leverages the `laravel/ai` package. If your custom code references any of the old provider classes, you must update those references.
-
-**Removed classes:**
-
-- `Webkul\MagicAI\Services\OpenAI`
-- `Webkul\MagicAI\Services\Gemini`
-- `Webkul\MagicAI\Services\Groq`
-- `Webkul\MagicAI\Services\Ollama`
-
-**Replacement:**
-
-- `Webkul\MagicAI\Services\LaravelAiAdapter`
-
-**Before (v1.0.0):**
-
-```php
-use Webkul\MagicAI\Services\OpenAI;
-
-$service = new OpenAI();
-$result = $service->generateContent($prompt);
-```
-
-**After (v2.0.0):**
-
-```php
-use Webkul\MagicAI\Services\LaravelAiAdapter;
-
-$service = app(LaravelAiAdapter::class);
-$result = $service->generateContent($prompt);
-```
-
-::: tip
-The `LaravelAiAdapter` supports 10+ AI providers (OpenAI, Gemini, Groq, Ollama, Anthropic, and more) through a single unified interface. Provider selection is handled via the admin configuration panel.
-:::
-
-### ImageManager Replaced
-
-The `ImageManager` class has been replaced with `ImageCache`, a more performant image processing system.
-
-The new `ImageCache` system introduces several improvements:
-
-- **Deferred execution** — Images are only processed when actually requested, rather than eagerly on upload. This reduces server load during import and bulk-update operations.
-- **Closure hashing** — Transformation closures are hashed to generate deterministic cache keys, ensuring that identical transformations are never processed twice.
-- **ETag support** — HTTP responses include `ETag` and `Cache-Control` headers, allowing browsers and CDNs to serve cached images without hitting the server again.
-
-**Before (v1.0.0):**
-
-```php
-use Webkul\Core\ImageCache\ImageManager;
-```
-
-**After (v2.0.0):**
-
-```php
-use Webkul\Core\ImageCache\ImageCache;
-```
-
-### API ACL Expanded
-
-Two new ACL permission nodes have been added for API access:
-
-- `api.catalog.products.delete`
-- `api.catalog.categories.delete`
-
-If you use custom API roles, review your role permissions to ensure they include or exclude these new nodes as needed.
-
-### Dependency Version Changes
-
-The following dependencies have been updated or added. If your custom packages depend on any of these, update your `composer.json` accordingly:
-
-| Package | v1.0.0 | v2.0.0 |
-|---------|--------|--------|
-| `laravel/framework` | ^10.0 | ^12.0 |
-| `laravel/sanctum` | ^3.0 | ^4.0 |
-| `diglactic/laravel-breadcrumbs` | ^9.0 | ^10.0 |
-| `pestphp/pest` | ^2.0 | ^3.0 |
-| `phpunit/phpunit` | ^10.0 | ^11.0 |
-| `nunomaduro/collision` | ^7.0 | ^8.0 |
-
-**New dependencies in v2.0.0:**
-
-| Package | Version | Purpose |
-|---------|---------|---------|
-| `laravel/ai` | ^0.3.2 | Unified AI provider abstraction |
-| `laravel/boost` | ^2.1 | Performance and developer tooling |
-| `prism-php/prism` | latest | AI model orchestration |
-
-### PostgreSQL Migration Compatibility
-
-MagicAI migrations in v1.0.0 used MySQL-only `MODIFY COLUMN ... ENUM()` syntax, which fails on PostgreSQL. In v2.0.0, these migrations now detect the database driver at runtime and use PostgreSQL-compatible `ALTER COLUMN ... TYPE VARCHAR` with `CHECK` constraints when running on PostgreSQL.
-
-::: warning
-If you have written **custom migrations** that use MySQL `ENUM()` syntax (e.g., `DB::statement('ALTER TABLE ... MODIFY COLUMN ... ENUM(...)'))`), review them for PostgreSQL compatibility before upgrading. Use `Schema::getConnection()->getDriverName()` to branch between MySQL and PostgreSQL DDL statements.
-:::
+For a complete and detailed list of all changes, please visit the [UnoPim CHANGELOG on GitHub](https://github.com/unopim/unopim/blob/master/CHANGELOG.md).
 
 ## Post-upgrade Steps
 
 After completing all upgrade steps, verify your installation:
 
 1. **Test core functionalities** — Log in to the admin panel, browse products, categories, and attributes to ensure everything loads correctly.
-2. **Verify file permissions** — Ensure the `storage/` and `bootstrap/cache/` directories are writable by the web server.
-3. **Check error logs** — Review `storage/logs/laravel.log` for any errors or deprecation warnings.
-4. **Test API endpoints** — If you use the REST API, verify that authentication and CRUD operations work as expected.
-5. **Verify queue processing** — Ensure queue workers are processing jobs on all three queues (`default`, `system`, `completeness`).
-6. **Test custom packages** — If you have custom packages or integrations, thoroughly test them against the new version.
+2. **Check error logs** — Review `storage/logs/laravel.log` for any errors or deprecation warnings.
+3. **Verify queue processing** — Ensure queue workers are running and confirm that the new `SendProductWebhook` and `ImportProductsJob` jobs are processed.
+4. **Test product webhooks** — If you use webhooks, save a product and confirm the webhook is delivered asynchronously.
+5. **Test product import** — Run a product import and confirm it completes through the queued `ImportProductsJob`.
+6. **Test custom packages** — If you have custom packages or integrations, verify they still work as expected.
 7. **Re-index Elasticsearch** — If you use Elasticsearch, re-index your data to ensure search results are accurate.
 
 ```bash
 php artisan unopim:product:index
 ```
-
-## New Features in v2.0.0
-
-UnoPim v2.0.0 introduces several major features alongside the framework upgrade:
-
-- **AI Agent Chat** — A conversational AI assistant with 32+ PIM-specific tools for managing products, categories, attributes, and more directly through natural language.
-- **Multi-Platform MagicAI** — Content generation powered by 10+ AI providers (OpenAI, Gemini, Groq, Ollama, Anthropic, and more) through a unified adapter.
-- **Swatch Types for Attributes** — Visual swatch support (color, image, text) for product attributes, enabling richer catalog experiences.
-- **Enhanced Dashboard** — A redesigned admin dashboard with improved analytics, quick actions, and at-a-glance product data insights.
-- **Import/Export Tracker** — Real-time progress tracking for import and export jobs with pause, resume, and cancel capabilities.
-- **Completeness Queue** — A dedicated queue for product completeness scoring, improving performance by offloading quality calculations from the main queue.
-- **AI Translation Workflow** — Bulk-translate product attribute values across all configured locales using your chosen AI provider. Translations are dispatched from the admin panel and processed by the `SaveTranslatedDataJob` and `SaveTranslatedAllAttributesJob` background jobs. This eliminates the need to manually translate product data locale by locale.
-
-For a complete and detailed list of all changes, new features, bug fixes, and improvements, please visit the [UnoPim CHANGELOG on GitHub](https://github.com/unopim/unopim/blob/master/CHANGELOG.md).
 
 ## Need Help?
 
