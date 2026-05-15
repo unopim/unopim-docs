@@ -15,25 +15,21 @@ import { useRoute, useRouter } from 'vitepress'
 import { computed } from 'vue'
 
 const versions = [
-  { label: 'Master', value: 'master' },
-  { label: '2.1.x', value: '2.1.x' },
-  { label: '2.0.x', value: '2.0.x' },
-  { label: '1.0.x', value: '1.0.x' },
-  { label: '0.3', value: '0.3' },
-  { label: '0.2', value: '0.2' },
-  { label: '0.1', value: '0.1' }
+  { label: '2.1', value: '2.1' },
+  { label: '2.0', value: '2.0' },
+  { label: '1.0', value: '1.0' }
 ]
 
 const route = useRoute()
 const router = useRouter()
 
 const currentVersion = computed(() => {
-  const match = route.path.match(/^\/(master|0\.1|0\.2|0\.3|1\.0\.x|2\.0\.x|2\.1\.x)(\/.*)?$/)
-  return match ? match[1] : 'master'
+  const match = route.path.match(/^\/(1\.0|2\.0|2\.1)(\/.*)?$/)
+  return match ? match[1] : '2.1'
 })
 
 const restPath = computed(() => {
-  const match = route.path.match(/^\/(master|0\.1|0\.2|0\.3|1\.0\.x|2\.0\.x|2\.1\.x)(\/.*)?$/)
+  const match = route.path.match(/^\/(1\.0|2\.0|2\.1)(\/.*)?$/)
   return match && match[2] ? match[2] : '/'
 })
 
