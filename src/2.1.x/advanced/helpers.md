@@ -489,3 +489,15 @@ core()->getMaxUploadSize()
 ```
 
 These core helper methods provide various functionalities to simplify common tasks and streamline development in UnoPim.
+
+## Security Helpers
+
+### Sanitize user-generated content
+
+The global `clean_content()` helper was introduced in UnoPim **v2.1.0** to safely sanitize user-generated HTML content before it is stored or rendered. It uses [HTMLPurifier](http://htmlpurifier.org/) to strip Blade directives, raw PHP tags, and dangerous HTML (such as `<script>` tags and inline event handlers), helping prevent XSS attacks.
+
+```php
+$safeContent = clean_content($userInput);
+```
+
+Use this helper whenever you accept rich-text or HTML input from users — for example, product descriptions or other free-form attribute values — instead of echoing the raw input.

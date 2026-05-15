@@ -113,6 +113,49 @@ Login with `admin@example.com` / `admin123`.
 
 ---
 
+## Seeding Demo Data
+
+UnoPim can seed sample products, demo categories, and demo extras so you have data to explore right after the containers start. Demo data is intended for evaluation, development, and testing — do not seed it in production.
+
+### Seed After the Containers Start
+
+Once the containers are up and the first-time setup has finished, run the standalone demo data command inside the application container:
+
+```bash
+docker compose exec unopim-fpm php artisan unopim:install:demo-data
+```
+
+For the Apache variant, target the `unopim-web` container instead:
+
+```bash
+docker compose exec unopim-web php artisan unopim:install:demo-data
+```
+
+To re-seed when demo data already exists, add the `--force` option:
+
+```bash
+docker compose exec unopim-fpm php artisan unopim:install:demo-data --force
+```
+
+After seeding, rebuild the Elasticsearch indexes so the new products and categories appear in search and listings:
+
+```bash
+docker compose exec unopim-fpm php artisan unopim:product:index
+docker compose exec unopim-fpm php artisan unopim:category:index
+```
+
+### Seed During a Manual Installation
+
+If you run the UnoPim installer manually inside a container (for example, on a fresh database), pass the `--with-demo-data` flag to seed sample products as part of the installation:
+
+```bash
+docker compose exec unopim-fpm php artisan unopim:install --with-demo-data
+```
+
+See [CLI Commands](../advanced/cli-commands.html#demo-data-seeding) for full details on both commands.
+
+---
+
 ## Services Overview
 
 The Docker Compose setup runs the following services:

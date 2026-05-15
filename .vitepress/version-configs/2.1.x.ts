@@ -70,6 +70,7 @@ export default [
             ['packages/create-acl', 'Access Control List'],
             ['packages/history', 'History Tracking'],
             ['packages/data-transfer', 'Data Transfer'],
+            ['packages/webhooks', 'Webhooks'],
             ['packages/swatch-types', 'Swatch Types'],
         ])
     },

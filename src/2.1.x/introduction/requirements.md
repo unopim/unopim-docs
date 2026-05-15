@@ -241,7 +241,7 @@ UnoPim supports the following database servers:
 
 - **MariaDB**: Version 10.3 or higher is recommended for optimal performance and compatibility.
 
-- **PostgreSQL**: Version 14.x or higher is recommended for optimal performance and compatibility.
+- **PostgreSQL**: Version 16 is recommended and is fully supported and CI-tested as of UnoPim v2.1.0. Version 14.x or higher will also work.
 
 - **Database Collation**: The recommended collation for the database is **`utf8mb4_unicode_ci`**, which ensures proper handling of Unicode characters and multilingual support.
 

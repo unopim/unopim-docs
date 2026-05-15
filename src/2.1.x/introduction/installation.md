@@ -52,8 +52,10 @@ To install UnoPim using Composer, use the following steps:
     - Please enter the Database Prefix :
     - Please enter the Database Username :
     - Please enter the Database Password :
+    - Do you want sample products? [no]
+        [0] yes
+        [1] no
     ```
-
     - For Create your admin credentials:
     ```
     - Enter the Name of Admin User :
@@ -73,6 +75,35 @@ To install UnoPim using Composer, use the following steps:
     ```sh
     php artisan unopim:translations:check
     ```
+
+## Install with Demo Data
+
+UnoPim can seed sample products, demo categories, and demo extras so you have data to explore immediately after installation. This is useful for evaluation, development, and testing environments.
+
+::: warning
+Demo data is intended for non-production environments. Do not seed demo data on a live store.
+:::
+
+### Option 1: Seed During Installation
+
+Installer automatically seeds sample products once the admin account has been created:
+
+### Option 2: Seed After Installation
+
+If you have already installed UnoPim and want to add demo data later, run the standalone command:
+
+```sh
+php artisan unopim:install:demo-data
+```
+
+This seeds demo extras, demo categories, and sample products into an existing UnoPim database. See [CLI Commands](../advanced/cli-commands.html#demo-data-seeding) for full details, including the `--force` option for re-seeding.
+
+After seeding demo data, rebuild the Elasticsearch indexes so the new products and categories appear in search and listings:
+
+```sh
+php artisan unopim:product:index
+php artisan unopim:category:index
+```
 
 ## Install Using Docker
 
@@ -127,6 +158,10 @@ Make sure your system meets these requirements:
 - PHP >= 8.3
 - Required PHP extensions are enabled
 - Proper directory permissions are set
+:::
+
+::: tip Demo Data
+During the admin setup step of the GUI installer, you can enable the demo data toggle to seed sample products, demo categories, and demo extras. Leave it off for a clean installation — you can always seed demo data later with `php artisan unopim:install:demo-data` (see [Install with Demo Data](#install-with-demo-data)).
 :::
 
 ## Install on macOS

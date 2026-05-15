@@ -116,7 +116,7 @@ The agent ships with 38+ tools organized by category:
 |----------|-------|
 | **Search & List** | `SearchProducts`, `GetProductDetails`, `ListAttributes`, `ListCategories`, `CategoryTree`, `CatalogSummary`, `FindSimilarProducts` |
 | **Create** | `CreateProduct`, `CreateAttribute`, `CreateCategory` |
-| **Update** | `UpdateProduct`, `UpdateCategory`, `AssignCategories`, `ManageOptions`, `ManageFamilies`, `ManageChannels`, `ManageUsers`, `ManageRoles` |
+| **Update** | `UpdateProduct`, `UpdateCategory`, `AssignCategories`, `ManageOptions`, `ManageFamilies`, `ManageChannels`, `ManageAssociations`, `ManageUsers`, `ManageRoles` |
 | **Delete** | `DeleteProducts` |
 | **Bulk Operations** | `BulkEdit` (supports bulk transform: append, prepend, replace) |
 | **Content Generation** | `GenerateContent`, `RateContent` |
@@ -146,6 +146,40 @@ Agent: (calls bulk_edit with operation="replace", find="Acme Corp", replace="Acm
 ```
 
 These transform operations work across any text-based attribute and respect the same ACL permissions and approval modes as standard bulk edits.
+
+### Managing Product Associations
+
+::: info Added in v2.1.0
+The `ManageAssociations` tool (`manage_associations`) lets you manage a product's **related**, **up-sell**, and **cross-sell** associations through natural language in the AI Agent Chat.
+:::
+
+The tool registers with the description *"Add product associations (related, up-sell, cross-sell). Defaults to append mode which keeps existing associations."* and accepts the following parameters:
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `sku` | string | The product SKU to update associations for |
+| `related` | string | Comma-separated SKUs for related products (leave empty to skip) |
+| `up_sells` | string | Comma-separated SKUs for up-sell products (leave empty to skip) |
+| `cross_sells` | string | Comma-separated SKUs for cross-sell products (leave empty to skip) |
+| `mode` | enum | `append` (default) keeps existing associations and adds new ones; `replace` removes all existing associations of that type first |
+
+Like other write tools, `ManageAssociations` checks the `catalog.products.edit` ACL permission via the `ChecksPermission` trait before applying changes. The tool returns JSON describing the target SKU, the resolved associations, the mode used, and any SKUs that could not be resolved.
+
+```
+User: "Relate the leather wallet WALLET-001 to WALLET-002 and BELT-005"
+Agent: (calls manage_associations with sku="WALLET-001", related="WALLET-002,BELT-005", mode="append")
+```
+
+```
+User: "Replace all the cross-sells on SHOE-100 with SOCK-200 and SOCK-201"
+Agent: (calls manage_associations with sku="SHOE-100", cross_sells="SOCK-200,SOCK-201", mode="replace")
+```
+
+![AI Agent managing product associations in chat](/assets/2.1.x/images/ai-agent-manage-associations.png)
+
+#### Clickable Product Links in Results
+
+When the agent surfaces products — for example after a search the user runs to pick association targets — each result carries an `edit_url` generated from the `admin.catalog.products.edit` route. The system prompt instructs the LLM to render this as a clickable markdown link using the product name as the link text (for example `[Nike Air Max 270](edit_url)`), so users can jump straight to a product's edit page from the chat.
 
 ### Implementing a Custom Tool
 
@@ -791,6 +825,36 @@ eventSource.addEventListener('done', (e) => {
     eventSource.close();
 });
 ```
+
+---
+
+## Friendly Error Messages
+
+::: info Added in v2.1.0
+The `PrismErrorResolver` (`Webkul\AiAgent\Chat\PrismErrorResolver`) translates raw provider and Prism exceptions into clear, user-friendly messages before they reach the chat widget.
+:::
+
+When a chat request fails, `AgentRunner` catches the exception and passes it to `PrismErrorResolver::resolve()`. This is the single public method on the class, and it returns an array with three keys:
+
+| Key | Description |
+|-----|-------------|
+| `message` | A cleaned, translated error message safe to display in chat |
+| `status` | An appropriate HTTP status code |
+| `is_known` | `true` if the error type was recognised, `false` otherwise |
+
+The resolver maps common failure types to meaningful responses:
+
+| Exception | HTTP Status | Message |
+|-----------|-------------|---------|
+| `DecryptException` | 422 | The stored API key is corrupted and must be re-entered (typically after an `APP_KEY` change) |
+| `PrismRateLimitedException` | 429 | The provider rate limit was hit, including retry timing when the provider supplies it |
+| `PrismProviderOverloadedException` | 503 | The provider is temporarily overloaded |
+| `PrismRequestTooLargeException` | 413 | The request exceeds the provider's size limits |
+| Unrecognised exception | 500 | The raw upstream message, or a generic fallback when none is available |
+
+Before returning, the resolver also cleans the message — it extracts the structured `error.message` field from JSON error bodies, collapses whitespace, strips Prism's empty `Details: []` suffix, and truncates to 500 characters.
+
+The `is_known` flag lets `AgentRunner` log appropriately: recognised provider errors are logged as warnings, while unexpected exceptions are logged as errors. Either way, only the friendly `message` is streamed to the client via the SSE `error` event.
 
 ---
 

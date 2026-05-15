@@ -10,23 +10,59 @@ Credentials are now managed via a dedicated database table (`magic_ai_platforms`
 
 ## Supported Providers
 
-UnoPim v2.0.0 ships with support for the following AI providers out of the box:
+UnoPim ships with support for the following AI providers out of the box:
 
-| Provider       | Slug         | Text Generation | Image Generation |
-| -------------- | ------------ | :-------------: | :--------------: |
-| OpenAI         | `openai`     | Yes             | Yes              |
-| Anthropic      | `anthropic`  | Yes             | No               |
-| Google Gemini  | `gemini`     | Yes             | Yes              |
-| Groq           | `groq`       | Yes             | No               |
-| Ollama         | `ollama`     | Yes             | No               |
-| xAI (Grok)    | `xai`        | Yes             | Yes              |
-| Mistral        | `mistral`    | Yes             | No               |
-| DeepSeek       | `deepseek`   | Yes             | No               |
-| Azure OpenAI   | `azure`      | Yes             | No               |
-| OpenRouter     | `openrouter` | Yes             | No               |
+| Provider                     | Slug         | Text Generation | Image Generation |
+| ----------------------------- | ------------ | :-------------: | :--------------: |
+| OpenAI                        | `openai`     | Yes             | Yes              |
+| Anthropic                     | `anthropic`  | Yes             | No               |
+| Google Gemini                 | `gemini`     | Yes             | Yes              |
+| Groq                          | `groq`       | Yes             | No               |
+| Ollama                        | `ollama`     | Yes             | No               |
+| xAI (Grok)                   | `xai`        | Yes             | Yes              |
+| Mistral                       | `mistral`    | Yes             | No               |
+| DeepSeek                      | `deepseek`   | Yes             | No               |
+| Azure OpenAI                  | `azure`      | Yes             | No               |
+| OpenRouter                    | `openrouter` | Yes             | No               |
+| Custom (OpenAI-compatible)    | `custom`     | Yes             | No               |
 
 ::: tip
 Image generation is currently supported by OpenAI, Gemini, and xAI. Attempting to generate images with an unsupported provider will throw a `RuntimeException`.
+:::
+
+---
+
+## Custom Provider (OpenAI-Compatible)
+
+::: info Added in v2.1.0
+The **Custom** provider lets you connect any OpenAI-compatible AI service — such as Cerebras, Together, Fireworks, or a self-hosted gateway — without writing a new provider class.
+:::
+
+When you select **Custom (OpenAI-compatible)** as the provider, the `LaravelAiAdapter` routes requests through Prism's Groq provider implementation. Groq's provider posts to the legacy `/chat/completions` endpoint, which is the de-facto standard that virtually every OpenAI-compatible third-party service implements. This means any service exposing a `/chat/completions` API will work without further code changes.
+
+### Configuring a Custom Provider
+
+1. From **Platform Management**, click **Add Platform**.
+2. Set **Provider** to **Custom (OpenAI-compatible)**.
+3. Enter the service's **API URL** — this is **required** for the custom provider, since there is no default endpoint. Point it at the base URL of the OpenAI-compatible API (e.g. `https://api.together.xyz/v1`).
+4. Enter the **API Key** issued by your provider (stored encrypted).
+5. Add the **Models** you intend to use. Custom providers do not auto-discover models — the `fetchCustomModels()` routine returns an empty list when the API does not expose a models endpoint, so enter the model identifiers manually as a comma-separated list.
+6. Save the platform.
+
+![MagicAI custom provider configuration form](/assets/2.1.x/images/magic-ai-custom-provider-form.png)
+
+### How the Custom Base URL Is Applied
+
+At runtime, when a platform has an `api_url` set, the adapter dynamically overrides the base URL for both the Laravel AI SDK and Prism:
+
+```php
+config(["ai.providers.{$configKey}.url" => $this->platform->api_url]);
+```
+
+This keeps the custom endpoint scoped to the request and avoids any global configuration or `.env` changes.
+
+::: warning
+The custom provider is text-only — `supportsImages()` returns `false` for the `custom` slug. Use OpenAI, Gemini, or xAI for image generation.
 :::
 
 ---
@@ -70,6 +106,7 @@ This adapter:
 | Provider enum | `Webkul\MagicAI\Enums\AiProvider` |
 | Platform model | `Webkul\MagicAI\Models\MagicAIPlatform` |
 | Platform repository | `Webkul\MagicAI\Repository\MagicAIPlatformRepository` |
+| Model recommender | `Webkul\MagicAI\Support\ModelRecommender` |
 | Admin controller | `Webkul\Admin\Http\Controllers\MagicAI\MagicAIPlatformController` |
 | DataGrid | `Webkul\Admin\DataGrids\MagicAI\MagicAIPlatformDataGrid` |
 
@@ -116,13 +153,13 @@ Navigate to **Configuration > MagicAI > Platform Management** in the admin panel
 3. Toggle **Status** to enable the platform.
 4. Toggle **Set as Default** to make it the primary platform for AI operations.
 
-### Testing a Connection
-
-Before saving, use the **Test Connection** button. This sends a minimal prompt (`Say OK`) to the first model in the list and verifies the provider responds successfully.
-
 ### Fetching Available Models
 
-Click **Fetch Models** to query the provider's API for all available models. The system will also suggest recommended models based on the provider.
+Click **Fetch Models** to query the provider's API for all available models. The results are passed through the `ModelRecommender`, whose `recommend()` method strips out model families that are not useful for chat or image generation — embeddings, speech, moderation, legacy completion bases, and dated snapshots — and returns the rest as suggested options for the **Models** field. If filtering removes everything, the original list is returned unchanged so the field is never empty.
+
+::: tip
+The Custom (OpenAI-compatible) provider does not support model discovery — **Fetch Models** returns an empty list when the API has no models endpoint. Enter the model identifiers manually instead.
+:::
 
 ### Setting a Default Platform
 
@@ -270,7 +307,9 @@ The `Webkul\MagicAI\Enums\AiProvider` backed enum provides utility methods for e
 
 | Symptom | Cause | Fix |
 | ------- | ----- | --- |
-| "Provider does not support image generation" | Using Anthropic, Groq, etc. for images | Switch to OpenAI, Gemini, or xAI |
+| "Provider does not support image generation" | Using Anthropic, Groq, Custom, etc. for images | Switch to OpenAI, Gemini, or xAI |
 | Connection test times out | Network or incorrect API URL | Verify `api_url` and network access |
 | Invalid model names error | Model string contains invalid characters | Use alphanumeric names with hyphens, dots, colons, or slashes |
 | Encrypted key read error | `APP_KEY` changed after platform was saved | Re-enter the API key and save again |
+| Custom provider request fails with a 404 | The API URL does not point at the base of an OpenAI-compatible API | Set **API URL** to the base path that exposes `/chat/completions` (e.g. `https://api.together.xyz/v1`) |
+| **Fetch Models** returns nothing for a Custom provider | The custom API does not expose a models endpoint | Enter the model identifiers manually in the **Models** field |

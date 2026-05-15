@@ -7,7 +7,8 @@ UnoPim provides a set of Artisan commands for managing your PIM installation. Th
 | Command | Description |
 |---------|-------------|
 | `php artisan unopim:version` | Display the current UnoPim version |
-| `php artisan unopim:install` | Run the interactive UnoPim installer |
+| `php artisan unopim:install` | Run the interactive UnoPim installer (use `--with-demo-data` to seed sample data) |
+| `php artisan unopim:install:demo-data` | Seed demo extras, categories, and sample products into an installed database |
 | `php artisan unopim:publish` | Publish UnoPim assets and config (use `--force` to overwrite) |
 | `php artisan unopim:user:create` | Create a default admin user |
 | `php artisan unopim:passport:client` | Create an API OAuth client for REST API authentication |
@@ -32,6 +33,51 @@ php artisan unopim:publish --force
 ```
 
 Use this after updating UnoPim to ensure all assets and configuration files are up to date.
+
+### Run the Installer
+
+```bash
+# Standard interactive install
+php artisan unopim:install
+
+# Install and seed sample products / demo data
+php artisan unopim:install --with-demo-data
+```
+
+The `unopim:install` command supports the following options:
+
+| Option | Description |
+|--------|-------------|
+| `--with-demo-data` | Seed sample products and demo data as part of the installation |
+| `--skip-env-check` | Bypass the `.env` file validation step |
+| `--skip-admin-creation` | Skip the admin account creation step |
+
+When run **without** `--with-demo-data`, the installer still asks `Do you want sample products?` interactively after the admin account is created. Passing `--with-demo-data` seeds the data non-interactively. See [Install with Demo Data](../introduction/installation.html#install-with-demo-data).
+
+### Demo Data Seeding
+
+```bash
+# Seed demo data into an already-installed database
+php artisan unopim:install:demo-data
+
+# Re-seed even when demo data is already present
+php artisan unopim:install:demo-data --force
+```
+
+Seeds demo extras, demo categories, and sample products into an installed UnoPim database. Use this command to add demo data **after** installation — for example, to populate a development or testing environment without re-running the installer.
+
+By default the command skips seeding if demo data already exists; pass `--force` to re-seed regardless.
+
+::: warning
+Demo data is intended for evaluation, development, and testing environments. Do not seed demo data on a production installation.
+:::
+
+After seeding, rebuild the Elasticsearch indexes so the new products and categories appear in search and listings:
+
+```bash
+php artisan unopim:product:index
+php artisan unopim:category:index
+```
 
 ### Create Admin User
 

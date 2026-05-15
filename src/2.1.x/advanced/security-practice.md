@@ -144,4 +144,38 @@ UnoPim v2.0.0 includes significant API security hardening:
 
 ---
 
+## **11. Security Enhancements (v2.1.0)**
+
+UnoPim v2.1.0 adds further hardening on top of the v2.0.0 API improvements:
+
+### IP-based debug filtering
+
+When `APP_DEBUG` is enabled, detailed error pages and the debug toolbar can leak sensitive information. v2.1.0 adds the `APP_DEBUG_ALLOWED_IPS` environment variable (backed by the `debug_allowed_ips` setting in `config/app.php`) to restrict debug output to specific IP addresses:
+
+```ini
+APP_DEBUG=true
+APP_DEBUG_ALLOWED_IPS=127.0.0.1,203.0.113.10
+```
+
+Visitors outside the allowed list see a generic error page. If the variable is empty or omitted, behaviour is unchanged. A matching `maintenance_allowed_ips` configuration lets whitelisted IPs reach the site while it is in maintenance mode.
+
+### Security middleware
+
+- **`NoCacheMiddleware`** — prevents browsers and proxies from caching admin pages, reducing the risk of sensitive data being served from a shared cache.
+- **Enhanced `SecureHeaders` middleware** — now also sends the `Permissions-Policy` and `X-Permitted-Cross-Domain-Policies` response headers, in addition to the headers described in section 8.
+
+### Admin authentication hardening
+
+- **Rate limiting on admin login** — named rate limiters (`admin-login` and `admin-forgot-password`) throttle repeated attempts against the admin login and password-reset endpoints, mitigating brute-force attacks.
+- **Server-side password validation** — admin passwords are validated server-side with a `min:6` rule, so weak passwords cannot be set by bypassing the client.
+- **User-enumeration protection** — the forgot-password flow returns a generic message regardless of whether the email exists, preventing attackers from discovering valid accounts.
+- **Open-redirect protection** — redirects derived from the `Referer` header are validated with `parse_url()` host checks, blocking open-redirect attacks.
+- **Privilege-escalation guards** — the user edit endpoint now enforces the missing ACL entries and adds controller-level checks to prevent users from escalating their own privileges.
+
+### Sanitizing user-generated content
+
+Use the `clean_content()` helper (added in v2.1.0) to sanitize rich-text or HTML input from users before storing or rendering it. See [Helpers → Security Helpers](helpers#security-helpers) for details.
+
+---
+
 By adhering to these best practices, you can significantly enhance the security of your UnoPIM setup and safeguard it against potential vulnerabilities.

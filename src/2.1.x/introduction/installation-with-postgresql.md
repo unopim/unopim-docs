@@ -1,6 +1,10 @@
 # Installation with PostgreSQL
 
-Before beginning, make sure all the requirements are clearly met according to the [requirements doc](requirements) and you have [PostgreSQL 14.x or higher](https://www.postgresql.org/download/) installed.
+Before beginning, make sure all the requirements are clearly met according to the [requirements doc](requirements) and you have [PostgreSQL 16](https://www.postgresql.org/download/) installed (version 14.x or higher will also work).
+
+::: tip PostgreSQL is fully supported
+As of UnoPim v2.1.0, PostgreSQL is a fully supported, first-class database backend. UnoPim runs a dedicated PostgreSQL CI workflow that executes the full Pest test suite against **PostgreSQL 16**, both with and without Elasticsearch. PostgreSQL 16 is therefore the recommended version.
+:::
 
 ## PostgreSQL Prerequisites
 
@@ -90,6 +94,10 @@ To install UnoPim using Composer, use the following steps:
     - Please enter the Database Username :
     - Please enter the Database Password :
     ```
+
+    ::: info Database Prefix (`DB_PREFIX`)
+    The **Database Prefix** is optional. If you provide one, the installer validates and trims the value before applying it, so leading/trailing whitespace is removed automatically. As of UnoPim v2.1.0 this also prevents a double table prefix bug (for example tables being created as `wk_wk_channels`). Leave the prompt blank if you do not need a table prefix.
+    :::
 
     - For Create your admin credentials:
     ```
@@ -209,9 +217,14 @@ Follow these steps to install UnoPim on macOS:
      DB_HOST=127.0.0.1
      DB_PORT=5432
      DB_DATABASE=unopim
-     DB_USERNAME=root
-     DB_PASSWORD=
+     DB_PREFIX=
+     DB_USERNAME=unopim
+     DB_PASSWORD=your_secure_password
      ```
+
+   ::: info Switching `DB_CONNECTION`
+   The default `.env.example` ships with `DB_CONNECTION=mysql`. Set it to `pgsql` (along with `DB_PORT=5432`) to use PostgreSQL. As of UnoPim v2.1.0 the installer can be safely re-run after switching `DB_CONNECTION`.
+   :::
 
 4. **Run the installation command**:
    ```sh
@@ -230,8 +243,8 @@ For a more production-like environment on macOS, you can use tools like Laravel 
 :::
 
 ::: warning Note
-- Make sure your PHP version is 8.1 or higher and all required PHP extensions are installed including the pdo_pgsql required for postrgresql.
-- Make sure your Composer version is 2.0 or higher and postgresql is installed.
+- Make sure your PHP version is 8.3 or higher and all required PHP extensions are installed including the `pdo_pgsql` extension required for PostgreSQL.
+- Make sure your Composer version is 2.6.0 or higher and PostgreSQL is installed.
 :::
 
 ## Start Using UnoPim

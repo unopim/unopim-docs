@@ -165,7 +165,7 @@ v2.1.0 is a feature and hardening release. Highlights:
 
 - **ManageAssociations AI Agent tool** — manage product associations (related, cross-sell, up-sell) through natural language, with clickable product links in the responses.
 - **MagicAI Custom Provider** — connect any OpenAI-compatible endpoint through a hardened adapter.
-- **MagicAI ModelRecommender** — validates platform credentials and recommends compatible models.
+- **MagicAI ModelRecommender** — filters out non-chat model families when fetching the model list, so only compatible models are suggested.
 - **PrismErrorResolver** — translates raw AI provider errors into clear, user-friendly messages.
 
 ### Performance & Data Processing
