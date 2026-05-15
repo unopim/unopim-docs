@@ -56,183 +56,216 @@ To install UnoPim using Composer, use the following steps:
 
 ## Install Using Docker
 
-###  Prerequisites
+### Prerequisites
 
 Make sure the following are installed on your system:
 
-* **Docker** (latest version)
-* **Docker Compose** (for Method 2)
+* **Docker** (v20.10+)
+* **Docker Compose** (v2.0+ — included with Docker Desktop)
 
 Verify installation:
 
 ```bash
 docker --version
-docker-compose --version
+docker compose version
 ```
 
+### Method 1: Using Docker Hub (Quick Start)
 
-### Method 1: Using Docker Hub (Quick Setup - Recommended)
-
-This is the **fastest way** to get UnoPim running.
-
-#### Step 1: Pull UnoPim Docker Image
+Download only the compose file and environment config — no source code needed.
 
 ```bash
-docker pull webkul/unopim:v1.0.0
+curl -O https://raw.githubusercontent.com/unopim/unopim/master/docker-compose.hub.yml
+curl -O https://raw.githubusercontent.com/unopim/unopim/master/.env.docker
+cp .env.docker .env
+docker compose -f docker-compose.hub.yml up -d
 ```
 
-#### Step 2: Run the Container
+Wait approximately 90 seconds for the first-time setup (migrations, seeding) to complete, then open:
 
-```bash
-docker run -it -d --name unopim_container -p 80:80 webkul/unopim:v1.0.0
-```
+**`http://localhost:8000/admin`**
 
-If port `80` is already in use, you can map to another port (e.g. `8082`):
+### Method 2: Using Docker Compose from Source (Recommended for Developers)
 
-```bash
-# Stop the container if it is already running
-docker stop unopim_container
+This method builds from source and gives full control over the environment.
 
-# Remove the container so you can recreate it cleanly
-docker rm unopim_container
-
-# Run a new container on port 8082 instead of 80
-docker run -it -d --name unopim_container -p 8082:80 webkul/unopim:v1.0.0
-```
-
-
-Then access UnoPim at:
-**`http://localhost:8082`**
-
-
-#### Step 3: Access UnoPim
-
-Open your browser and visit:
- **`http://localhost`**
-
-**Default Admin Credentials**
-(for UnoPim v0.3.2 and newer):
-
-| Version Range    | Username                                          | Password     |
-| ---------------- | ------------------------------------------------- | ------------ |
-| v0.3.2 and above | `admin@example.com`                               | admin123     |
-| v0.3.0 – v0.3.1  | `admin@example.com`                               | admin\@123   |
-| v0.2.x and below | `johndoe@example.com`                             | JohnDoe\@123 |
-
----
-
-#### Database Connection (Optional)
-
-| Key           | Value       |
-| ------------- | ----------- |
-| Database Name | `unopim_db` |
-| Username      | `root`      |
-| Password      | `root`      |
-
----
-
-###  Method 2: Using Docker Compose (For Customization)
-
-This method is ideal if you want **more control** over your UnoPim environment (custom ports, volumes, etc.).
-
-#### Step 1: Clone Repository
-
-Clone the official UnoPim repository:
-
-**HTTPS:**
+#### Step 1: Clone the Repository
 
 ```bash
 git clone https://github.com/unopim/unopim.git
-```
-
-**SSH:**
-
-```bash
-git clone git@github.com:unopim/unopim.git
-```
-
-#### Step 2: Enter the Project Directory
-
-```bash
 cd unopim
 ```
 
-
-#### Step 3: Configure `.env` (before starting containers)
-
-Create a `.env` file by copying the provided example:
+#### Step 2: Configure Environment
 
 ```bash
-cp .env.example .env
+cp .env.docker .env
 ```
 
-Then, open `.env` in your editor and update the database configuration for Docker:
+::: warning
+Always copy from **`.env.docker`** (not `.env.example`) — it contains pre-configured Docker service hostnames and ports.
+:::
+
+#### Step 3: Start Containers
+
+**Nginx + PHP-FPM** (default, recommended for production):
+
+```bash
+docker compose up -d
+```
+
+**Apache + mod_php** (alternative):
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.apache.yml up -d
+```
+
+The first start takes a few minutes as Docker builds the images and runs the initial setup (Composer install, migrations, seeding, Elasticsearch indexing).
+
+#### Step 4: Access Services
+
+| Service           | URL                          |
+| ----------------- | ---------------------------- |
+| UnoPim Admin      | `http://localhost:8000/admin` |
+| Mailpit (email)   | `http://localhost:8025`       |
+| MySQL             | `localhost:3306`              |
+| Redis             | `localhost:6379`              |
+| Elasticsearch     | `localhost:9200`              |
+
+**Default Admin Credentials:**
+
+| Field    | Value               |
+| -------- | ------------------- |
+| Email    | `admin@example.com` |
+| Password | `admin123`          |
+
+### Managing Containers
+
+```bash
+# Check status
+docker compose ps
+
+# View logs
+docker compose logs -f unopim-fpm      # application logs
+docker compose logs -f unopim-nginx    # web server logs
+
+# Stop all containers
+docker compose down
+
+# Stop and remove all data (volumes)
+docker compose down -v
+
+# Rebuild after code changes
+docker compose up --build -d
+```
+
+### Running Artisan Commands Inside Docker
+
+```bash
+docker compose exec unopim-fpm php artisan migrate
+docker compose exec unopim-fpm php artisan cache:clear
+docker compose exec unopim-fpm php artisan unopim:product:index
+```
+
+For the Apache variant, replace `unopim-fpm` with `unopim-web`:
+
+```bash
+docker compose exec unopim-web php artisan migrate
+```
+
+### Troubleshooting
+
+#### Port Conflicts
+
+If you already have MySQL, Redis, Elasticsearch, or a web server running locally, Docker will fail with:
+
+```
+Bind for 127.0.0.1:3306 failed: port is already allocated
+```
+
+**Fix:** Edit the `FORWARD_*` ports in your `.env` file. These only control the host-side mapping — they do **not** affect how services connect inside Docker:
 
 ```dotenv
-DB_CONNECTION=mysql
-DB_HOST=unopim-mysql
-DB_PORT=3306
-DB_DATABASE=unopim
-DB_USERNAME=root
-DB_PASSWORD=password
-DB_PREFIX=
+# Change these to any available ports on your host
+APP_PORT=8080
+FORWARD_DB_PORT=33060
+FORWARD_REDIS_PORT=16379
+FORWARD_ES_PORT=19200
+FORWARD_MAILPIT_PORT=18025
+FORWARD_MAILPIT_SMTP_PORT=11025
 ```
 
-> 💡 These values match the services defined in `docker-compose.yml`.
-> You can adjust them if you change container names, ports, or credentials.
-
-Once you’ve saved the file, proceed to **Step 4** to start the containers.
-
-#### Step 4: Start Docker Containers
+Then restart:
 
 ```bash
-docker-compose up -d
+docker compose down
+docker compose up -d
 ```
 
-This will pull the required images, build containers, and set up the environment.
+Access UnoPim at the new port: `http://localhost:8080/admin`
 
----
+#### Elasticsearch "503 Service Unavailable" or "no_shard_available"
 
-#### Step 5: Access Services
+If the product listing page shows an Elasticsearch error, the cluster may be unhealthy due to **disk space**. Elasticsearch stops allocating shards when disk usage exceeds 85%.
 
-| Service               | URL                                            |
-| --------------------- | ---------------------------------------------- |
-| UnoPim App            | `http://localhost:8000`                        |
-| MySQL                 | localhost:3306                                 |
-
-Verify running containers:
+**Check cluster health:**
 
 ```bash
-docker ps
+curl http://localhost:9200/_cluster/health
 ```
 
----
-
-### Managing Services
-
-Stop containers:
+If status is `red`, override the disk watermark thresholds:
 
 ```bash
-docker-compose down
+curl -X PUT http://localhost:9200/_cluster/settings \
+  -H ‘Content-Type: application/json’ \
+  -d ‘{
+    "persistent": {
+      "cluster.routing.allocation.disk.watermark.low": "95%",
+      "cluster.routing.allocation.disk.watermark.high": "97%",
+      "cluster.routing.allocation.disk.watermark.flood_stage": "99%"
+    }
+  }’
 ```
 
-Restart containers:
+Then reindex products:
 
 ```bash
-docker-compose up -d
+docker compose exec unopim-fpm php artisan unopim:product:index
 ```
 
-Rebuild containers (if configuration changes):
+::: tip
+For production, free up disk space instead of raising watermarks. The defaults (85%/90%/95%) exist to protect your data.
+:::
+
+#### First-Time Setup Hangs or Fails
+
+The entrypoint script runs migrations and seeds on first start. If it fails:
 
 ```bash
-docker-compose up --build -d
+# Check what happened
+docker compose logs unopim-fpm | tail -50
+
+# Retry by removing the lock file and restarting
+docker compose exec unopim-fpm rm -f /var/www/html/storage/unopim.lock
+docker compose restart unopim-fpm
 ```
 
-### 💡 Notes & Tips
+#### Storage/Image Permissions
 
-* If MySQL is already running locally, change the MySQL container port in `docker-compose.yml` and `.env` file.
-* For production, you can configure **persistent volumes** for MySQL data.
-* Always restart containers after making `.env` or `docker-compose.yml` changes.
+Product images are stored via a symlink: `public/storage -> storage/app/public`. If images return 404 or 403:
+
+```bash
+# Verify symlink exists
+docker compose exec unopim-fpm ls -la public/storage
+
+# If missing, recreate it
+docker compose exec unopim-fpm php artisan storage:link
+
+# Fix permissions
+docker compose exec unopim-fpm chown -R www-data:www-data storage bootstrap/cache
+docker compose exec unopim-fpm chmod -R 775 storage bootstrap/cache
+```
 
 
 ## Install Using GUI Installer

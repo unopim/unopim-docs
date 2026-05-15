@@ -6,6 +6,7 @@ import v02 from './version-configs/0.2'
 import v03 from './version-configs/0.3'
 import v1 from './version-configs/1.0.x'
 import v2 from './version-configs/2.0.x'
+import v21 from './version-configs/2.1.x'
 import getMasterSidebar from './version-configs/master'
 
 
@@ -60,6 +61,7 @@ export default defineConfig({
 
     sidebar: {
       '/master/': getMasterSidebar('master'),
+      '/2.1.x/': v21,
       '/2.0.x/': v2,
       '/1.0.x/': v1,
       '/0.2/': v02,
