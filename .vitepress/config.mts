@@ -1,6 +1,9 @@
 import { defineConfig } from 'vitepress'
 
 
+import v01 from './version-configs/0.1'
+import v02 from './version-configs/0.2'
+import v03 from './version-configs/0.3'
 import v1 from './version-configs/1.0'
 import v2 from './version-configs/2.0'
 import v21 from './version-configs/2.1'
@@ -62,6 +65,9 @@ export default defineConfig({
       '/2.1/': v21,
       '/2.0/': v2,
       '/1.0/': v1,
+      '/0.3/': v03,
+      '/0.2/': v02,
+      '/0.1/': v01,
     },
 
 

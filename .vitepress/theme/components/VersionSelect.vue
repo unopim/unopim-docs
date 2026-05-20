@@ -17,19 +17,22 @@ import { computed } from 'vue'
 const versions = [
   { label: '2.1', value: '2.1' },
   { label: '2.0', value: '2.0' },
-  { label: '1.0', value: '1.0' }
+  { label: '1.0', value: '1.0' },
+  { label: '0.3', value: '0.3' },
+  { label: '0.2', value: '0.2' },
+  { label: '0.1', value: '0.1' }
 ]
 
 const route = useRoute()
 const router = useRouter()
 
 const currentVersion = computed(() => {
-  const match = route.path.match(/^\/(1\.0|2\.0|2\.1)(\/.*)?$/)
+  const match = route.path.match(/^\/(0\.1|0\.2|0\.3|1\.0|2\.0|2\.1)(\/.*)?$/)
   return match ? match[1] : '2.1'
 })
 
 const restPath = computed(() => {
-  const match = route.path.match(/^\/(1\.0|2\.0|2\.1)(\/.*)?$/)
+  const match = route.path.match(/^\/(0\.1|0\.2|0\.3|1\.0|2\.0|2\.1)(\/.*)?$/)
   return match && match[2] ? match[2] : '/'
 })
 
