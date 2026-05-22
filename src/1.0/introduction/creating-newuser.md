@@ -1,8 +1,8 @@
-# Creating a New User in UnoPIM via the Command Line
+# Creating a New User in UnoPim via the Command Line
 
 
 
-Use the following command structure to create a new user in UnoPIM:
+Use the following command structure to create a new user in UnoPim:
 
 ```shell
 php artisan unopim:user:create --name="username" --email="useremail" --password="userpassword" --ui_locale="locale_code" --timezone="timezone" --admin
@@ -10,7 +10,7 @@ php artisan unopim:user:create --name="username" --email="useremail" --password=
 
 ## Command Parameters Explained
 
-- **`--name`**: Full name of the user, displayed across the UnoPIM interface.
+- **`--name`**: Full name of the user, displayed across the UnoPim interface.
 - **`--email`**: User's email address, used for login and notifications.
 - **`--password`**: A strong password for the account. Follow secure password practices.
 - **`--ui_locale`**: User interface language code (e.g., `en_US` for English, `fr_FR` for French).

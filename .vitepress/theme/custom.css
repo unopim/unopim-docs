@@ -231,3 +231,45 @@
   background-color: var(--vp-c-brand-light);
   color: #fff; /* White text on hover */
 }
+
+
+/* ===========================
+   Google Translate widget — hide default UI, keep functionality
+   =========================== */
+#google_translate_element {
+  position: absolute !important;
+  left: -10000px !important;
+  top: -10000px !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.goog-te-banner-frame.skiptranslate,
+.goog-te-banner-frame,
+iframe.skiptranslate {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Google injects `top: 40px` on <body> when its banner is visible; force it back */
+body {
+  top: 0 !important;
+}
+
+/* Suppress the floating "translated" tooltip that follows the cursor */
+.goog-tooltip,
+.goog-tooltip:hover,
+#goog-gt-tt,
+.goog-text-highlight {
+  display: none !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+/* Fix font when a translation is active (Google sometimes overrides) */
+font[style*="vertical-align"] {
+  vertical-align: baseline !important;
+}

@@ -1,11 +1,46 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount } from 'vue'
+import { onMounted, onBeforeUnmount, computed } from 'vue'
+import { useRoute } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import VersionSelect from './components/VersionSelect.vue'
+import UnmaintainedBanner from './components/UnmaintainedBanner.vue'
+import LanguageSelect from './components/LanguageSelect.vue'
 
 const { Layout } = DefaultTheme
 
+const route = useRoute()
+
+const unmaintainedVersion = computed(() => {
+  const match = route.path.match(/^\/(0\.1|0\.2|0\.3)(\/|$)/)
+  return match ? match[1] : null
+})
+
 let observer: MutationObserver | null = null
+
+function loadGoogleTranslate() {
+  if (typeof window === 'undefined') return
+  const w = window as unknown as { __unopimGTLoaded?: boolean }
+  if (w.__unopimGTLoaded) return
+  w.__unopimGTLoaded = true
+
+  ;(window as any).googleTranslateElementInit = function () {
+    const g = (window as any).google
+    if (!g || !g.translate || !g.translate.TranslateElement) return
+    new g.translate.TranslateElement(
+      {
+        pageLanguage: 'en',
+        autoDisplay: false,
+        layout: g.translate.TranslateElement.InlineLayout.HORIZONTAL
+      },
+      'google_translate_element'
+    )
+  }
+
+  const s = document.createElement('script')
+  s.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'
+  s.async = true
+  document.head.appendChild(s)
+}
 
 function scrollActiveTocIntoView() {
   const active = document.querySelector('.VPDocAsideOutline .outline-link.active')
@@ -15,6 +50,7 @@ function scrollActiveTocIntoView() {
 }
 
 onMounted(() => {
+  loadGoogleTranslate()
   scrollActiveTocIntoView()
   const toc = document.querySelector('.VPDocAsideOutline')
   if (toc) {
@@ -39,9 +75,13 @@ onBeforeUnmount(() => {
 
 <template>
   <Layout>
+    <template #doc-before>
+      <UnmaintainedBanner v-if="unmaintainedVersion" :version="unmaintainedVersion" />
+    </template>
     <template #nav-bar-content-after>
-      <div class="vp-nav-extra">
+      <div class="vp-nav-extra notranslate" translate="no">
         <VersionSelect class="vp-version-select" />
+        <LanguageSelect />
         <a
           class="vp-github-link"
           href="https://github.com/unopim/unopim"
@@ -54,6 +94,9 @@ onBeforeUnmount(() => {
           </svg>
         </a>
       </div>
+    </template>
+    <template #layout-bottom>
+      <div id="google_translate_element" aria-hidden="true" />
     </template>
   </Layout>
 </template>

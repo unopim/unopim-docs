@@ -1,8 +1,8 @@
-# Configuring Supervisor for UnoPIM
+# Configuring Supervisor for UnoPim
 
 
 
-Supervisor is used to manage the job queue daemon for UnoPIM. Follow these steps to set it up.
+Supervisor is used to manage the job queue daemon for UnoPim. Follow these steps to set it up.
 
 ## Step 1: Install Supervisor
 
@@ -26,7 +26,7 @@ Supervisor is used to manage the job queue daemon for UnoPIM. Follow these steps
 
 ---
 
-## Step 2: Configure Supervisor for UnoPIM
+## Step 2: Configure Supervisor for UnoPim
 
 1. Navigate to the Supervisor configuration directory:
 
@@ -57,7 +57,7 @@ Supervisor is used to manage the job queue daemon for UnoPIM. Follow these steps
 
    ### Notes:
    - Replace `/path/to/php` with the path to your PHP binary.
-   - Replace `/path/to/your/unopim` with the installation directory of UnoPIM.
+   - Replace `/path/to/your/unopim` with the installation directory of UnoPim.
    - Replace `my_user` with the user that runs PHP-FPM (e.g., `www-data`).
 
 ---
@@ -75,7 +75,7 @@ $ supervisorctl update
 
 ## Step 4: Start the Daemon
 
-Start the UnoPIM queue daemon:
+Start the UnoPim queue daemon:
 
 ```bash
 $ supervisorctl start unopim_queue_daemon

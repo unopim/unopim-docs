@@ -22,7 +22,7 @@ APT_FLAGS='-o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold
 alias apt-install="apt install $APT_FLAGS"
 
 ########################################################################
-# UnoPIM Interactive Setup Script for Ubuntu 24.04 LTS
+# UnoPim Interactive Setup Script for Ubuntu 24.04 LTS
 # Run as root: bash setup-unopim-v2.sh
 ########################################################################
 
@@ -41,7 +41,7 @@ ask()  { echo -ne "${CYAN}$1${NC}"; }
 
 echo ""
 echo "============================================="
-echo "   UnoPIM Interactive Setup — Ubuntu 24.04"
+echo "   UnoPim Interactive Setup — Ubuntu 24.04"
 echo "============================================="
 echo ""
 
@@ -100,7 +100,7 @@ require DB_ROOT_PASS "Enter MySQL root password: " 1
 default SSL_EMAIL    "Enter email for SSL certificate [admin@${DOMAIN}]: " "admin@${DOMAIN}"
 default ADMIN_NAME   "Enter admin full name [Admin]: " "Admin"
 require ADMIN_PASS   "Enter admin login password (also used for admin account): " 1
-default INSTALL_DAM      "Install UnoPIM DAM extension? (y/n) [n]: " "n"
+default INSTALL_DAM      "Install UnoPim DAM extension? (y/n) [n]: " "n"
 default INSTALL_SHOPIFY  "Install Shopify Connector extension? (y/n) [n]: " "n"
 
 # Persist state — passwords cached only with explicit opt-in
@@ -370,9 +370,9 @@ apt install -y unzip git
 ########################################################################
 # 14. CLONE UNOPIM
 ########################################################################
-log "Setting up UnoPIM at ${APP_DIR}..."
+log "Setting up UnoPim at ${APP_DIR}..."
 if [[ -d "$APP_DIR/.git" ]]; then
-    warn "UnoPIM already cloned at $APP_DIR — skipping clone"
+    warn "UnoPim already cloned at $APP_DIR — skipping clone"
 else
     mkdir -p "$PARENT_DIR"
     sudo -u "$DEPLOY_USER" git clone https://github.com/unopim/unopim.git "$APP_DIR"
@@ -409,7 +409,7 @@ sudo -u "$DEPLOY_USER" composer install --no-interaction 2>&1 | tail -5
 ########################################################################
 echo ""
 echo "============================================="
-log "Running UnoPIM installer — INTERACTIVE STEP"
+log "Running UnoPim installer — INTERACTIVE STEP"
 echo "============================================="
 echo ""
 echo "  Recommended values for the prompts:"
@@ -677,10 +677,10 @@ SERVER_IP=$(curl -s ifconfig.me 2>/dev/null || echo 'YOUR_IP')
 
 echo ""
 echo "============================================="
-log "UnoPIM setup complete!"
+log "UnoPim setup complete!"
 echo "============================================="
 echo ""
-echo "Your UnoPIM instance has been successfully set up and is now live."
+echo "Your UnoPim instance has been successfully set up and is now live."
 echo ""
 echo "Here are your login details:"
 echo ""
