@@ -57,7 +57,6 @@ function onChange(e: Event) {
 .vp-version-select {
   position: relative;
   display: inline-block;
-  margin-left: 1.5rem;
   vertical-align: middle;
 }
 
