@@ -309,7 +309,7 @@ To access UnoPim on your local server, follow these steps:
 
 ### Creating the Virtual Host File
 
-This guide explains how to create and configure a virtual host for Apache to point to the installation folder of UnoPIM, Create the file **`/etc/apache2/sites-available/unopim.local.conf`**:
+This guide explains how to create and configure a virtual host for Apache to point to the installation folder of UnoPim, Create the file **`/etc/apache2/sites-available/unopim.local.conf`**:
 
 ```apache
 <VirtualHost *:80>
@@ -334,7 +334,7 @@ This guide explains how to create and configure a virtual host for Apache to poi
 </VirtualHost>
 ```
 Notes:
-- Replace **`/path/to/installation`** with the actual path where UnoPIM is installed.
+- Replace **`/path/to/installation`** with the actual path where UnoPim is installed.
 - Ensure that **`/run/php/php8.2-fpm.sock`** matches the socket path defined in **`/etc/php/8.2/fpm/pool.d/www.conf`**. Update this value if it differs.
 
 ### Enabling the Virtual Host
@@ -355,4 +355,4 @@ Add the following entry to your **`/etc/hosts`** file:
    ```
     127.0.0.1    unopim.local
    ```
-Your virtual host configuration for UnoPIM is now complete. Visit **`http://unopim.local`** in your browser to access the application.
+Your virtual host configuration for UnoPim is now complete. Visit **`http://unopim.local`** in your browser to access the application.

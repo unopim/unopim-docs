@@ -35,3 +35,17 @@ Make sure your PR follows all these points,
   ~~~
 
 - Open your browser and go to [http://localhost:8080](http://localhost:8080).
+
+## Build for production
+
+- Build the static site (output goes to `.vitepress/dist`):
+
+  ~~~sh
+  npm run docs:build
+  ~~~
+
+- Preview the production build locally:
+
+  ~~~sh
+  npm run docs:preview
+  ~~~

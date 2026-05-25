@@ -3,8 +3,13 @@
     v-if="route.path !== '/'"
     class="vp-version-select"
   >
-    <select @change="onChange" :value="currentVersion">
-      <option v-for="v in versions" :key="v.value" :value="v.value">{{ v.label }}</option>
+    <select @change="onChange">
+      <option
+        v-for="v in versions"
+        :key="v.value"
+        :value="v.value"
+        :selected="v.value === currentVersion"
+      >{{ v.label }}</option>
     </select>
     <span class="vp-version-arrow" aria-hidden="true">▼</span>
   </div>
@@ -14,7 +19,10 @@
 import { useRoute, useRouter } from 'vitepress'
 import { computed } from 'vue'
 
+const LATEST = '2.1'
+
 const versions = [
+  { label: 'master', value: 'master' },
   { label: '2.1', value: '2.1' },
   { label: '2.0', value: '2.0' },
   { label: '1.0', value: '1.0' },
@@ -28,7 +36,7 @@ const router = useRouter()
 
 const currentVersion = computed(() => {
   const match = route.path.match(/^\/(0\.1|0\.2|0\.3|1\.0|2\.0|2\.1)(\/.*)?$/)
-  return match ? match[1] : '2.1'
+  return match ? match[1] : LATEST
 })
 
 const restPath = computed(() => {
@@ -38,7 +46,9 @@ const restPath = computed(() => {
 
 function onChange(e: Event) {
   const newVersion = (e.target as HTMLSelectElement).value
-  const newPath = `/${newVersion}${restPath.value}`
+  // 'master' is an alias that always sends users to the latest version.
+  const target = newVersion === 'master' ? LATEST : newVersion
+  const newPath = `/${target}${restPath.value}`
   router.go(newPath)
 }
 </script>
@@ -47,7 +57,6 @@ function onChange(e: Event) {
 .vp-version-select {
   position: relative;
   display: inline-block;
-  margin-left: 1.5rem;
   vertical-align: middle;
 }
 

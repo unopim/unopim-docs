@@ -1,13 +1,13 @@
-# UnoPIM Best Security Practices
+# UnoPim Best Security Practices
 
-Follow these guidelines to enhance the security of your UnoPIM instance and protect it from potential threats.
+Follow these guidelines to enhance the security of your UnoPim instance and protect it from potential threats.
 
 ---
 
 ## **1. Software Updates**
 
 - **Use HTTPS**: Encrypt communication with HTTPS, a Google ranking factor.
-- **Keep Software Updated**: Regularly update all server software (e.g., UnoPIM, database, Adminer/phpMyAdmin, Apache, Redis).
+- **Keep Software Updated**: Regularly update all server software (e.g., UnoPim, database, Adminer/phpMyAdmin, Apache, Redis).
 - **Secure Protocols**: Manage files via SSH, SFTP, or HTTPS; disable FTP.
 - **Protect System Files**: Use `.htaccess` to protect sensitive files.
 - **Disable Unused Ports**: Stop unnecessary services and disable unused ports.
@@ -178,4 +178,4 @@ Use the `clean_content()` helper (added in v2.1.0) to sanitize rich-text or HTML
 
 ---
 
-By adhering to these best practices, you can significantly enhance the security of your UnoPIM setup and safeguard it against potential vulnerabilities.
+By adhering to these best practices, you can significantly enhance the security of your UnoPim setup and safeguard it against potential vulnerabilities.
