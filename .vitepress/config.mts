@@ -144,6 +144,10 @@ export default defineConfig({
   },
 
   markdown: {
-    lineNumbers: false
+    lineNumbers: false,
+    languageAlias: {
+      'directory-structure': 'bash',
+      'env': 'dotenv'
+    }
   }
 })
