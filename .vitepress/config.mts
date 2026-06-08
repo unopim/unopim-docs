@@ -79,6 +79,16 @@ export default defineConfig({
 
   srcDir: './src',
 
+  sitemap: {
+    hostname: 'https://devdocs.unopim.com',
+    // Drop the noindex redirect stubs (pages moved to /agentic/) so the
+    // sitemap only advertises canonical URLs.
+    transformItems: (items) =>
+      items.filter(item =>
+        !/(^|\/)2\.1\/advanced\/(ai-agent|magic-ai-platform)\.html$/.test(item.url)
+      )
+  },
+
   themeConfig: {
     siteTitle: false,
 

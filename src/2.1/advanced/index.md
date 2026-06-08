@@ -16,10 +16,6 @@ UnoPim includes a comprehensive set of helper functions that simplify common dev
 
 Sometimes, you may need to modify or extend the default behavior of UnoPim's core models to accommodate your specific business requirements. We will demonstrate how to override core models effectively, enabling you to customize the behavior of UnoPim without modifying the underlying codebase.
 
-### AI Agent Integration
-
-UnoPim v2.0.0 introduces the AiAgent package, which provides a conversational AI interface with 32+ PIM-specific tools. We will cover how to use the AI agent chat for product management, configure approval workflows for AI-suggested changes, set up auto-enrichment pipelines, and extend the agent with custom tools.
-
-### MagicAI Platform Management
-
-The enhanced MagicAI package in v2.0.0 supports 10+ AI providers through a unified configuration interface. We will explain how to configure multi-platform AI providers, manage database-backed credentials, switch between providers, and customize AI behavior for content generation and translation tasks.
+::: tip
+Looking for the AI Agent and MagicAI platform documentation? Those topics now live in the dedicated [Agentic Development](../agentic/) section, alongside the Agentic Skills and MCP Server guides.
+:::
