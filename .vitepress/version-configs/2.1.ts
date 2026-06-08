@@ -99,8 +99,21 @@ export default [
             ['advanced/cli-commands', 'CLI Commands'],
             ['advanced/queue-management', 'Queue Management'],
             ['advanced/elasticsearch-configuration', 'Elasticsearch Configuration'],
-            ['advanced/ai-agent', 'AI Agent Integration'],
-            ['advanced/magic-ai-platform', 'MagicAI Platform Management'],
+        ])
+    },
+    {
+        text: 'Agentic Development',
+        link: `/${version}/agentic/`,
+        collapsed: false,
+        items: setVersionPrefix([
+            ['agentic/ai-agent', 'AI Agent Integration'],
+            ['agentic/magic-ai-platform', 'MagicAI Platform Management'],
+            ['agentic/agent-skills', 'Agentic Skills'],
+            ['agentic/mcp-server', 'MCP Server'],
+            ['agentic/building-integrations', 'Building an Integration with AI'],
+            ['agentic/building-agent-tools', 'Building Custom Agent Tools'],
+            ['agentic/extending-mcp', 'Extending the MCP Bridge'],
+            ['agentic/recipes', 'Agentic Recipes'],
         ])
     },
     {
