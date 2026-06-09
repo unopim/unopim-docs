@@ -5,6 +5,7 @@ import DefaultTheme from 'vitepress/theme'
 import VersionSelect from './components/VersionSelect.vue'
 import UnmaintainedBanner from './components/UnmaintainedBanner.vue'
 import LanguageSelect from './components/LanguageSelect.vue'
+import PromoBar from './components/PromoBar.vue'
 
 const { Layout } = DefaultTheme
 
@@ -79,6 +80,9 @@ onBeforeUnmount(() => {
 
 <template>
   <Layout>
+    <template #layout-top>
+      <PromoBar />
+    </template>
     <template #doc-before>
       <UnmaintainedBanner v-if="unmaintainedVersion" :version="unmaintainedVersion" />
     </template>
