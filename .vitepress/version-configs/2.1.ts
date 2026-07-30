@@ -95,10 +95,12 @@ export default [
             ['advanced/helpers', 'Helpers'],
             ['advanced/override-core-model', 'Override Core Models'],
             ['advanced/render-event', 'View Render Event'],
+            ['advanced/microsoft-sso', 'Microsoft SSO (Entra ID)'],
             ['advanced/security-practice', 'Best Security Practices'],
             ['advanced/cli-commands', 'CLI Commands'],
             ['advanced/queue-management', 'Queue Management'],
             ['advanced/elasticsearch-configuration', 'Elasticsearch Configuration'],
+            ['advanced/digital-product-passport', 'Digital Product Passport'],
         ])
     },
     {
