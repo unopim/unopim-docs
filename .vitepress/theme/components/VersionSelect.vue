@@ -19,10 +19,11 @@
 import { useRoute, useRouter } from 'vitepress'
 import { computed } from 'vue'
 
-const LATEST = '2.1'
+const LATEST = '3.0'
 
 const versions = [
   { label: 'master', value: 'master' },
+  { label: '3.0', value: '3.0' },
   { label: '2.1', value: '2.1' },
   { label: '2.0', value: '2.0' },
   { label: '1.0', value: '1.0' },

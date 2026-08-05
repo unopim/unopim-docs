@@ -14,7 +14,7 @@ import { computed } from 'vue'
 
 const props = defineProps<{ version: string }>()
 
-const latestVersion = '2.1'
+const latestVersion = '3.0'
 const latestLanding = '/prologue/'
 
 const latestPath = computed(() => `/${latestVersion}${latestLanding}`)
