@@ -3,28 +3,50 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
 jobs:
-  publish-docs:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      # https://github.com/actions/checkout
       - name: Checkout 🛎️
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          persist-credentials: false
+          node-version: 20
 
       - name: NPM install 📦
-        uses: bahmutov/npm-install@v1
-        
-      - name: Build docs 🏗
-        run: export NODE_OPTIONS=--openssl-legacy-provider && npm run docs:build
+        run: npm install
 
-      # https://github.com/marketplace/actions/github-pages-action
-      - name: Deploy 🚀
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Build docs 🏗
+        run: npm run docs:build
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./.vitepress/dist
-          cname: devdocs.unopim.com
+          path: .vitepress/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy 🚀
+        id: deployment
+        uses: actions/deploy-pages@v4
