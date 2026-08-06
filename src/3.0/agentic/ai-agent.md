@@ -2,7 +2,7 @@
 
 ## Introduction
 
-UnoPim v2.0.0 introduces the **AI Agent** — a conversational interface for managing your product catalog using natural language. Built on [prism-php/prism](https://github.com/prism-php/prism) for multi-provider AI tool calling, the agent provides 38+ PIM tools that let you search, create, update, delete, bulk edit, export, categorize, generate content and images, plan multi-step workflows, and more — all from a single chat widget.
+UnoPim v2.0.0 introduced the **AI Agent** — a conversational interface for managing your product catalog using natural language. Built on [prism-php/prism](https://github.com/prism-php/prism) for multi-provider AI tool calling, the agent provides 38+ PIM tools that let you search, create, update, delete, bulk edit, export, categorize, generate content and images, plan multi-step workflows, and more — all from a single chat widget.
 
 The agent is accessible from any page in the admin panel via the floating chat widget. It supports Server-Sent Events (SSE) streaming for real-time progress feedback and persists conversation history in the database.
 

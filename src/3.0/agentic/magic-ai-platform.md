@@ -2,7 +2,7 @@
 
 ## Introduction
 
-UnoPim v2.0.0 introduces a unified multi-platform AI provider architecture. Instead of individual service classes for each provider, a single **LaravelAiAdapter** bridges all supported AI providers through the `laravel/ai` ^0.3.2 SDK and the Prism library.
+UnoPim v2.0.0 introduced a unified multi-platform AI provider architecture. Instead of individual service classes for each provider, a single **LaravelAiAdapter** bridges all supported AI providers through the `laravel/ai` ^0.3.2 SDK and the Prism library.
 
 Credentials are now managed via a dedicated database table (`magic_ai_platforms`) with encrypted API key storage, replacing the previous configuration-file approach. Administrators can add, test, and switch between providers entirely from the admin panel.
 

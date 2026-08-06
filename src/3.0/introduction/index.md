@@ -4,8 +4,8 @@
 
 UnoPim is a leading open-source Product Information Management (PIM) platform built on Laravel 13, PHP 8.4, Vue 3, and Tailwind CSS. It offers a comprehensive set of tools to manage product data efficiently across multiple channels and locales. UnoPim is actively developed on [GitHub](https://github.com/unopim/unopim).
 
-::: tip What's new in v2.0
-v2.0 introduces an AI-powered conversational agent, multi-platform AI content generation, swatch attributes, a redesigned dashboard, real-time import/export tracking, and a dedicated completeness queue. Upgrading from v1.x? See the [Upgrade Guide](../prologue/upgrade-guide).
+::: tip What's new in v3.0
+v3.0 introduces Digital Product Passports, configurable association types, advanced product variants, measurement families with unit conversions, Microsoft SSO (Entra ID), multi-webhooks, and a modernized admin with AJAX navigation and dark mode. See [What's New in v3.0](../api/whats-new-v3) for the full list. Upgrading from v2.x? See the [Upgrade Guide](../prologue/upgrade-guide).
 :::
 
 ## Key Features of UnoPim
@@ -28,11 +28,11 @@ UnoPim supports multiple locales and currencies during installation, making it a
 
 UnoPim streamlines the management of product information, allowing businesses to handle complex data, such as product attributes, descriptions, and categorizations. It provides tools to keep product data consistent and up-to-date, facilitating smooth workflows and collaboration.
 
-### AI-Powered Enrichment (v2.0+)
+### AI-Powered Enrichment
 
 UnoPim 3.0 ships with an integrated AI Agent that exposes 32+ PIM-specific tools through a chat-style interface, plus the **MagicAI** content engine which supports 10+ providers (OpenAI, Gemini, Groq, Ollama, Anthropic, and more) for generation and translation of product attribute values across locales.
 
-### Swatch Attributes and Dashboard Insights (v2.0+)
+### Swatch Attributes and Dashboard Insights
 
 Visual swatch types (color, image, text) for product attributes enable richer catalog experiences. The redesigned dashboard surfaces channel readiness, product trend charts, and recent activity in a single view.
 

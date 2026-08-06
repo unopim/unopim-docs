@@ -2,7 +2,7 @@
 
 ## Introduction
 
-UnoPim v2.0.0 introduces **swatch types** for `select` and `multiselect` attributes. Swatches provide a visual representation of attribute options, replacing plain text labels with color blocks, image thumbnails, or styled text chips.
+UnoPim v2.0.0 introduced **swatch types** for `select` and `multiselect` attributes. Swatches provide a visual representation of attribute options, replacing plain text labels with color blocks, image thumbnails, or styled text chips.
 
 Swatch values are displayed in:
 

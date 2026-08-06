@@ -138,7 +138,7 @@ The **Installer** package simplifies the installation process of the UnoPim plat
 
 ### MagicAI
 
-The **MagicAI** package integrates AI-based functionalities into UnoPim, offering tools to enhance efficiency and decision-making processes based on product data. In v2.0.0, MagicAI supports **multi-platform AI provider management** with 10+ providers including OpenAI, Groq, Ollama, Gemini, Anthropic, and more, all configurable through a unified admin interface.
+The **MagicAI** package integrates AI-based functionalities into UnoPim, offering tools to enhance efficiency and decision-making processes based on product data. Since v2.0.0, MagicAI supports **multi-platform AI provider management** with 10+ providers including OpenAI, Groq, Ollama, Gemini, Anthropic, and more, all configurable through a unified admin interface.
 
 #### Key Features of the MagicAI Package
 

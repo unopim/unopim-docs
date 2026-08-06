@@ -16,7 +16,7 @@ Exporting data to save information in files is a common practice for data manage
 
 ## Import/Export Tracker UI (v2.0.0)
 
-UnoPim v2.0.0 introduces a real-time **Import/Export Tracker** in the admin panel that provides step-by-step pipeline visualization for running jobs. The tracker displays each stage of the import or export process, including validation, processing, and indexing, with live progress indicators.
+UnoPim v2.0.0 introduced a real-time **Import/Export Tracker** in the admin panel that provides step-by-step pipeline visualization for running jobs. The tracker displays each stage of the import or export process, including validation, processing, and indexing, with live progress indicators.
 
 ### Key Features
 
