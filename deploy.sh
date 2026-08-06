@@ -11,6 +11,9 @@ cd .vitepress/dist
 
 echo 'devdocs.unopim.com' > CNAME
 
+# skip Jekyll on GitHub Pages — without this the legacy build fails
+touch .nojekyll
+
 git init
 git add -A
 git commit -m 'Deploy docs to GitHub gh-pages'
