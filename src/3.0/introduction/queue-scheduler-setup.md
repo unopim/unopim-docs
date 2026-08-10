@@ -42,10 +42,9 @@ The database driver stores jobs in a database table. It requires no additional i
 QUEUE_CONNECTION=database
 ```
 
-Run the migration to create the jobs table (if not already present):
+UnoPim ships the `jobs`, `job_batches`, and `failed_jobs` migrations, so switching driver needs no extra table — just run any pending migrations:
 
 ```bash
-php artisan queue:table
 php artisan migrate
 ```
 
@@ -92,7 +91,7 @@ sudo nano /etc/supervisor/conf.d/unopim-worker.conf
 ```ini
 [program:unopim-worker]
 process_name=%(program_name)s_%(process_num)02d
-command=php /var/www/unopim/artisan queue:work redis --queue=system,completeness,default --tries=3 --timeout=90 --max-jobs=1000 --max-time=3600
+command=php /var/www/unopim/artisan queue:work redis --queue=system,completeness,publication,webhooks,default --tries=3 --timeout=90 --max-jobs=1000 --max-time=3600
 autostart=true
 autorestart=true
 stopasgroup=true
@@ -113,7 +112,7 @@ sudo nano /etc/supervisord.d/unopim-worker.ini
 ```ini
 [program:unopim-worker]
 process_name=%(program_name)s_%(process_num)02d
-command=php /var/www/unopim/artisan queue:work redis --queue=system,completeness,default --tries=3 --timeout=90 --max-jobs=1000 --max-time=3600
+command=php /var/www/unopim/artisan queue:work redis --queue=system,completeness,publication,webhooks,default --tries=3 --timeout=90 --max-jobs=1000 --max-time=3600
 autostart=true
 autorestart=true
 stopasgroup=true
@@ -129,7 +128,7 @@ stopwaitsecs=3600
 
 | Option | Value | Description |
 |--------|-------|-------------|
-| `--queue` | `system,completeness,default` | Queue names in priority order |
+| `--queue` | `system,completeness,publication,webhooks,default` | Queue names in priority order. `publication` carries passport publishing and `webhooks` carries webhook deliveries — omit either and that work queues up unprocessed. |
 | `--tries` | `3` | Maximum number of attempts before a job is marked as failed |
 | `--timeout` | `90` | Maximum seconds a job can run before being killed |
 | `--max-jobs` | `1000` | Restart the worker after processing 1000 jobs (prevents memory leaks) |
@@ -218,7 +217,7 @@ php artisan schedule:list
 
 ## Monitoring Failed Jobs
 
-When a queued job fails after exhausting all retry attempts, it is stored in the `wk_failed_jobs` table.
+When a queued job fails after exhausting all retry attempts, it is stored in the `failed_jobs` table (prefixed, if you set `DB_PREFIX`).
 
 ### List Failed Jobs
 
@@ -255,6 +254,8 @@ Check how many jobs are pending in each queue:
 # With Redis driver
 redis-cli LLEN queues:system
 redis-cli LLEN queues:completeness
+redis-cli LLEN queues:publication
+redis-cli LLEN queues:webhooks
 redis-cli LLEN queues:default
 ```
 
@@ -297,7 +298,7 @@ redis-cli LLEN queues:default
 Reduce the `--max-jobs` value or add `--memory=128` to limit memory usage per worker:
 
 ```ini
-command=php /var/www/unopim/artisan queue:work redis --queue=system,completeness,default --tries=3 --timeout=90 --max-jobs=500 --max-time=3600 --memory=128
+command=php /var/www/unopim/artisan queue:work redis --queue=system,completeness,publication,webhooks,default --tries=3 --timeout=90 --max-jobs=500 --max-time=3600 --memory=128
 ```
 
 ### Scheduler not running

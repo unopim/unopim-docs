@@ -23,7 +23,7 @@ The DataGrid in UnoPim has several global properties that enhance its functional
 
 The **`DataGrid`** abstract class is created in the **`Webkul\DataGrid`** package. In the abstract class, a list of properties and methods are declared. To create your own DataGrid, you need to extend the **`Webkul\DataGrid\DataGrid`** abstract class.
 
-In **`Webkul\DataGrid\DataGrid\DataGrid.php`** abstract class, two abstract methods are declared **`prepareQueryBuilder()`** and **`prepareColumns()`**. You can prepare your grid by defining these two methods.
+In the **`Webkul\DataGrid\DataGrid`** abstract class, two abstract methods are declared **`prepareQueryBuilder()`** and **`prepareColumns()`**. You can prepare your grid by defining these two methods.
 
 - **`prepareQueryBuilder()`**: In this method, records are retrieved through queries applicable to the database and stored in a collection. When records are retrieved, the **`setQueryBuilder()`** method is called.
 
@@ -77,16 +77,20 @@ In **`Webkul\DataGrid\DataGrid\DataGrid.php`** abstract class, two abstract meth
     ```php
     public function prepareActions()
     {
-        $this->addAction([
-            'icon'   => 'icon-edit',
-            'title'  => trans('example::app.admin.datagrid.edit'),
-            'method' => 'GET',
-            'url'    => function ($row) {
-                return route('admin.example.edit', $row->id);
-            },
-        ]);
+        if (bouncer()->hasPermission('example.edit')) {
+            $this->addAction([
+                'icon'   => 'icon-edit',
+                'title'  => trans('example::app.admin.datagrid.edit'),
+                'method' => 'GET',
+                'url'    => function ($row) {
+                    return route('admin.example.edit', $row->id);
+                },
+            ]);
+        }
     }
     ```
+
+    Gate every action behind a `bouncer()->hasPermission()` check, as the core grids do — a row action the user may not perform should not be rendered at all.
 
 ## Making DataGrids
 
@@ -176,7 +180,7 @@ class ExampleDataGrid extends DataGrid
      *
      * @var string
      */
-    protected $primaryColumn = 'order_id';
+    protected $primaryColumn = 'id';
 
     /**
      * Prepare query builder.
@@ -266,7 +270,7 @@ class ExampleDataGrid extends DataGrid
             'title'  => trans('example::app.admin.datagrid.edit'),
             'method' => 'GET',
             'url'    => function ($row) {
-                return route('aadmin.example.edit', $row->id);
+                return route('admin.example.edit', $row->id);
             },
         ]);
 
@@ -289,7 +293,7 @@ class ExampleDataGrid extends DataGrid
     {
         $this->addMassAction([
             'title'   => trans('example::app.admin.datagrid.mass-update'),
-            'url'     => oute('admin.example.mass_update'),
+            'url'     => route('admin.example.mass_update'),
             'method'  => 'POST',
             'options' => [
                 [

@@ -2,7 +2,7 @@
 
 ## Introduction
 
-UnoPim v2.0.0 introduced a unified multi-platform AI provider architecture. Instead of individual service classes for each provider, a single **LaravelAiAdapter** bridges all supported AI providers through the `laravel/ai` ^0.3.2 SDK and the Prism library.
+UnoPim uses a unified multi-platform AI provider architecture. Instead of individual service classes for each provider, a single **LaravelAiAdapter** bridges every supported AI provider through the [`laravel/ai`](https://github.com/laravel/ai) SDK (`^0.9.1`).
 
 Credentials are now managed via a dedicated database table (`magic_ai_platforms`) with encrypted API key storage, replacing the previous configuration-file approach. Administrators can add, test, and switch between providers entirely from the admin panel.
 
@@ -38,7 +38,7 @@ Image generation is currently supported by OpenAI, Gemini, and xAI. Attempting t
 The **Custom** provider lets you connect any OpenAI-compatible AI service — such as Cerebras, Together, Fireworks, or a self-hosted gateway — without writing a new provider class.
 :::
 
-When you select **Custom (OpenAI-compatible)** as the provider, the `LaravelAiAdapter` routes requests through Prism's Groq provider implementation. Groq's provider posts to the legacy `/chat/completions` endpoint, which is the de-facto standard that virtually every OpenAI-compatible third-party service implements. This means any service exposing a `/chat/completions` API will work without further code changes.
+When you select **Custom (OpenAI-compatible)** as the provider, the `LaravelAiAdapter` routes requests through the SDK's Groq lab. That lab posts to the legacy `/chat/completions` endpoint, which is the de-facto standard that virtually every OpenAI-compatible third-party service implements, so any service exposing a `/chat/completions` API works without further code changes.
 
 ### Configuring a Custom Provider
 
@@ -53,7 +53,7 @@ When you select **Custom (OpenAI-compatible)** as the provider, the `LaravelAiAd
 
 ### How the Custom Base URL Is Applied
 
-At runtime, when a platform has an `api_url` set, the adapter dynamically overrides the base URL for both the Laravel AI SDK and Prism:
+At runtime, when a platform has an `api_url` set, the adapter dynamically overrides the SDK's base URL:
 
 ```php
 config(["ai.providers.{$configKey}.url" => $this->platform->api_url]);
@@ -71,7 +71,7 @@ The custom provider is text-only — `supportsImages()` returns `false` for the 
 
 ### Before (v1.0.x)
 
-In v1.0.x, each AI provider had its own service class:
+In v1.0.x, each AI provider had its own service class — these classes no longer exist:
 
 ```
 Webkul\MagicAI\Services\OpenAI
@@ -82,7 +82,7 @@ Webkul\MagicAI\Services\Ollama
 
 Provider credentials were stored in Laravel config files, and switching providers required code or `.env` changes.
 
-### After (v2.0.0)
+### After
 
 All provider logic is consolidated into a single adapter:
 
@@ -93,8 +93,8 @@ Webkul\MagicAI\Services\LaravelAiAdapter
 This adapter:
 
 - Implements the `Webkul\MagicAI\Contracts\LLMModelInterface` contract.
-- Uses **Prism** (`echolabsdev/prism`) for text generation with full control over temperature, max tokens, and system prompts.
-- Uses **Laravel AI SDK** (`laravel/ai`) `Image::of()` for image generation.
+- Uses the **Laravel AI SDK** (`laravel/ai`) for text generation, with full control over temperature, max tokens, and system prompts.
+- Uses the same SDK's `Image::of()` for image generation.
 - Reads credentials from the `magic_ai_platforms` database table at runtime.
 
 ### Key Components
@@ -171,7 +171,7 @@ Only one platform can be the default at a time. When a new platform is set as de
 
 ### Text Generation
 
-The adapter uses Prism directly for text generation, providing:
+The adapter calls the SDK directly for text generation, providing:
 
 - Configurable **temperature** (0.0 -- 1.0)
 - Configurable **max tokens** (automatically increased for reasoning models like o1, o3)
@@ -216,7 +216,7 @@ $service = new OpenAI();
 $response = $service->ask('Generate a product description for...');
 ```
 
-**After (v2.0.0):**
+**After:**
 
 ```php
 use Webkul\MagicAI\Models\MagicAIPlatform;
@@ -237,7 +237,7 @@ $adapter = new LaravelAiAdapter(
 $response = $adapter->ask();
 ```
 
-### Generating Images (v2.0.0)
+### Generating Images
 
 ```php
 $adapter = new LaravelAiAdapter(
@@ -296,7 +296,6 @@ The `Webkul\MagicAI\Enums\AiProvider` backed enum provides utility methods for e
 | `configKey()` | Laravel config key for the provider |
 | `defaultUrl()` | Default API base URL |
 | `supportsImages()` | Whether the provider supports image generation |
-| `toPrismProvider()` | Maps to `Prism\Prism\Enums\Provider` |
 | `toLab()` | Maps to `Laravel\Ai\Enums\Lab` |
 | `fetchModels()` | Fetches available models from the provider API |
 | `options()` | Returns an array suitable for dropdown menus |

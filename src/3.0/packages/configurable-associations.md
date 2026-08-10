@@ -38,7 +38,7 @@ A field with `value_per_locale = 1` reads and writes the `locale_specific.<local
 Before any link is persisted, its custom-field data is validated by the association validator:
 
 ```php
-Webkul\Product\Validator\AssociationValidator::validate(int $typeId, array $additionalData);
+Webkul\Product\Validator\AssociationValidator::validate(int $associationTypeId, array $additionalData, ?int $ignoreId = null, bool $skipLocaleSpecific = false): void;
 ```
 
 Unknown field codes are rejected, and each field type contributes its own rules — booleans via `BooleanString`, dates via `date_format`, and options via `FieldOption`.

@@ -1,6 +1,6 @@
 # Building Custom Agent Tools
 
-The AI Agent ships with 38+ PIM tools, but its real power for developers is **extensibility**: any Concord package can register its own tools so the agent can drive *your* catalog logic in natural language. A tool is a small PHP class that the LLM autonomously decides to call based on the user's request.
+The AI Agent ships with 35 PIM tools, but its real power for developers is **extensibility**: any Concord package can register its own tools so the agent can drive *your* catalog logic in natural language. A tool is a small PHP class that the LLM autonomously decides to call based on the user's request.
 
 This guide walks through building, securing, registering, and testing a custom PIM tool. For the agent's overall architecture, see [AI Agent Integration](./ai-agent.html).
 
@@ -13,24 +13,24 @@ Every tool implements a single-method contract:
 ```php
 namespace Webkul\AiAgent\Chat\Contracts;
 
-use Prism\Prism\Tool;
+use Laravel\Ai\Contracts\Tool;
 use Webkul\AiAgent\Chat\ChatContext;
 
 interface PimTool
 {
     /**
-     * Return a configured Prism Tool instance.
+     * Return a configured laravel/ai Tool instance.
      */
     public function register(ChatContext $context): Tool;
 }
 ```
 
-The `register()` method returns a [Prism](https://github.com/prism-php/prism) `Tool` describing:
+The `register()` method returns a [`laravel/ai`](https://github.com/laravel/ai) `Tool`. UnoPim provides an abstract base, `Webkul\AiAgent\Chat\Tools\ContextualTool`, that holds the `ChatContext` for you, so a tool implements four methods:
 
-- **`as()`** — the tool name the LLM calls.
-- **`for()`** — a description the LLM reads to decide *when* to call it. Be specific; this is the single most important field for correct tool selection.
-- **`withStringParameter()` / `withNumberParameter()` / …** — the parameters the LLM must supply.
-- **`using()`** — the callback that runs your PIM logic and returns a JSON string.
+- **`name()`** — the tool name the LLM calls.
+- **`description()`** — what the LLM reads to decide *when* to call it. Be specific; this is the single most important piece of text for correct tool selection.
+- **`schema(JsonSchema $schema)`** — the parameters the LLM must supply, returned as an array of schema definitions.
+- **`handle(Request $request)`** — the code that runs your PIM logic and returns a JSON string.
 
 ---
 
@@ -41,49 +41,88 @@ Say you want the agent to report which products are missing a required attribute
 ```php
 namespace App\AiAgent\Tools;
 
-use Prism\Prism\Tool;
+use Illuminate\Contracts\JsonSchema\JsonSchema;
+use Laravel\Ai\Contracts\Tool;
+use Laravel\Ai\Tools\Request;
 use Webkul\AiAgent\Chat\ChatContext;
 use Webkul\AiAgent\Chat\Concerns\ChecksPermission;
 use Webkul\AiAgent\Chat\Contracts\PimTool;
+use Webkul\AiAgent\Chat\Tools\ContextualTool;
 use Webkul\Product\Repositories\ProductRepository;
 
 class FindProductsMissingAttribute implements PimTool
 {
-    use ChecksPermission;
-
     public function __construct(protected ProductRepository $productRepository) {}
 
     public function register(ChatContext $context): Tool
     {
-        return (new Tool)
-            ->as('find_products_missing_attribute')
-            ->for('Find products that do not have a value for a given attribute code in the current channel and locale. Use when the user asks which products are missing a specific field, e.g. "which electronics are missing voltage".')
-            ->withStringParameter('attribute_code', 'The attribute code to check, e.g. "voltage" or "description".')
-            ->withNumberParameter('limit', 'Maximum products to return (default 25).')
-            ->using(function (string $attribute_code, int $limit = 25) use ($context): string {
-                // Read-only catalog access still requires the catalog.products permission.
-                if ($denied = $this->denyUnlessAllowed($context, 'catalog.products')) {
+        $outer = $this;
+
+        return new class($context, $outer) extends ContextualTool
+        {
+            use ChecksPermission;
+
+            public function __construct(ChatContext $context, protected FindProductsMissingAttribute $outer)
+            {
+                parent::__construct($context);
+            }
+
+            public function name(): string
+            {
+                return 'find_products_missing_attribute';
+            }
+
+            public function description(): string
+            {
+                return 'Find products that do not have a value for a given attribute code in the current channel and locale. Use when the user asks which products are missing a specific field, e.g. "which electronics are missing voltage".';
+            }
+
+            public function schema(JsonSchema $schema): array
+            {
+                return [
+                    'attribute_code' => $schema->string()->description('The attribute code to check, e.g. "voltage" or "description".'),
+                    'limit'          => $schema->integer()->description('Maximum products to return (default 25).'),
+                ];
+            }
+
+            public function handle(Request $request): string
+            {
+                if ($denied = $this->denyUnlessAllowed($this->context, 'catalog.products')) {
                     return $denied;
                 }
 
-                $missing = $this->productRepository->findMissingAttribute(
-                    code:    $attribute_code,
-                    channel: $context->channel,
-                    locale:  $context->locale,
-                    limit:   $limit,
+                $attributeCode = $request->string('attribute_code')->toString();
+                $limit = $request->integer('limit') ?: 25;
+
+                $missing = $this->outer->findMissing(
+                    $attributeCode,
+                    $this->context->channel,
+                    $this->context->locale,
+                    $limit,
                 );
 
                 return json_encode([
                     'result' => [
-                        'attribute' => $attribute_code,
+                        'attribute' => $attributeCode,
                         'count'     => count($missing),
                         'products'  => $missing,
                     ],
                 ]);
-            });
+            }
+        };
+    }
+
+    /**
+     * The catalog lookup, kept on the outer class so the anonymous tool stays thin.
+     */
+    public function findMissing(string $code, string $channel, string $locale, int $limit): array
+    {
+        return $this->productRepository->findMissingAttribute($code, $channel, $locale, $limit);
     }
 }
 ```
+
+The anonymous-class pattern is how UnoPim's own tools are written — `register()` returns a `ContextualTool` that already holds the context, while the outer class keeps the injected repositories and any heavy logic. Look at `Webkul\AiAgent\Chat\Tools\ExportProducts` for a complete example.
 
 Now the user can ask *"Which products in Electronics are missing the voltage attribute?"* and the LLM will call this tool with `attribute_code="voltage"`.
 
@@ -95,25 +134,25 @@ Always go through a `*Repository` for catalog access rather than querying Eloque
 
 ## The `ChatContext` DTO
 
-Every tool callback receives the immutable `ChatContext` carrying request-scoped data — the active channel and locale, the product currently being edited (if the chat was opened from a product page), the AI platform/model, and the authenticated admin for ACL checks:
+Every tool receives the immutable `ChatContext` carrying request-scoped data — the active channel and locale, the product currently being edited (if the chat was opened from a product page), the AI platform and model, and the authenticated admin for ACL checks. `ContextualTool` exposes it as `$this->context`:
 
 ```php
-final class ChatContext
+final readonly class ChatContext
 {
     public function __construct(
-        public readonly string $message,           // User's text message
-        public readonly array $history,             // Conversation history
-        public readonly ?int $productId,            // Product being edited (page context)
-        public readonly ?string $productSku,
-        public readonly ?string $productName,
-        public readonly string $locale,             // Active locale (e.g. en_US)
-        public readonly string $channel,            // Active channel (e.g. default)
-        public readonly MagicAIPlatform $platform,  // AI platform record
-        public readonly string $model = '',
-        public readonly array $uploadedImagePaths = [],
-        public readonly array $uploadedFilePaths = [],
-        public readonly ?string $currentPage = null,
-        public readonly ?Admin $user = null,        // Authenticated admin (for ACL)
+        public string $message,             // User's text message
+        public array $history,              // Conversation history
+        public ?int $productId,             // Product being edited (page context)
+        public ?string $productSku,
+        public ?string $productName,
+        public string $locale,              // Active locale (e.g. en_US)
+        public string $channel,             // Active channel (e.g. default)
+        public MagicAIPlatform $platform,   // AI platform record
+        public string $model = '',
+        public array $uploadedImagePaths = [],
+        public array $uploadedFilePaths = [],
+        public ?string $currentPage = null,
+        public ?Admin $user = null,         // Authenticated admin (for ACL)
     ) {}
 }
 ```
@@ -129,8 +168,8 @@ Tools that read or write the catalog must respect UnoPim's role-based permission
 ```php
 use Webkul\AiAgent\Chat\Concerns\ChecksPermission;
 
-// Inside ->using():
-if ($denied = $this->denyUnlessAllowed($context, 'catalog.products.edit')) {
+// Inside handle():
+if ($denied = $this->denyUnlessAllowed($this->context, 'catalog.products.edit')) {
     return $denied; // returns a JSON error the LLM relays to the user
 }
 ```
@@ -146,9 +185,9 @@ Write tools should honour the configured `approval_mode` (`auto`, `review`, `sug
 ```php
 use Webkul\AiAgent\Chat\Concerns\QueuesForApproval;
 
-// Inside ->using() for a write tool:
+// Inside handle() for a write tool:
 if ($this->shouldQueueForApproval()) {
-    return $this->queueChange($context, 'Update voltage on 12 products', [
+    return $this->queueChange($this->context, 'Update voltage on 12 products', [
         'type'           => 'bulk_edit',
         'data'           => $changes,
         'affected_count' => 12,
@@ -191,7 +230,7 @@ The `class_exists` guard keeps your package safe to install even when the AiAgen
 
 ## Testing Your Tool
 
-Per the UnoPim development pipeline, every tool needs a Pest test. Test the tool's behaviour through its callback — assert on the JSON contract the LLM will consume:
+Per the UnoPim development pipeline, every tool needs a Pest test. Test the tool's behaviour through its `handle()` method — assert on the JSON contract the LLM will consume:
 
 ```php
 it('lists products missing the requested attribute', function () {
@@ -200,7 +239,9 @@ it('lists products missing the requested attribute', function () {
     $tool = app(\App\AiAgent\Tools\FindProductsMissingAttribute::class)
         ->register($context);
 
-    $result = json_decode($tool->handle(attribute_code: 'voltage', limit: 5), true);
+    $request = new \Laravel\Ai\Tools\Request(['attribute_code' => 'voltage', 'limit' => 5]);
+
+    $result = json_decode($tool->handle($request), true);
 
     expect($result['result']['attribute'])->toBe('voltage')
         ->and($result['result']['count'])->toBeGreaterThanOrEqual(0);
@@ -213,9 +254,9 @@ Also assert that a user without the `catalog.products` permission receives the d
 
 ## Best Practices
 
-- **Return JSON strings** — every callback returns a JSON-encoded `string`; the LLM parses it to compose its reply.
+- **Return JSON strings** — `handle()` returns a JSON-encoded `string`; the LLM parses it to compose its reply.
 - **Check permissions first** — use `ChecksPermission` on any tool touching the catalog.
 - **Support approval mode** — use `QueuesForApproval` on write tools.
 - **Keep tools focused** — one tool, one job. The LLM chains tools for complex workflows.
-- **Write a precise `->for()`** — the description drives whether the LLM picks your tool at the right moment.
+- **Write a precise `description()`** — it drives whether the LLM picks your tool at the right moment.
 - **Stay PIM-scoped** — operate on products, attributes, categories, families, channels, and locales through their repositories; honour the active channel/locale from `ChatContext`.

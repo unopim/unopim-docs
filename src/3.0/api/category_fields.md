@@ -23,10 +23,11 @@ GET {{url}}/api/v1/rest/category-fields
 
 The endpoint accepts the following query parameters:
 
-| Name    | Description                   | Type   | Default |
-|---------|-------------------------------|--------|---------|
-| `limit` | Number of records to return   | Number | `100`   |
-| `page`  | Page number for pagination    | Number | `1`     |
+| Name      | Description                                                          | Type   | Default |
+|-----------|----------------------------------------------------------------------|--------|---------|
+| `limit`   | Number of records to return. Clamped to a maximum of `100`           | Number | `10`    |
+| `page`    | Page number for pagination                                           | Number | `1`     |
+| `filters` | Filter by `code` or `type` with the `=`, `IN`, or `NOT IN` operators | JSON   | N/A     |
 
 For example, to retrieve the first page with up to 100 category fields:
 

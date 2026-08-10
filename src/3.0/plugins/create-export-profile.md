@@ -89,9 +89,9 @@ class Exporter extends AbstractExporter
 
 To make the exporter available in UnoPim, you need to register it. This involves defining it in a configuration file and loading that configuration within your service provider.
 
-### Step 1: Create `exporter.php`
+### Step 1: Create `exporters.php`
 
-In your plugin's `Config` directory, create a new configuration file named `exporter.php`. This file will hold the configuration settings for your exporter.
+In your plugin's `Config` directory, create a new configuration file named `exporters.php`. This file will hold the configuration settings for your exporter.
 
 Directory structure:
 
@@ -102,12 +102,12 @@ Directory structure:
             ├── ...
             └── src
                 └── Config
-                    └── exporter.php
+                    └── exporters.php
 ```
 
 ### Step 2: Define the Exporter Configuration
 
-In the `exporter.php` file, define your exporter and its settings. Here’s an example configuration for a product exporter:
+In the `exporters.php` file, define your exporter and its settings. Here’s an example configuration for a product exporter:
 
 ```php
 <?php
@@ -122,7 +122,7 @@ return [
             'fields' => [
                 [
                     'name'       => 'file_format',
-                    'title'      => 'File Format',
+                    'title'      => 'example::app.exporters.fields.file-format',
                     'type'       => 'select',
                     'required'   => true,
                     'validation' => 'required',
@@ -393,12 +393,12 @@ In your `ExampleServiceProvider`, add the following code to the `register()` met
 public function register()
 {
     $this->mergeConfigFrom(
-        dirname(__DIR__) . '/Config/exporter.php', 'exporters'
+        dirname(__DIR__) . '/Config/exporters.php', 'exporters'
     );
 }
 ```
 
-This merges the custom `exporter.php` configuration into the core exporter settings in UnoPim.
+This merges the custom `exporters.php` configuration into the core exporter settings in UnoPim.
 
 ## Step 4: Queue Operations
 

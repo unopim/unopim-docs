@@ -12,20 +12,27 @@ To utilize the `view_render_event()` function effectively, follow these steps:
 
 You can use `view_render_event()` within your Blade templates (*.blade.php) to specify points where content should be injected. Here’s an example:
 
-```php
+```blade
 @section('content-wrapper')
 
     {!! view_render_event('unopim.admin.layout.content.before') !!}
 
-    {!! DbView::make($channel)->field('home_page_content')
-    ->with(['sliderData' => $sliderData])->render() !!}
+    <div class="content">
+        {{-- the page's own markup --}}
+    </div>
 
     {!! view_render_event('unopim.admin.layout.content.after') !!}
 
 @endsection
 ```
 
-In this example `unopim.admin.layout.content.before` and `unopim.admin.layout.content.after` are custom event names that denote where content should be injected before and after the home_page_content section, respectively.
+Here `unopim.admin.layout.content.before` and `unopim.admin.layout.content.after` are event names marking where content may be injected, before and after the page content.
+
+The helper also accepts a second argument, passed through to every listener — core views use this to hand over the record being rendered:
+
+```blade
+{!! view_render_event('unopim.admin.system_settings.edit.'.$entry['key'].'.before', ['entry' => $entry]) !!}
+```
 
 ### Listening to Events
 

@@ -112,10 +112,10 @@ sudo systemctl restart php8.4-fpm nginx
 sudo supervisorctl restart unopim-worker
 ```
 
-Passports and publications run on a dedicated queue — add it to your worker if you enable Digital Product Passports:
+Passports, publications, and webhook deliveries run on dedicated queues — your worker must list them, or that work is queued and never processed:
 
 ```bash
-php artisan queue:work --queue="system,completeness,publication,default"
+php artisan queue:work --queue="system,completeness,publication,webhooks,default"
 ```
 
 ## Breaking Changes
@@ -151,7 +151,7 @@ Hardcoded admin URLs in extensions or bookmarks must be updated:
 | `catalog/attributegroups/*` | `catalog/attribute-groups/*` |
 | `catalog/families/*` | `catalog/attribute-families/*` |
 | `settings/data-transfer/*` | `data-transfer/*` |
-| `tracker/*` | `job-tracker/*` |
+| `settings/data-transfer/tracker/*` | `data-transfer/job-tracker/*` |
 | `integrations/api-keys/*` | `configuration/integrations/*` |
 | legacy combined settings page | `configuration/system-settings` hub (`configuration/system/{key}` editors) |
 
@@ -173,6 +173,10 @@ The single-webhook configuration was replaced by the multi-webhook module. `Webh
 ### Deprecated REST alias
 
 The misspelled `configrable-products` endpoint still works in this release but returns deprecation and successor headers. Move clients to `configurable-products` before the alias is removed in a future release.
+
+### Other API client changes
+
+Permissions are now enforced on reads as well as writes, error responses share a single shape, rate limits are enforced, and `limit` is capped at 100. If you maintain a client built against the v2.x API, work through [Migrating an API Client to v3.0](../api/migrating-your-client) — it covers each change and what the client must do about it.
 
 ### Removed classes and services
 
@@ -204,7 +208,7 @@ For the complete list, see the [UnoPim CHANGELOG on GitHub](https://github.com/u
 1. **Re-authenticate API clients** — issue new tokens; old ones are invalid.
 2. **Test core functionality** — log in, browse products, categories, attributes.
 3. **Check error logs** — review `storage/logs/laravel.log`.
-4. **Verify queue processing** — confirm workers process the `system`, `completeness`, and (if passports are enabled) `publication` queues.
+4. **Verify queue processing** — confirm workers process the `system`, `completeness`, `webhooks`, and (if passports are enabled) `publication` queues.
 5. **Re-index Elasticsearch** — if enabled:
 
    ```bash

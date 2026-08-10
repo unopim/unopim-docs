@@ -16,6 +16,10 @@ Here is what you get out of the box:
 - **Pagination Support**: Streamline data handling for larger datasets through pagination.
 - **PIM Integration**: Facilitate seamless integration with eCommerce platforms, mobile apps, and other systems that rely on product information management.
 
+## Coming from v2.x
+
+New in 3.0 is covered in [What's New in v3.0](./whats-new-v3). If you maintain a client built against v2.x, [Migrating an API Client to v3.0](./migrating-your-client) covers what changed underneath it — permissions are now enforced on reads as well as writes, error responses share a single shape, rate limits are enforced, and `limit` is capped at 100.
+
 ## Explore the REST API Demo
 
 Try out the UnoPim API through our interactive demo. This demo showcases the Create, Read, and Update operations and other API functionalities, providing developers with hands-on experience.

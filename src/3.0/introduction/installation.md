@@ -11,7 +11,7 @@ To install UnoPim using Composer, follow these steps:
 - If you have downloaded the zip file from the Git repository, extract the files into your desired directory and run the following command to set up the project:
 
     ```sh
-    composer create-project
+    composer install
     ```
 
 - Otherwise, to directly install UnoPim, run the following command in your terminal:
@@ -40,29 +40,36 @@ To install UnoPim using Composer, follow these steps:
     - Follow the prompts during the installation process to provide the following details:
 
     ```
-    - Please Enter the APP URL :
-    - Please Enter the Application Name :
-    - Please select the default locale :
-    - Please enter the default currency :
-    - Please choose the Allowed Locales for your channels :
-    - Please choose the Allowed Currencies for your channels :
-    - Please select the Database Connection :
-    - Please enter the Database Host :
-    - Please enter the Database Port Number :
-    - Please enter the Database Name :
-    - Please enter the Database Prefix :
-    - Please enter the Database Username :
-    - Please enter the Database Password :
+    - Please provide the name of the application
+    - Please provide the application URL
+    - Please select the default application locale
+    - Please select the default currency
+    - Please choose the allowed locales for your channels
+    - Please choose the allowed currencies for your channels
+    - Please select the database connection
+    - Please enter the database host
+    - Please enter the database port
+    - Please enter the database name
+    - Please enter the database prefix
+    - Please enter your database username
+    - Please enter your database password
+    - Do you want to enable Elasticsearch?
+      (if yes: connection, host or Cloud ID, user, password or API key, index prefix)
+    - Select optional packages to install
     - Do you want sample products? [no]
         [0] yes
         [1] no
     ```
     - You will then be asked to create your admin credentials:
     ```
-    - Enter the Name of Admin User :
-    - Enter the Email address of the Admin User :
-    - Configure the Password for admin user :
+    - Set the Name for Administrator
+    - Provide Email of Administrator
+    - Input a Password for Administrator
     ```
+
+    ::: tip Command options
+    `unopim:install` accepts `--skip-env-check`, `--skip-admin-creation`, `--with-demo-data`, and `--with-packages=` (comma-separated: `dam`, `shopify`, `bagisto`).
+    :::
 
 - After the installation completes, build the Elasticsearch indexes:
 

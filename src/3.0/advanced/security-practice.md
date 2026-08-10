@@ -123,7 +123,7 @@ Follow these guidelines to enhance the security of your UnoPim instance and prot
 ---
 
 ## 10. API Security Improvements (v2.0.0)
-UnoPim v2.0.0 includes significant API security hardening:
+UnoPim includes significant API security hardening:
 
 - **Full ACL enforcement on all API routes**: All 48 API routes now have proper ACL authorization checks. 15 previously unprotected routes have been fixed to require appropriate permissions.
 - **ACL authorization on AI Agent tools**: All 32 AI Agent tools enforce permission checks via the `ChecksPermission` trait, ensuring that AI-driven operations respect the same role-based access controls as manual actions.
@@ -135,7 +135,7 @@ UnoPim v2.0.0 includes significant API security hardening:
 ---
 
 ## 11. Security Enhancements (v2.1.0)
-UnoPim v2.1.0 adds further hardening on top of the v2.0.0 API improvements:
+Further hardening on top of those API improvements:
 
 ### IP-based debug filtering
 

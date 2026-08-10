@@ -5,7 +5,7 @@
 UnoPim is a leading open-source Product Information Management (PIM) platform built on Laravel 13, PHP 8.4, Vue 3, and Tailwind CSS. It offers a comprehensive set of tools to manage product data efficiently across multiple channels and locales. UnoPim is actively developed on [GitHub](https://github.com/unopim/unopim).
 
 ::: tip What's new in v3.0
-v3.0 introduces Digital Product Passports, configurable association types, advanced product variants, measurement families with unit conversions, Microsoft SSO (Entra ID), multi-webhooks, and a modernized admin with AJAX navigation and dark mode. See [What's New in v3.0](../api/whats-new-v3) for the full list. Upgrading from v2.x? See the [Upgrade Guide](../prologue/upgrade-guide).
+v3.0 introduces Digital Product Passports, configurable association types, two-level variant structures, measurement families and units, multi-webhooks, Microsoft SSO (Entra ID), and a greatly expanded REST API — on Laravel 13 and PHP 8.4. See [What's New in v3.0](../api/whats-new-v3) for the full list. Upgrading from v2.1.x? See the [Upgrade Guide](../prologue/upgrade-guide).
 :::
 
 ## Key Features of UnoPim
@@ -30,7 +30,7 @@ UnoPim streamlines the management of product information, allowing businesses to
 
 ### AI-Powered Enrichment
 
-UnoPim 3.0 ships with an integrated AI Agent that exposes 32+ PIM-specific tools through a chat-style interface, plus the **MagicAI** content engine which supports 10+ providers (OpenAI, Gemini, Groq, Ollama, Anthropic, and more) for generation and translation of product attribute values across locales.
+UnoPim 3.0 ships with an integrated AI Agent that exposes 35 PIM-specific tools through a chat-style interface, plus the **MagicAI** content engine which supports 10+ providers (OpenAI, Anthropic, Gemini, Groq, Ollama, Mistral, DeepSeek, Azure, xAI, OpenRouter, and any OpenAI-compatible endpoint) for generation and translation of product attribute values across locales.
 
 ### Swatch Attributes and Dashboard Insights
 

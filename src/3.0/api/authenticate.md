@@ -85,3 +85,15 @@ You receive a fresh access token and a new refresh token:
     "refresh_token": "def50200b3b5e3ec4f608279263600e4041189dccaabe3e16ad487e72c26b80a128fcfe6232d21c4c9441ee258b8f03964f4685643865677e2e2613a7ed7251849f13934028f84dc33cbf589a6ce0c37e98066e561fbe16997751a831dd9df294a690c3ac43beab27cb86e64fa7eb1fe572c514fb5487d929dfc6b415f34803ce7168cd468fbc9a0f30b460244a8b9da559ec5dfe1b7b01f52219150e02d75a001007fed26a1fd66f2086fed15e4961f9481fdbdac032b3c055e5d6509e615e831fa6b395195cc561b14be95d9f16bf73a77bedcf20b9348e11d1a2a8bab3abaa62f585f1aa804e53b7f8e297b295a18b146eea8ada82ee4ea8d4e6cfdd563f1f06947b5b84ad1e02551674d302a77d1f0949f10324e37ed7c55620c0271a871555784b3d256ca7a48d261ca7afcac50235ae75066a73b7dd99034549a0c9cefb98685527f32b05f13cb681432919644766bc56fb1ad3412c43e96037cd1511d175460ee6f0d5e12a7e2ab90b2ae6e12be2e1a1f62f40ffe80457cd96f850adb5e3c4d23"
   }
 ```
+
+## Rate Limit <Badge type="tip" text="3.0" />
+
+Token issue and refresh are throttled to **10 requests per minute** by default (`OAUTH_TOKEN_RATE_LIMIT`). A client that requests a token before every API call will exhaust that budget immediately.
+
+Cache the access token for its lifetime — `expires_in` tells you how long, one hour by default — and refresh only when it expires or a call returns `401`. On a `429`, wait for the `Retry-After` header before retrying.
+
+Token lifetimes are configurable per installation with `ACCESS_TOKEN_TTL` and `REFRESH_TOKEN_TTL`, so read `expires_in` rather than assuming 3600.
+
+::: warning Tokens issued before v3.0 are invalid
+v3.0 replaces the previously shared OAuth signing keys with per-installation keys, so every token issued by an earlier version stops working at upgrade. Authenticate again. See [Migrating an API Client](./migrating-your-client).
+:::

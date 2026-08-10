@@ -23,7 +23,7 @@ Manually setting up repository files involves creating and organizing repository
 
 ### Setting Up ExampleRepository in Webkul/Example Package
 
-Start by creating a `Repository` folder within the `Webkul/Example/src/` directory. This folder will house the repository class responsible for handling example-related database operations.Create a file named `ExampleRepository.php`. 
+Start by creating a `Repositories` folder within the `Webkul/Example/src/` directory. This folder will house the repository class responsible for handling example-related database operations.Create a file named `ExampleRepository.php`. 
 
   ```
   └── packages
@@ -31,7 +31,7 @@ Start by creating a `Repository` folder within the `Webkul/Example/src/` directo
           └── Example
               └── src
                   ├── ...
-                  └── Repository
+                  └── Repositories
                       └── ExampleRepository.php
   ```
 
@@ -41,7 +41,7 @@ Copy the following code into your newly created repository file.
   ```php
   <?php
 
-  namespace Webkul\Example\Repository;
+  namespace Webkul\Example\Repositories;
 
   use Webkul\Core\Eloquent\Repository;
 
@@ -52,7 +52,7 @@ Copy the following code into your newly created repository file.
       *
       * @return string
       */
-      function model(): string
+      public function model(): string
       {
           return 'Webkul\Example\Contracts\Example';
       }
@@ -115,7 +115,7 @@ $example = $this->exampleRepository->findOrFail($id);
 Create a new record.
 
 ```php
-$example = $this->exampleRepository->create(Input::all());
+$example = $this->exampleRepository->create($request->validated());
 ```
 
 ### Update
@@ -123,7 +123,7 @@ $example = $this->exampleRepository->create(Input::all());
 Update an existing record by its ID.
 
 ```php
-$example = $this->exampleRepository->update(Input::all(), $id);
+$example = $this->exampleRepository->update($request->validated(), $id);
 ```
 
 ### Delete

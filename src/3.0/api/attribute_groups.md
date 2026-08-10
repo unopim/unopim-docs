@@ -23,14 +23,22 @@ GET {{url}}/api/v1/rest/attribute-groups
 
 The endpoint accepts the following query parameter:
 
-| Name   | Info                               | Type   | Default |
-|--------|------------------------------------|--------|---------|
-| `page` | The page number to retrieve        | Number | `1`     |
+| Name      | Info                                                        | Type   | Default |
+|-----------|-------------------------------------------------------------|--------|---------|
+| `limit`   | Records per request. Clamped to a maximum of `100`          | Number | `10`    |
+| `page`    | The page number to retrieve                                 | Number | `1`     |
+| `filters` | Filter by `code` with the `=`, `IN`, or `NOT IN` operators  | JSON   | N/A     |
 
 For example, to fetch a specific page of attribute groups:
 
 ```http
 GET {{url}}/api/v1/rest/attribute-groups?page=1
+```
+
+To filter by code:
+
+```http
+GET {{url}}/api/v1/rest/attribute-groups?filters={"code":[{"operator":"IN","value":["marketing","technical"]}]}
 ```
 
 ### Response

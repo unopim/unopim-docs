@@ -47,6 +47,22 @@ The response is the list of options for the specified attribute:
 ```
 :::
 
+Options come back ordered by `sort_order`, and the response is a plain array — this endpoint is not paginated.
+
+When the attribute's swatch type is `image` or `color`, each option carries two extra keys:
+
+```json
+{
+  "code": "red",
+  "sort_order": 1,
+  "labels": { "en_US": "Red" },
+  "swatch_value": "attribute_option/12/nEr4h2Kq….png",
+  "swatch_value_url": "https://example.com/storage/attribute_option/12/nEr4h2Kq….png"
+}
+```
+
+Use [Swatch Media Upload](./media#swatch-media-upload) to set an image swatch.
+
 ## Create Attribute Options by Attribute Code
 
 Creates one or more options for an attribute in a single request.
@@ -143,3 +159,5 @@ A successful deletion returns a confirmation message:
     "message": "Deleted successfully."
 }
 ```
+
+An unknown attribute code or option code returns `404`. Deleting an option does not rewrite products that already store its value — clean those up before removing an option that is in use.

@@ -143,7 +143,7 @@ php artisan unopim:category:index
 
 ## Filter Improvements (v2.0.0)
 
-UnoPim v2.0.0 includes several improvements to Elasticsearch filter handling:
+UnoPim includes several improvements to Elasticsearch filter handling:
 
 - **SKU Filters** — Improved handling for exact and partial SKU matching.
 - **Text Filters** — Better support for text-based attribute filtering with improved tokenization.

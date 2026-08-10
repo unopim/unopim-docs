@@ -21,6 +21,13 @@ GET {{url}}/api/v1/rest/channels
 
 **Headers:** use the [Common Headers](#common-headers).
 
+The endpoint accepts these query parameters:
+
+| Name    | Info                                               | Type   | Default |
+|---------|----------------------------------------------------|--------|---------|
+| `limit` | Records per request. Clamped to a maximum of `100` | Number | `10`    |
+| `page`  | Page number to retrieve                            | Number | `1`     |
+
 ### Response
 
 The response contains the list of channels with pagination metadata:

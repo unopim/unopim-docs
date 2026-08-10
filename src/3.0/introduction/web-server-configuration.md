@@ -62,11 +62,29 @@ server {
     gzip_proxied any;
 
     # ──────────────────────────────────────────────
+    # Dynamic image cache — /cache/{template}/{filename} is rendered by
+    # PHP, so it must reach the front controller. This block has to come
+    # BEFORE the static-extension rule below, which would 404 it.
+    # ──────────────────────────────────────────────
+    location ^~ /cache/ {
+        try_files $uri /index.php?$query_string;
+    }
+
+    # ──────────────────────────────────────────────
+    # Passport QR carrier — /p/{uuid}/carrier.svg is generated on the fly.
+    # Same reason: it must precede the static .svg rule.
+    # ──────────────────────────────────────────────
+    location ~ ^/p/[^/]+/carrier\.svg$ {
+        try_files $uri /index.php?$query_string;
+    }
+
+    # ──────────────────────────────────────────────
     # Static file caching (30 days)
     # ──────────────────────────────────────────────
-    location ~* \.(jpg|jpeg|png|gif|ico|css|js|svg|woff|woff2|ttf|eot)$ {
+    location ~* \.(jpg|jpeg|png|gif|ico|css|js|svg|webp|map|woff|woff2|ttf|eot)$ {
         expires 30d;
         add_header Cache-Control "public, immutable";
+        access_log off;
         try_files $uri =404;
     }
 
@@ -80,25 +98,50 @@ server {
     # ──────────────────────────────────────────────
     # PHP processing via PHP-FPM
     # ──────────────────────────────────────────────
-    location ~ \.php$ {
-        try_files $uri =404;
-        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+    location ~ ^/index\.php(/|$) {
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
 
         # Ubuntu/Debian socket path:
         fastcgi_pass unix:/run/php/php8.4-fpm.sock;
         # CentOS/RHEL socket path (uncomment if needed):
         # fastcgi_pass unix:/run/php-fpm/www.sock;
 
-        fastcgi_index index.php;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT $realpath_root;
+
+        # Prevent the httpoxy vulnerability
+        fastcgi_param HTTP_PROXY "";
+
+        # Forward client info so url(), secure() and trusted proxies work
+        fastcgi_param HTTP_X_FORWARDED_FOR $proxy_add_x_forwarded_for;
+        fastcgi_param HTTP_X_FORWARDED_PROTO $scheme;
+        fastcgi_param HTTP_X_REAL_IP $remote_addr;
 
         # Timeout for long-running operations (imports, exports)
         fastcgi_read_timeout 600;
+        fastcgi_send_timeout 600;
 
         # Buffer settings for large responses
-        fastcgi_buffers 16 16k;
-        fastcgi_buffer_size 32k;
+        fastcgi_buffers 32 32k;
+        fastcgi_buffer_size 128k;
+        fastcgi_busy_buffers_size 256k;
+
+        internal;
+    }
+
+    # ──────────────────────────────────────────────
+    # Security: Never serve executable or active content from uploads
+    # ──────────────────────────────────────────────
+    location ~* ^/storage/.*\.(php[0-9]?|phtml|pht|phar|html?|shtml|xhtml)$ {
+        return 404;
+    }
+
+    # ──────────────────────────────────────────────
+    # Security: only index.php may execute
+    # ──────────────────────────────────────────────
+    location ~ \.php$ {
+        return 404;
     }
 
     # ──────────────────────────────────────────────
@@ -106,13 +149,7 @@ server {
     # ──────────────────────────────────────────────
     location ~ /\. {
         deny all;
-    }
-
-    # ──────────────────────────────────────────────
-    # Security: Deny PHP execution in writable directories
-    # ──────────────────────────────────────────────
-    location ~* ^/(storage|bootstrap/cache)/.*\.php$ {
-        deny all;
+        access_log off;
     }
 
     # ──────────────────────────────────────────────
@@ -198,6 +235,24 @@ sudo nano /etc/apache2/sites-available/unopim.conf
     <IfModule mod_deflate.c>
         AddOutputFilterByType DEFLATE text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript image/svg+xml
     </IfModule>
+
+    # Dynamic routes that must not be treated as static files:
+    # /cache/{template}/{filename} (image cache) and
+    # /p/{uuid}/carrier.svg (passport QR carrier) are rendered by PHP.
+    # Laravel's shipped public/.htaccess already routes anything that is
+    # not an existing file to index.php, so keep AllowOverride All and do
+    # not add expiry rules that bypass the front controller for them.
+    <LocationMatch "^/(cache/|p/[^/]+/carrier\.svg$)">
+        <IfModule mod_expires.c>
+            ExpiresActive Off
+        </IfModule>
+        Header unset Cache-Control
+    </LocationMatch>
+
+    # Never serve executable or active content from uploads
+    <LocationMatch "^/storage/.*\.(php[0-9]?|phtml|pht|phar|html?|shtml|xhtml)$">
+        Require all denied
+    </LocationMatch>
 
     # Static file caching
     <IfModule mod_expires.c>

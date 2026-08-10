@@ -17,11 +17,13 @@ Follow these steps in the admin panel:
    - Under the API Keys section, click the **Create** button to start the process of creating a new API key.
 
 3. **General Section**:
-   - In the **General** Section, provide the following details:
-     - **Name**: Enter a unique name for the API key.
-     - **Assign User**: Choose the user who will be assigned to this API key.
+   - In the **General** Section, enter a unique **Name** for the API key.
 
     ![API key General section](/assets/2.1/images/api-integration-general.png)
+
+   ::: tip No user to choose <Badge type="tip" text="3.0" />
+   In v2.x you picked an existing administrator to own the integration. Since v3.0, UnoPim provisions a dedicated **robot user** for each integration automatically — a least-privilege `type = 'api'` account that cannot log into the admin panel. There is nothing to assign.
+   :::
 
 4. **Access Control**:
    - Navigate to the **Access Control** Section, where you'll configure permissions for the API key.
@@ -39,6 +41,10 @@ Follow these steps in the admin panel:
 
    ![Save API credentials](/assets/2.1/images/api-integration-save.png)
 
+   ::: warning Copy the password now <Badge type="tip" text="3.0" />
+   Saving reveals the robot user's **username** and **password** exactly once. The password is hashed immediately and cannot be shown again — copy both before leaving the screen. If you lose them, use **Regenerate Password** on the integration's edit screen; doing so revokes every token issued to that integration.
+   :::
+
 6. **Generate Secret Key**:
    - Once saved, a **Generate Secret Key** button will appear.
    - Click on this button to display the **Client ID** and **Secret Key**.
@@ -49,10 +55,10 @@ Follow these steps in the admin panel:
    ![Client ID and Secret Key](/assets/2.1/images/api-client-id-secret.png)
 
 ::: tip Re-Generate Secret Key
-After generating the secret key, a **Re-Generate Secret Key** button will be available. Use this button to regenerate the secret key if needed.
+After generating the secret key, a **Re-Generate Secret Key** button will be available. Use this button to regenerate the secret key if needed. Like regenerating the password, it revokes existing tokens.
 :::
 
-For more detailed reference, you can consult the UnoPim **User Guide** [here](https://docs.unopim.com/1.0/configuration/integration.html).
+You now hold the four values every client needs: **Client ID**, **Secret Key**, **username**, and **password**. Continue to [Authentication](authenticate) to exchange them for an access token.
 
 ## Set up Postman
 

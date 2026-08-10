@@ -17,5 +17,5 @@ UnoPim includes a comprehensive set of helper functions that simplify common dev
 Sometimes, you may need to modify or extend the default behavior of UnoPim's core models to accommodate your specific business requirements. We will demonstrate how to override core models effectively, enabling you to customize the behavior of UnoPim without modifying the underlying codebase.
 
 ::: tip
-Looking for the AI Agent and MagicAI platform documentation? Those topics now live in the dedicated [Agentic Development](../agentic/) section, alongside the Agentic Skills and MCP Server guides.
+Looking for the AI Agent and MagicAI platform documentation? Those topics now live in the dedicated [Agentic Development](../agentic/) section, alongside the Agentic Skills guides.
 :::

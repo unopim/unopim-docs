@@ -12,7 +12,8 @@ In UnoPim, various packages are located at **`packages/Webkul/`**. Below is a ba
         └── src
             ├── Config
             │   ├── acl.php
-            │   └── menu.php
+            │   ├── menu.php
+            │   └── system_settings.php
             ├── Console
             │   └── Commands
             ├── Contracts
@@ -54,7 +55,9 @@ In UnoPim, various packages are located at **`packages/Webkul/`**. Below is a ba
                 │   └── css
                 │       └── app.css
                 ├── lang
-                │   └── app.php
+                │   ├── en_US
+                │   │   └── app.php
+                │   └── …            # one directory per supported locale
                 └── views
                     └── example
                         ├── create.blade.php

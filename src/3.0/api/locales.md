@@ -25,7 +25,7 @@ The endpoint accepts the following query parameters:
 
 | Name     | Description                                      | Type   | Default |
 |----------|--------------------------------------------------|--------|---------|
-| `limit`  | Maximum number of records per request            | Number | `10`    |
+| `limit`  | Records per request. Clamped to a maximum of `100` | Number | `10`    |
 | `page`   | Page number to retrieve based on the limit       | Number | `1`     |
 | `filters`| Criteria to filter the records returned          | JSON   | N/A     |
 

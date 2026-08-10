@@ -47,12 +47,17 @@ Wait for the first-time setup (migrations and seeding) to complete, then open:
 http://localhost:8000/admin
 ```
 
-**Default Admin Credentials:**
+**Admin credentials.** The first-run seeder creates `admin@example.com` and generates a **random 20-character password**, which it writes to `storage/app/admin-credentials.txt` inside the container:
 
-| Field    | Value               |
-|----------|---------------------|
-| Email    | `admin@example.com` |
-| Password | `admin123`          |
+```bash
+docker compose exec unopim cat storage/app/admin-credentials.txt
+```
+
+Log in, change the password, and delete the file. To choose the credentials yourself instead, set them before the first boot — they are only read while the `admins` table is still empty:
+
+```bash
+INSTALLER_ADMIN_EMAIL=you@example.com INSTALLER_ADMIN_PASSWORD='a-strong-password' docker compose up -d
+```
 
 To change any setting, export the variable or drop it in a `.env` file next to `compose.yaml` — Compose interpolates it automatically:
 

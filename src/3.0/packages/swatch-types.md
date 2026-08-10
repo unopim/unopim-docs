@@ -2,7 +2,7 @@
 
 ## Introduction
 
-UnoPim v2.0.0 introduced **swatch types** for `select` and `multiselect` attributes. Swatches provide a visual representation of attribute options, replacing plain text labels with color blocks, image thumbnails, or styled text chips.
+UnoPim supports **swatch types** for `select` and `multiselect` attributes. Swatches provide a visual representation of attribute options, replacing plain text labels with color blocks, image thumbnails, or styled text chips.
 
 Swatch values are displayed in:
 
@@ -28,13 +28,13 @@ When no swatch type is set, the attribute option displays its standard translate
 
 Swatch data is stored across two existing tables:
 
-### `wk_attributes` Table
+### `attributes` Table
 
 | Column        | Type              | Description |
 | ------------- | ----------------- | ----------- |
 | `swatch_type` | `string` (nullable) | One of `color`, `image`, `text`, or `null` |
 
-### `wk_attribute_options` Table
+### `attribute_options` Table
 
 | Column         | Type              | Description |
 | -------------- | ----------------- | ----------- |

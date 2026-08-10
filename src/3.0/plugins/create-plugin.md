@@ -96,23 +96,19 @@ Add your plugin's namespace to the **`psr-4`** section in the **`composer.json`*
    }
    ```
 
-Register your plugin's service provider in the **`config/app.php`** file located in the root directory of your UnoPim application. Add the following line to the **`providers`** array:
+Register your plugin's service provider in the **`bootstrap/providers.php`** file located in the root directory of your UnoPim application. Add your service provider class to the returned array:
 
 ```php
-<?php
-
+// bootstrap/providers.php
 return [
-    
-    // Other configuration options
-
-    'providers' => ServiceProvider::defaultProviders()->merge([
-        // Other service providers
-        Webkul\Example\Providers\ExampleServiceProvider::class,
-    ])->toArray(),
-    
-    // Other configuration options
+    // Other service providers
+    Webkul\Example\Providers\ExampleServiceProvider::class,
 ];
 ```
+
+::: warning Not `config/app.php`
+Since Laravel 11, providers are registered in `bootstrap/providers.php`; the `providers` array in `config/app.php` no longer exists. UnoPim 3.0 runs on Laravel 13, so a provider added to `config/app.php` is simply never loaded.
+:::
 
 ### Run the Commands
 

@@ -43,14 +43,14 @@ class ExampleServiceProvider extends ServiceProvider
         //...
         
         $this->app->concord->registerModel(
-            \Webkul\Product\Contracts\Product::class, \App\Http\Product::class
+            \Webkul\Product\Contracts\Product::class, \App\Models\Product::class
         );
     }
 }
 ```
 
 - Replace `\Webkul\Product\Contracts\Product::class` with the interface you wish to override.
-- Replace `\App\Http\Product::class` with the path to your custom model class that extends the core model you are overriding.
+- Replace `\App\Models\Product::class` with your custom model class, which must extend the core model you are overriding.
 
 ### Implement the Custom Model Class
 
@@ -59,7 +59,7 @@ Your custom model class (Product in this example) should extend the base core mo
 ```php
 <?php
 
-namespace App\Http;
+namespace App\Models;
 
 use Webkul\Product\Models\Product as ProductBaseModel;
 
@@ -69,7 +69,7 @@ class Product extends ProductBaseModel
 }
 ```
 
-Once registered, you can use dependency injection or other Laravel mechanisms to reference the interface(`\Webkul\Product\Contracts\Product::class`) throughout your application. Laravel's service container will automatically resolve your custom model implementation (`\App\Http\Product::class`) where the interface is referenced.
+Once registered, you can use dependency injection or other Laravel mechanisms to reference the interface(`\Webkul\Product\Contracts\Product::class`) throughout your application. Laravel's service container will automatically resolve your custom model implementation (`\App\Models\Product::class`) where the interface is referenced.
 
 By following this approach, you can effectively extend and override core models within UnoPim using Concord, maintaining modularity and flexibility in your application's architecture.
 

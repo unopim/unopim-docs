@@ -23,10 +23,11 @@ GET {{url}}/api/v1/rest/categories
 
 You can shape the result set with these query parameters:
 
-| Name      | Info                                         | Type   | Default |
-|-----------|----------------------------------------------|--------|---------|
-| `filters` | Filter by parent category (e.g., `master`)   | JSON   | N/A     |
-| `page`    | Page number to retrieve                      | Number | `1`     |
+| Name      | Info                                                                            | Type   | Default |
+|-----------|---------------------------------------------------------------------------------|--------|---------|
+| `limit`   | Records per request. Clamped to a maximum of `100`                              | Number | `10`    |
+| `page`    | Page number to retrieve                                                         | Number | `1`     |
+| `filters` | Filter by `code` (`=`, `IN`, `NOT IN`) or `parent` (`=`, e.g. `master`)         | JSON   | N/A     |
 
 #### Usage Examples
 

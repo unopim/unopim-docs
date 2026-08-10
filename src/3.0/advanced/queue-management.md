@@ -35,7 +35,7 @@ Basic queue management commands:
 
 ```bash
 # Start the queue worker
-php artisan queue:work --queue="system,completeness,default"
+php artisan queue:work --queue="system,completeness,publication,webhooks,default"
 
 # Restart queue workers (after code changes)
 php artisan queue:restart
@@ -76,12 +76,12 @@ php artisan queue:restart
 
 ## Completeness Queue
 
-New in v2.0.0, product completeness calculations are processed through a dedicated **`completeness`** queue. This ensures that completeness score recalculations do not block default or system queue workers, especially during bulk product updates.
+Product completeness calculations are processed through a dedicated **`completeness`** queue. This ensures that completeness score recalculations do not block default or system queue workers, especially during bulk product updates.
 
 When starting your queue worker, include the `completeness` queue alongside the default queues:
 
 ```bash
-php artisan queue:work --queue="system,completeness,default"
+php artisan queue:work --queue="system,completeness,publication,webhooks,default"
 ```
 
 If you are using Supervisor, update your configuration to include the `completeness` queue in the `--queue` argument (see [Configuring Supervisor](../introduction/configuring_supervisor.html)).
@@ -164,7 +164,7 @@ When a bulk completeness calculation finishes, all admin users with full permiss
 
 ## Pause, Resume, and Cancel Controls
 
-Import and export jobs in v2.0.0 support **pause**, **resume**, and **cancel** controls. These controls are available both in the admin UI and through the job management commands, allowing administrators to:
+Import and export jobs support **pause**, **resume**, and **cancel** controls. These controls are available both in the admin UI and through the job management commands, allowing administrators to:
 
 - **Pause** a running import or export job to temporarily halt processing without losing progress.
 - **Resume** a paused job to continue from where it left off.

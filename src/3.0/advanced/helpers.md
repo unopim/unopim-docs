@@ -188,41 +188,6 @@ To set the current currency in UnoPim using the `core()->setCurrentCurrency()` m
 core()->setCurrentCurrency()
 ```
 
-### Get current channel's currency model
-
-```php
-core()->getCurrentCurrency()
-```
-
-- **Get current channel's currency code.**
-
-To retrieve the current channel's currency model in UnoPim, you should use the `core()->getCurrentCurrency()` method. Here's how you can use it:
-
-```php
-core()->getCurrentCurrencyCode()
-```
-
-This function call retrieves the currency model of the current channel, allowing you to access attributes such as the currency code, symbol, exchange rates, and other relevant information related to currency management within your pim application.
-
-### Get exchange rates
-
-To get exchange rates in UnoPim, you typically need to specify the base currency and the target currency for which you want to retrieve the exchange rate. Here's how you can achieve this:
-
-```php
-core()->getExchangeRate()
-```
-
-### Converts price.
-
-The `core()->convertPrice()` function in UnoPim is used to convert a given amount from the base currency to a specified target currency. Here's how you can use it:
-
-```php
-$amount = 100; // Replace with the amount you want to convert
-$targetCurrencyCode = 'EUR'; // Replace with the target currency code
-
-$convertedAmount = core()->convertPrice($amount, $targetCurrencyCode);
-```
-
 ### Converts to base price
 
 The `core()->convertToBasePrice()` function in UnoPim is used to convert a given amount from a specified currency (target currency) to the base currency of the application. Here's how you can use it:
@@ -273,14 +238,6 @@ This method also give ability to encode the base currency symbol and its optiona
 core()->formatBasePrice($price, $isEncoded = false)
 ```
 
-### Checks if current date of the given channel (in the channel timezone) is within the range
-
-The `core()->isChannelDateInInterval($dateFrom = null, $dateTo = null)` function in UnoPim checks if the current date of the given channel (considering the channel's timezone) falls within the specified date range.
-
-```php
-core()->isChannelDateInInterval($dateFrom = null, $dateTo = null)
-```
-
 ### Get channel timestamp, timestamp will be builded with channel timezone settings.
 
 To retrieve a timestamp that adheres to a specific channel's timezone settings in UnoPim, you typically use the `core()->channelTimeStamp($channel)` function. Here's how you can implement it:
@@ -325,42 +282,6 @@ To retrieve all countries in UnoPim, you can use the `core()->countries()` funct
 core()->countries()
 ```
 
-### Get country name by code
-
-To get the country name by its ISO 3166-1 alpha-2 code in UnoPim, you can use the `core()->country_name($code)` function. Here's how you can use it
-
-```php
-core()->country_name($code)
-```
-
-This function retrieves the full name of the country based on its ISO 3166-1 alpha-2 code ($code). 
-
-### Retrieve all country states
-
-To retrieve all states (or provinces) of a specific country in UnoPim, you can use the `core()->states($countryCode)` function. Here's how you can use it
-
-```php
-core()->states($countryCode)
-```
-
-This function returns a collection of state objects for the specified country
-
-### Retrieve all grouped states by country code.
-
-In UnoPim, to retrieve all states grouped by country code, you can use the `core()->groupedStatesByCountries()` function. This function organizes states or provinces by their respective countries. Here's how you can use it:
-
-```php
-core()->groupedStatesByCountries()
-```
-
-### Get states by country code.
-
-To retrieve states (or provinces) by country code in UnoPim, you can use the `core()->findStateByCountryCode($countryCode, $stateCode = null)` function. Here’s how you can use it
-
-```php
-core()->findStateByCountryCode($countryCode = null, $stateCode = null)
-```
-
 ### Get guest customer group
 
 In UnoPim, to get the guest customer group, you can use the `core()->getGuestCustomerGroup()` function. Here's how you can use it
@@ -370,32 +291,6 @@ core()->getGuestCustomerGroup()
 ```
 
 This function retrieves the guest customer group configured in your UnoPim application. It returns an object representing the guest customer group
-
-### Is country required
-
-In UnoPim, to check if a country selection is required (typically in address forms or checkout processes), you can use the `core()->isCountryRequired()` function. Here's how you can use it:
-
-```php
-core()->isCountryRequired()
-```
-
-This function returns a boolean (true or false) indicating whether the country selection is mandatory
-
-### Is state required
-
-In UnoPim, to check if a state or province selection is required (typically in address forms or checkout processes), you can use the `core()->isStateRequired()` function. Here's how you can use it:
-
-```php
-core()->isStateRequired()
-```
-
-### Is postcode required.
-
-This function returns a boolean (true or false) indicating whether the postcode (or ZIP code) selection is mandatory. 
-
-```php
-core()->isPostCodeRequired()
-```
 
 ### Week range
 

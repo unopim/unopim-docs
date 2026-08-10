@@ -3,7 +3,7 @@
 ## Introduction
 
 Laravel includes Eloquent, an object-relational mapper (ORM) that makes it enjoyable to interact with your database. When using Eloquent, each database table has a corresponding "Model" that is used to interact with that table. In addition to retrieving records from the database table, Eloquent models allow you to insert, update, and delete records from the table as well. 
-To understand Models in detail, you can visit the Laravel documentation [here](https://laravel.com/docs/10.x/eloquent).
+To understand Models in detail, you can visit the Laravel documentation [here](https://laravel.com/docs/13.x/eloquent).
 
 We are using the [konekt/concord](https://packagist.org/packages/konekt/concord) package, which is an extension of Laravel. It helps in building modular Laravel applications.
 
@@ -17,7 +17,7 @@ Before creating the model class, it's essential to create two additional compone
 
 Laravel's Contracts are a set of interfaces that define the core services provided by the framework. For example, the **`Illuminate\Contracts\Queue\Queue`** contract defines the methods needed for queueing jobs, while the **`Illuminate\Contracts\Mail\Mailer`** contract defines the methods needed for sending an email.
 
-Each contract has a corresponding implementation provided by the framework. For example, Laravel provides a queue implementation with various drivers and a mailer implementation powered by SwiftMailer.
+Each contract has a corresponding implementation provided by the framework. For example, Laravel provides a queue implementation with various drivers and a mailer implementation powered by Symfony Mailer.
 
 All Laravel contracts are stored in their own GitHub repository. This provides a quick reference for all available contracts and a single, decoupled package that can be used by package developers.
 
@@ -147,7 +147,7 @@ Copy the following code into the **`Example.php`** file.
   }
   ```
 
-The `Example` model represents a example example in the application. It implements the `ExampleContract` and is part of the `Webkul\Example\Models` namespace.
+The `Example` model represents an example record in the application. It implements the `ExampleContract` and is part of the `Webkul\Example\Models` namespace.
 
 `public function author(): BelongsTo` This method defines a `BelongsTo` relationship between the Example model and the Admin model.
 

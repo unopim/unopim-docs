@@ -35,14 +35,14 @@ Add the following code to `acl.php`:
 return [
       [
          'key'   => 'example',
-         'name'  => 'example',
+         'name'  => 'example::app.acl.example',
          'route' => 'example.admin.index',
          'sort'  => 2
       ]
 ];
 ```
 
-In the above code, we have defined an array for each menu item with the parameters (key, name, route, and sort). You need to define the menus you want to include in the ACL here.
+Each array element defines one permission with a `key`, a `name`, the `route` it guards, and a `sort` order. The `name` must be a translation key, not a literal string, so the permission label follows the admin's locale. Keys are flat and dot-separated (`example`, `example.create`, `example.edit`, `example.delete`) — there is no nested `children` array.
 
 ## Merge ACL Configuration
 
@@ -63,7 +63,7 @@ Inside the `register` method of your service provider, use the mergeConfigFrom m
 
    use Illuminate\Support\ServiceProvider;
 
-   class StripeServiceProvider extends ServiceProvider
+   class ExampleServiceProvider extends ServiceProvider
    {
       /**
       * Register services.
@@ -87,10 +87,10 @@ This will merge the ACL configuration with the existing configuration.
 
 ### Clear Configuration Cache
 
-After making changes, clear the configuration cache to apply the latest ACL configuration:
+After making changes, clear the cached config so the new ACL entries are picked up:
 
 ```sh
-php artisan optimize
+php artisan optimize:clear
 ```
 
 ### Verify in Admin Panel

@@ -30,11 +30,17 @@ The admin panel now navigates SPA-style with AJAX and browser history, and a glo
 
 Working with the catalog is faster throughout: the product grid gains filters for category, completeness, dates, properties, and attribute values, plus saved grid views; catalog structures can be created from quick modals; a native category tree browser and lazy attribute-group loading keep large screens responsive; and products support quick export and asynchronous mass actions.
 
-Configuration moved into a config-driven [System Settings hub](../advanced/system-settings) with package extension hooks, and each admin may now set a personal catalog locale and default channel.
+Configuration moved into a config-driven [System Settings hub](../advanced/system-settings) with package extension hooks, and each admin may now set a personal catalog locale and default channel. New alongside it are an Appearance section for changing the admin logo and favicon, a System Information page covering the application, server, database, services, and installed packages, and an optional Gravatar integration.
+
+Product exports gained filters for channels, locales, currencies, attributes, families, status, completeness, date ranges, categories, identifiers, and attribute values. DataGrids gained cross-page "select all matching records" for mass actions. The login and recovery screens were rebuilt with Remember Me, AJAX password reset, and accessible toast notifications.
+
+### AI
+
+Magic AI moves to the `laravel/ai` package, with improved platform validation, model discovery, target-locale handling, and prompt setup. The AI Agent adds product-embedding indexing (`ai-agent:embeddings:index`) and channel-aware memory and token accounting — see [AI Agent Integration](../agentic/ai-agent).
 
 ### Platform & Developer
 
-The platform moves to Laravel 13, PHP 8.4.1, and Symfony 8 components, with Pest 5 / PHPUnit 13 for testing. Fresh Docker environments now default to native PostgreSQL support.
+The platform moves to Laravel 13, PHP 8.4.1, and Symfony 8 components, with Pest 5 / PHPUnit 13 for testing. Fresh Docker environments now default to native PostgreSQL support. Admin and installer screens no longer load TinyMCE or Inter from a CDN, so they work in environments without outbound internet access.
 
 For extension authors, 3.0 opens several new surfaces: the [Resource CRUD Kit](../packages/resource-crud-kit), the `SsoProvider` contract, variant resolver contracts, the publication `PayloadBuilder` / `PublicationGate` / type registry, and the webhook `EventRegistry`.
 
@@ -52,4 +58,8 @@ OAuth signing keys are now per-installation 4096-bit keys, which invalidates exi
 
 The breaking changes are summarized in the [Upgrade Guide](upgrade-guide#breaking-changes): the PHP/Laravel requirement bump, OAuth token invalidation, robot-user integration ownership, variant value storage, renamed admin URLs, the webhook module replacement, the Docker layout, the deprecated `configrable-products` alias, and removed classes.
 
-For the exhaustive list of every change, see the [CHANGELOG on GitHub](https://github.com/unopim/unopim/blob/master/CHANGELOG.md).
+### Fixes
+
+Alongside the features above, v3.0.0 ships a large batch of fixes. The ones most likely to affect you: Docker installation failing on a fresh clone, the pre-built image stack serving nothing, the committed OAuth signing keys being replaced by per-installation keys, and SSRF protection on Magic AI connection testing and model discovery.
+
+For the exhaustive list of every change, see the [CHANGELOG for v3.0.0](https://github.com/unopim/unopim/blob/v3.0.0/CHANGELOG.md).
