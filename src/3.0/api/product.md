@@ -341,7 +341,7 @@ A single-product `GET` returns an extra `associations` block alongside `values`.
 
 The block is returned only for a single product, never on the listing, so a paginated response does not run one query per row. The legacy `values.associations` SKU lists are unchanged.
 
-You may send the same structure when creating or updating a product, under a top-level `associations` key:
+The same block may be sent when creating or updating a product, under a top-level `associations` key. Note the one difference: a request identifies the linked product with `sku`, while a response returns it as `related_sku`.
 
 ```json
 {

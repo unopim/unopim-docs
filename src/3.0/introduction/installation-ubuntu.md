@@ -425,6 +425,12 @@ server {
         fastcgi_buffer_size 32k;
     }
 
+    # ACME HTTP-01 validation must stay reachable, so allow it before the dot-file deny
+    location ^~ /.well-known/acme-challenge/ {
+        allow all;
+        try_files $uri =404;
+    }
+
     # Deny access to hidden files
     location ~ /\. {
         deny all;

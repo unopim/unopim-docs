@@ -205,7 +205,7 @@ A single product `GET` now returns an `associations` block alongside the existin
 
 This is additive. The `values.associations` SKU lists a v2.x client already reads are unchanged, and the listing endpoint does not include the block at all — it is returned only for a single product, to keep list responses free of a per-row query.
 
-The same structure may be sent on create and update, under a top-level `associations` key:
+The same block may be sent on create and update, under a top-level `associations` key. The key naming differs by direction: write `sku`, read `related_sku`.
 
 ```json
 {

@@ -11,7 +11,7 @@ In UnoPim, events and listeners are organized in a clear and structured manner:
 
 This organization makes it easy to manage and locate the event-driven components of your application.
 
-To learn in detail about Controllers, you can visit the Laravel documentation [here](https://laravel.com/docs/13.x/events).
+To learn in detail about events, you can visit the Laravel documentation [here](https://laravel.com/docs/13.x/events).
 
 ## Creating an Event Class
 

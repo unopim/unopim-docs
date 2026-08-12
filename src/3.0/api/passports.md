@@ -53,6 +53,10 @@ GET {{url}}/api/v1/rest/passports
 ```
 :::
 
+::: warning Envelope differs from the rest of the API
+The passport endpoints are built on a Laravel resource collection, so they wrap pagination in `links` and `meta`. Every other list endpoint returns the counters at the top level instead — see [Response Structure Explained](./explanation). Do not share one pagination parser between them.
+:::
+
 ## Read a Product's Publications
 
 Every publication for one product, newest first, unpaginated.

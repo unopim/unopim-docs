@@ -55,7 +55,13 @@ The endpoint accepts these query parameters:
   ],
   "current_page": 1,
   "last_page": 1,
-  "total": 2
+  "total": 2,
+  "links": {
+    "first": "http://127.0.0.1:8000/api/v1/rest/association-types?page=1",
+    "last": "http://127.0.0.1:8000/api/v1/rest/association-types?page=1",
+    "next": null,
+    "prev": null
+  }
 }
 ```
 :::

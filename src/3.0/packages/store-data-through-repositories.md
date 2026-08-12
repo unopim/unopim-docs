@@ -23,7 +23,7 @@ Manually setting up repository files involves creating and organizing repository
 
 ### Setting Up ExampleRepository in Webkul/Example Package
 
-Start by creating a `Repositories` folder within the `Webkul/Example/src/` directory. This folder will house the repository class responsible for handling example-related database operations.Create a file named `ExampleRepository.php`. 
+Start by creating a `Repositories` folder within the `Webkul/Example/src/` directory. This folder will house the repository class responsible for handling example-related database operations. Create a file named `ExampleRepository.php`.
 
   ```
   └── packages

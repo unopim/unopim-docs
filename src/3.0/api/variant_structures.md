@@ -54,7 +54,16 @@ GET {{url}}/api/v1/rest/families/{code}/variant-structures
       "created_at": "2026-07-22T10:14:03.000000Z",
       "updated_at": "2026-07-22T10:14:03.000000Z"
     }
-  ]
+  ],
+  "current_page": 1,
+  "last_page": 1,
+  "total": 1,
+  "links": {
+    "first": "http://127.0.0.1:8000/api/v1/rest/families/apparel/variant-structures?page=1",
+    "last": "http://127.0.0.1:8000/api/v1/rest/families/apparel/variant-structures?page=1",
+    "next": null,
+    "prev": null
+  }
 }
 ```
 :::

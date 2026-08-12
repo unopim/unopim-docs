@@ -145,6 +145,14 @@ server {
     }
 
     # ──────────────────────────────────────────────
+    # ACME HTTP-01 validation (must precede the dot-file deny)
+    # ──────────────────────────────────────────────
+    location ^~ /.well-known/acme-challenge/ {
+        allow all;
+        try_files $uri =404;
+    }
+
+    # ──────────────────────────────────────────────
     # Security: Deny access to hidden files (.env, .git, etc.)
     # ──────────────────────────────────────────────
     location ~ /\. {
