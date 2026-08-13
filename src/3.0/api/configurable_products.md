@@ -25,7 +25,7 @@ You can shape the result set with these query parameters:
 
 | Name      | Info                                            | Type   | Default |
 |-----------|-------------------------------------------------|--------|---------|
-| `limit`   | The number of products to retrieve per request  | Number | `10`    |
+| `limit`   | Products per request. Clamped to a maximum of `100` | Number | `10`    |
 | `page`    | Page number to retrieve                         | Number | `1`     |
 | `filters` | Criteria to filter the records returned         | JSON   | N/A     |
 
@@ -139,8 +139,8 @@ The response returns a paginated list of configurable products in JSON format:
     "last_page": 1,
     "total": 1,
     "links": {
-        "first": "{{url}}/api/v1/rest/configrable-products?%3Flimit=10&page=1",
-        "last": "{{url}}/api/v1/rest/configrable-products?%3Flimit=10&page=1",
+        "first": "{{url}}/api/v1/rest/configurable-products?limit=10&page=1",
+        "last": "{{url}}/api/v1/rest/configurable-products?limit=10&page=1",
         "next": null,
         "prev": null
     }
@@ -475,6 +475,29 @@ A successful creation returns a confirmation message:
   "message": "Product created successfully"
 }
 ```
+:::
+
+## Delete a Configurable Product
+
+Deletes the configurable product identified by its SKU, along with its variants.
+
+```
+DELETE {{url}}/api/v1/rest/configurable-products/{sku}
+```
+
+**Headers** — use the [Common Headers](#common-headers).
+
+### Response
+
+```json
+{
+    "success": true,
+    "message": "Product deleted successfully."
+}
+```
+
+::: warning
+Deleting a configurable product removes every variant beneath it. There is no undo.
 :::
 
 ## Deprecated Alias <Badge type="warning" text="deprecated" />

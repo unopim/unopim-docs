@@ -44,6 +44,24 @@ The **AdminApi** package in UnoPim provides API functionalities for managing adm
 - **Configuration and Settings**
     - API access to platform settings, including languages, locales, and customization options.
 
+### AiAgent
+
+The **AiAgent** package provides an AI-powered conversational interface for managing PIM operations through natural language. It enables administrators to interact with product data, run enrichment tasks, and monitor data quality using an intelligent chat-based workflow.
+
+#### Key Features of the AiAgent Package
+
+* **AI Agent Chat** with 35 PIM-specific tools for product management, category operations, attribute handling, and data analysis
+* **Approval Queue** for reviewing and approving AI-suggested changes before they are applied to product data
+* **Auto-Enrichment** capabilities for automatically generating and improving product descriptions, translations, and attribute values
+* **Content Feedback** system allowing users to rate and refine AI-generated content
+* **Memory System** that retains conversation context and user preferences across sessions
+* **Quality Monitor** for tracking product data quality scores and identifying areas for improvement
+* **Token Tracking** to monitor AI usage and costs across providers and sessions
+
+### AppUrlGuard
+
+The **AppUrlGuard** package detects a mismatch between the configured `APP_URL` and the address the admin is actually being served from, and shows an interstitial rather than letting the panel load with broken asset and route URLs.
+
 ### Attribute
 
 The **Attribute** package in UnoPim handles all logic related to product attributes and attribute sets. This package allows you to define and organize product information effectively and customize data to enhance search and filtering capabilities.
@@ -98,11 +116,11 @@ The **Core** package serves as the foundation for various functionalities and ut
     - Provides utilities for tasks such as data manipulation, file handling, and date/time formatting.
     - Includes validation functions for input data, ensuring data integrity.
 
-### Datagrid
+### DataGrid
 
-The **Datagrid** package provides a solution for displaying and managing tabular data within the admin panel. It enables efficient data handling and enhances the user experience with configurable columns, filters, and sorting options.
+The **DataGrid** package provides a solution for displaying and managing tabular data within the admin panel. It enables efficient data handling and enhances the user experience with configurable columns, filters, and sorting options.
 
-#### Key Features of the Datagrid Package
+#### Key Features of the DataGrid Package
 
 - **Dynamic Data Presentation**
     - Allows administrators to configure columns, filters, and sorting for displaying product data in tables.
@@ -114,7 +132,7 @@ The **Datagrid** package provides a solution for displaying and managing tabular
 
 ### DataTransfer
 
-The **DataTransfer** package manages data imports and exports, facilitating bulk operations such as importing large volumes of product information. For more details, see the [DataTransfer documentation](/2.1/packages/data-transfer).
+The **DataTransfer** package manages data imports and exports, facilitating bulk operations such as importing large volumes of product information. For more details, see the [Data Transfer documentation](../packages/data-transfer).
 
 ### DebugBar
 
@@ -123,10 +141,6 @@ The **DebugBar** package includes essential tools for monitoring, analyzing, and
 ### ElasticSearch
 
 The **ElasticSearch** package integrates ElasticSearch functionalities into UnoPim, enabling advanced search capabilities and data indexing. It allows for efficient querying and retrieval of product information, enhancing the overall search experience.
-
-### FPC
-
-The **FPC (Full Page Cache)** package optimizes the platform’s performance by caching generated pages, reducing server load, and improving response times for administrators.
 
 ### HistoryControl
 
@@ -149,19 +163,9 @@ The **MagicAI** package integrates AI-based functionalities into UnoPim, offerin
 * **Database-backed credential management** for securely storing and managing API keys and provider configurations per platform
 * Platform-specific model discovery and validation
 
-### AiAgent
+### Measurement
 
-The **AiAgent** package provides an AI-powered conversational interface for managing PIM operations through natural language. It enables administrators to interact with product data, run enrichment tasks, and monitor data quality using an intelligent chat-based workflow.
-
-#### Key Features of the AiAgent Package
-
-* **AI Agent Chat** with 32+ PIM-specific tools for product management, category operations, attribute handling, and data analysis
-* **Approval Queue** for reviewing and approving AI-suggested changes before they are applied to product data
-* **Auto-Enrichment** capabilities for automatically generating and improving product descriptions, translations, and attribute values
-* **Content Feedback** system allowing users to rate and refine AI-generated content
-* **Memory System** that retains conversation context and user preferences across sessions
-* **Quality Monitor** for tracking product data quality scores and identifying areas for improvement
-* **Token Tracking** to monitor AI usage and costs across providers and sessions
+The **Measurement** package defines measurement families and their units, along with conversion rules and precision strategies, and binds them to measurement attributes. See [Measurements](../packages/measurements).
 
 ### Notification
 
@@ -171,10 +175,26 @@ The **Notification** package manages system notifications and alerts, enabling a
 
 The **Product** package in UnoPim manages all essential product information, including attributes, variants, and categorization. It allows administrators to create, update, and organize product data efficiently, supporting advanced configurations and real-time updates.
 
+### ProductPassport
+
+The **ProductPassport** package builds Digital Product Passports on top of Publication — admin-editable templates bound to attribute families, access tiers, QR carriers, and GS1 Digital Link aliases. See [Digital Product Passport](../advanced/digital-product-passport).
+
+### Publication
+
+The **Publication** package is the generic publishing engine: config-registered publication types, append-only per-locale versions, public rendering with ETags and tombstones, and the jobs that publish, withdraw, reinstate, and redact.
+
+### Resource
+
+The **Resource** package provides the CRUD kit for package developers: base controllers and reusable DataGrid and edit components that scaffold a full admin section with very little code. See [Resource CRUD Kit](../packages/resource-crud-kit).
+
+### Theme
+
+The **Theme** package holds the theme engine and view composition layer that lets packages register and override admin views.
+
 ### User
 
 The **User** package handles user management, including roles, permissions, and profiles for administrators, ensuring secure access and personalized experiences within the platform.
 
 ### Webhook
 
-The **Webhook** package manages product webhook configurations, including enabling or disabling webhook and handling product webhooks triggered by any product changes.
+The **Webhook** package manages webhook endpoints and their event subscriptions, signs deliveries with HMAC, and records a delivery log per endpoint. See [Webhooks](../packages/webhooks).

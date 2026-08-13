@@ -8,7 +8,7 @@ Assets in web development refer to files such as stylesheets, scripts, and image
 - **JavaScript**: JavaScript (JS) adds interactivity and dynamic behavior to web pages, enabling features like form validation, animations, and AJAX requests.
 - **Images**: Images enhance visual content, including logos, illustrations, and photographs, making web pages more engaging and informative.
 
-To learn in detail about Bundling Asset, you can visit the Laravel documentation [here](https://laravel.com/docs/10.x/frontend#bundling-assets).
+To learn in detail about Bundling Asset, you can visit the Laravel documentation [here](https://laravel.com/docs/13.x/frontend#bundling-assets).
 
 ## Directory Structure
 
@@ -81,18 +81,19 @@ Copy and paste the following code into your `package.json` file:
         "build": "vite build"
     },
     "devDependencies": {
-        "autoprefixer": "^10.4.14",
-        "axios": "^1.1.2",
-        "laravel-vite-plugin": "^0.7.2",
+        "autoprefixer": "^10.4.16",
+        "axios": "^1.6.4",
+        "laravel-vite-plugin": "^1.2.0",
         "postcss": "^8.4.23",
         "tailwindcss": "^3.3.2",
-        "vite": "^4.0.0",
-        "vue": "^3.2.47"
+        "vite": "^6.3.0",
+        "vue": "^3.5.13"
     },
     "dependencies": {
         "@vee-validate/i18n": "^4.9.1",
         "@vee-validate/rules": "^4.9.1",
-        "mitt": "^3.0.0",
+        "@vitejs/plugin-vue": "^5.0.0",
+        "mitt": "^3.0.1",
         "vee-validate": "^4.9.1",
         "vue-flatpickr": "^2.3.0"
     }
@@ -121,7 +122,8 @@ The `package.json` file includes the following:
 - **Dependencies:** These are essential packages required for the project to function, including:
     - `@vee-validate/i18n` Internationalization for VeeValidate.
     - `@vee-validate/rules` Validation rules for VeeValidate.
-    - `mitt` A tiny event emitter.
+    - `@vitejs/plugin-vue` Compiles single-file Vue components; required if your package ships any `.vue` file.
+    - `mitt` A tiny event emitter — UnoPim's admin uses it for the `$emitter` event bus.
     - `vee-validate` Form validation for Vue.js.
     - `vue-flatpickr` A Vue component for Flatpickr date picker.
 
@@ -131,6 +133,7 @@ Copy and paste the following code into your `vite.config.js` file:
 
 ```javascript
 import { defineConfig, loadEnv } from "vite";
+import vue from "@vitejs/plugin-vue";
 import laravel from "laravel-vite-plugin";
 import path from "path";
 
@@ -152,6 +155,8 @@ export default defineConfig(({ mode }) => {
         },
 
         plugins: [
+            vue(),
+
             laravel({
                 hotFile: "../../../public/example-vite.hot",
                 publicDirectory: "../../../public",

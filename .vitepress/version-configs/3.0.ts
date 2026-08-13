@@ -121,10 +121,8 @@ export default [
             ['agentic/ai-agent', 'AI Agent Integration'],
             ['agentic/magic-ai-platform', 'MagicAI Platform Management'],
             ['agentic/agent-skills', 'Agentic Skills'],
-            ['agentic/mcp-server', 'MCP Server'],
             ['agentic/building-integrations', 'Building an Integration with AI'],
             ['agentic/building-agent-tools', 'Building Custom Agent Tools'],
-            ['agentic/extending-mcp', 'Extending the MCP Bridge'],
             ['agentic/recipes', 'Agentic Recipes'],
         ])
     },
@@ -134,6 +132,7 @@ export default [
         collapsed: false,
         items: setVersionPrefix([
             ['api/whats-new-v3', "What's New in v3.0"],
+            ['api/migrating-your-client', 'Migrating an API Client'],
             ['api/configuration', 'Configuration'],
             ['api/authenticate', 'Authentication'],
             ['api/attribute', 'Attribute'],
@@ -146,9 +145,15 @@ export default [
             ['api/product', 'Product'],
             ['api/configurable_products', 'Configurable Products'],
             ['api/media', 'Media'],
+            ['api/association_types', 'Association Types'],
+            ['api/variant_structures', 'Variant Structures'],
+            ['api/passports', 'Digital Product Passports'],
             ['api/channel', 'Channel'],
             ['api/locales', 'Locales'],
             ['api/currency', 'Currency'],
+            ['api/explanation', 'Response Structure'],
+            ['api/getting-started-with-the-api', 'Getting Started'],
+            ['api/postman_collection', 'Postman Collection'],
         ])
     }
 ]

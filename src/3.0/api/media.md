@@ -109,9 +109,51 @@ The stored file path is returned so you can reference it in category data:
 ```
 :::
 
+## Swatch Media Upload
+
+Uploads a swatch image for an attribute option. The attribute's swatch type must be **Image**, or the request fails with `422`.
+
+```
+POST {{url}}/api/v1/rest/media-files/swatch
+```
+
+**Headers** — use the [Common Headers](#common-headers).
+
+The request takes these parameters:
+
+| Name             | Description                                                     | Type   |
+|------------------|-----------------------------------------------------------------|--------|
+| `file`           | The swatch image: `jpeg`, `png`, `jpg`, `webp`, or `svg`, max 2 MB | File   |
+| `code`           | Code of the attribute option the swatch belongs to               | String |
+| `attribute_code` | Code of the attribute that owns the option                       | String |
+
+### Response
+
+The stored path and its public URL come back on success:
+
+::: details Response
+```json
+{
+  "success": true,
+  "message": "Attribute option updated successfully.",
+  "data": {
+    "code": "red",
+    "swatch_value": "attribute_option/12/nEr4h2Kq….png",
+    "swatch_value_url": "https://example.com/storage/attribute_option/12/nEr4h2Kq….png"
+  }
+}
+```
+:::
+
+::: tip Never build the path yourself
+The stored filename is generated, not taken from the uploaded file. Always use the `swatch_value` returned here.
+:::
+
 ## Read Media <Badge type="tip" text="3.0" />
 
 Lists the file paths already stored for a product, category, or swatch. Media files are identified by query parameters, not path segments:
+
+Product media is scoped like any other attribute value. Pass `channel` and `locale` when the attribute is channel- or locale-scoped; omit them and the default channel and its default locale are used.
 
 ```
 GET {{url}}/api/v1/rest/media-files/product?sku=shirt-1&attribute=image
@@ -133,11 +175,15 @@ The matching file paths come back as a simple array:
 
 ## Delete Media <Badge type="tip" text="3.0" />
 
-Removes stored media using the same parameter scheme with the `DELETE` verb:
+Removes stored media using the same parameter scheme with the `DELETE` verb. The file is deleted from storage and the value cleared:
 
 ```
 DELETE {{url}}/api/v1/rest/media-files/product?sku=shirt-1&attribute=image
+DELETE {{url}}/api/v1/rest/media-files/category?code=apparel&category_field=banner
+DELETE {{url}}/api/v1/rest/media-files/swatch?code=red&attribute_code=color
 ```
+
+If no file is stored at that scope, the response is `404`.
 
 ### Response
 

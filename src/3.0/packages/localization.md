@@ -269,6 +269,18 @@ php artisan unopim:translations:check --package=Admin
 php artisan unopim:translations:check --locale=fr_FR --package=Admin
 ```
 
+### Coverage Gaps in Code
+
+Two checks compare the lang files against the source tree rather than against `en_US`:
+
+```bash
+# Keys referenced in code (trans/__/@lang) with no entry in the lang files
+php artisan unopim:translations:check --missing-in-code
+
+# Lang keys that no source file references any more
+php artisan unopim:translations:check --unused
+```
+
 ### Detailed Diagnostics
 
 ```bash
@@ -369,6 +381,7 @@ app(\Webkul\MagicAI\Repository\MagicAIPlatformRepository::class)->create([
 | DeepSeek | `deepseek` | DeepSeek models |
 | Azure OpenAI | `azure` | Azure-hosted OpenAI |
 | OpenRouter | `openrouter` | Multi-provider gateway |
+| Custom | `custom` | Any OpenAI-compatible `/chat/completions` endpoint |
 
 ### Translate Missing Keys
 
@@ -443,6 +456,8 @@ With `--fallback`:
 | `--empty-values` | — | Detect blank/empty values |
 | `--sort-check` | — | Verify key ordering matches `en_US` |
 | `--html-check` | — | Verify HTML tag consistency |
+| `--missing-in-code` | — | Keys used in code but absent from lang files |
+| `--unused` | — | Lang keys no source file references |
 
 ### Full Workflow Example
 

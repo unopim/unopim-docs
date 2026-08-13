@@ -8,6 +8,8 @@ If you are building or maintaining an API client, this page is your tour of ever
 
 We will start with the new write operations and media endpoints, move on to delta synchronization, and finish with the authentication changes and a deprecation you should plan for.
 
+If you are updating a client that already runs against v2.x, read [Migrating an API Client to v3.0](./migrating-your-client) as well — it covers the behaviour that changed underneath an existing integration: permission enforcement, error shapes, rate limits, and pagination bookkeeping.
+
 ## New Write Operations
 
 Catalog-structure resources gained the verbs they were missing. The table below lists each resource and the operations added in 3.0:
@@ -37,11 +39,15 @@ GET    /api/v1/rest/media-files/swatch?code=red&attribute_code=color
 
 ## Digital Product Passports
 
-Passports are fully manageable over the API under `/api/v1/rest/passports` — you may list them, read them per SKU, publish (the endpoint returns `202` and queues the work), withdraw, reinstate, and perform a GDPR redact. See [Digital Product Passport](../advanced/digital-product-passport#rest-api).
+Passports are fully manageable over the API under `/api/v1/rest/passports` — you may list them, read them per SKU, publish (the endpoint returns `202` and queues the work), withdraw, reinstate, and perform a GDPR redact. See [Digital Product Passports](./passports).
 
 ## Measurements
 
 Measurement families, units, and attribute bindings are fully manageable over the API — see [Measurements](../packages/measurements#rest-api).
+
+## Association Types and Variant Structures
+
+Custom association types and their per-link fields are managed at `/api/v1/rest/association-types`, and a family's variant structures at `/api/v1/rest/families/{code}/variant-structures`. See [Association Types](./association_types) and [Variant Structures](./variant_structures).
 
 ## Delta Synchronization
 

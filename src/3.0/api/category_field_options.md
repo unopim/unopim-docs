@@ -194,3 +194,5 @@ A successful deletion returns a confirmation message:
     "message": "Deleted successfully."
 }
 ```
+
+An unknown category field code or option code returns `404`. Deleting an option does not rewrite products that already store its value — clean those up before removing an option that is in use.

@@ -247,3 +247,7 @@ All publishing, bulk transitions and view counting run on the `publication` queu
 php artisan queue:work --queue=publication
 ```
 :::
+
+## REST API
+
+Passports are fully manageable over the REST API — list publications, read them per SKU, publish, withdraw, reinstate, and redact. See [Digital Product Passports](../api/passports) in the API reference.

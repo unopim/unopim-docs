@@ -317,7 +317,7 @@ DB_DATABASE=unopim
 DB_USERNAME=unopim
 DB_PASSWORD=your_secure_password
 
-CACHE_DRIVER=redis
+CACHE_STORE=redis
 QUEUE_CONNECTION=redis
 SESSION_DRIVER=redis
 
@@ -326,8 +326,7 @@ REDIS_PORT=6379
 
 ELASTICSEARCH_ENABLED=true
 ELASTICSEARCH_CONNECTION=default
-ELASTICSEARCH_HOST=127.0.0.1
-ELASTICSEARCH_PORT=9200
+ELASTICSEARCH_HOST=127.0.0.1:9200
 ```
 
 Generate the application key:
@@ -393,7 +392,17 @@ server {
     gzip_comp_level 5;
 
     # Static file caching
-    location ~* \.(jpg|jpeg|png|gif|ico|css|js|svg|woff|woff2|ttf|eot)$ {
+    # Dynamic routes rendered by PHP — these must precede the static rule
+    # below, which would otherwise 404 them.
+    location ^~ /cache/ {
+        try_files $uri /index.php?$query_string;
+    }
+
+    location ~ ^/p/[^/]+/carrier\.svg$ {
+        try_files $uri /index.php?$query_string;
+    }
+
+    location ~* \.(jpg|jpeg|png|gif|ico|css|js|svg|webp|map|woff|woff2|ttf|eot)$ {
         expires 30d;
         add_header Cache-Control "public, immutable";
         try_files $uri =404;
@@ -416,9 +425,20 @@ server {
         fastcgi_buffer_size 32k;
     }
 
+    # ACME HTTP-01 validation must stay reachable, so allow it before the dot-file deny
+    location ^~ /.well-known/acme-challenge/ {
+        allow all;
+        try_files $uri =404;
+    }
+
     # Deny access to hidden files
     location ~ /\. {
         deny all;
+    }
+
+    # Never serve executable or active content from uploads
+    location ~* ^/storage/.*\.(php[0-9]?|phtml|pht|phar|html?|shtml|xhtml)$ {
+        return 404;
     }
 
     # Deny PHP execution in writable directories

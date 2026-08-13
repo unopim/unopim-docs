@@ -23,12 +23,14 @@ GET {{url}}/api/v1/rest/products
 
 You can shape the result set with these query parameters:
 
-| Name                | Info                                            | Type    | Default |
-|---------------------|-------------------------------------------------|---------|---------|
-| `limit`             | The number of products to retrieve per request  | Number  | `10`    |
-| `page`              | Page number to retrieve                         | Number  | `1`     |
-| `filters`           | Criteria to filter the records returned         | JSON    | N/A     |
-| `with_completeness` | Returns completeness scores for the product     | Boolean | false   |
+| Name                | Info                                                              | Type    | Default |
+|---------------------|-------------------------------------------------------------------|---------|---------|
+| `limit`             | Products per request. Clamped to a maximum of `100`                | Number  | `10`    |
+| `page`              | Page number to retrieve (page mode only)                          | Number  | `1`     |
+| `filters`           | Criteria to filter the records returned                           | JSON    | N/A     |
+| `with_completeness` | Returns completeness scores for the product                       | Boolean | `false` |
+| `pagination_type`   | `page` (default) or `search_after` for cursor pagination          | String  | `page`  |
+| `search_after`      | Cursor from the previous cursor-mode response                     | Number  | N/A     |
 
 ### Usage Examples
 
@@ -78,6 +80,11 @@ You can shape the result set with these query parameters:
      - **Operators:**
        - `IN`: Matches any of the family types in the provided list.
        - `NOT IN`: Excludes any of the family types in the provided list.
+
+  6. **updated_at** and **created_at** <Badge type="tip" text="3.0" />
+     - **Operators:** `>`, `>=`, `<`, `<=`, and `BETWEEN` (which expects exactly two values).
+     - Values are date strings, for example `2026-08-01 00:00:00`. An unparseable value returns `422`.
+     - These combine with AND, so a delta filter always narrows the result set. Pair them with `pagination_type=search_after` for incremental syncs — see [Delta Synchronization](./whats-new-v3#delta-synchronization).
 
 #### Example Usage
 
@@ -314,6 +321,39 @@ The full product record is returned:
 }
 ```
 :::
+
+## Product Associations <Badge type="tip" text="3.0" />
+
+A single-product `GET` returns an extra `associations` block alongside `values`. It covers every association type the installation defines — the three built-in sections and any custom type — and carries each link's `additional_data`:
+
+```json
+{
+    "associations": {
+        "related_products": [
+            { "related_sku": "100PS", "additional_data": null }
+        ],
+        "spare_parts": [
+            { "related_sku": "FILTER-9", "additional_data": { "quantity": 2 } }
+        ]
+    }
+}
+```
+
+The block is returned only for a single product, never on the listing, so a paginated response does not run one query per row. The legacy `values.associations` SKU lists are unchanged.
+
+The same block may be sent when creating or updating a product, under a top-level `associations` key. Note the one difference: a request identifies the linked product with `sku`, while a response returns it as `related_sku`.
+
+```json
+{
+    "associations": {
+        "spare_parts": [
+            { "sku": "FILTER-9", "additional_data": { "quantity": 2 } }
+        ]
+    }
+}
+```
+
+Each type you submit replaces that type's links entirely, and types you omit are left alone. `additional_data` is validated against the fields defined on that association type — an invalid value fails the request with `422` before anything is written. A SKU that does not resolve is skipped, and a product cannot be associated with itself. See [Configurable Associations](../packages/configurable-associations) for defining types.
 
 ## Create a Product
 

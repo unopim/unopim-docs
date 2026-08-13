@@ -11,7 +11,7 @@ In UnoPim, events and listeners are organized in a clear and structured manner:
 
 This organization makes it easy to manage and locate the event-driven components of your application.
 
-To learn in detail about Controllers, you can visit the Laravel documentation [here](https://laravel.com/docs/10.x/events).
+To learn in detail about events, you can visit the Laravel documentation [here](https://laravel.com/docs/13.x/events).
 
 ## Creating an Event Class
 
@@ -51,7 +51,7 @@ class EventServiceProvider extends ServiceProvider
     {
         //...
 
-        Event::listen('catalog.attribute.create.after', 'Webkul\Catalog\Listeners\Attribute@handleAttributeCreated');
+        Event::listen('catalog.attribute.create.after', 'App\Listeners\AttributeListener@handleAttributeCreated');
     }
 }
 ```
@@ -63,9 +63,9 @@ In UnoPim, events are typically fired before and after the execution of CRUD ope
 For example, you might have events fired during product creation, updating, or deletion. Here’s an example of firing events before and after saving a product:
 
 ```php
-namespace Webkul\Catalog\Repositories;
+namespace Webkul\Product\Repositories;
 
-use Webkul\Catalog\Contracts\Product;
+use Webkul\Product\Contracts\Product;
 
 class ProductRepository extends Repository
 {
@@ -199,7 +199,7 @@ Open the `EventServiceProvider.php` file located in the `Providers` directory of
 Inside the `boot()` method of `EventServiceProvider.php`, use the `Event::listen` method to register your listener. This method takes the event name and a callback function or a class method that will handle the event.
 
 ```php
-Event::listen('catalog.product.create.after', 'Webkul\Notification\Listeners\Product@createNotification');
+Event::listen('catalog.product.create.after', 'App\Listeners\ProductListener@createNotification');
 ```
 
 By registering the listener, you have associated the **`createNotification`** function with the **`catalog.product.create.after`** event. Whenever this event is triggered, the specified function will be executed.

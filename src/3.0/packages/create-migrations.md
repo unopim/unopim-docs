@@ -6,7 +6,7 @@ Migrations are like version control for your database, allowing your team to def
 
 UnoPim leverages the Laravel Schema facade to offer database-agnostic support for creating and manipulating tables across various database systems supported by Laravel. Migrations in UnoPim utilize this powerful feature to manage database schema changes efficiently.
 
-To understand Migrations in detail, you can visit the Laravel documentation [here](https://laravel.com/docs/10.x/migrations).
+To understand Migrations in detail, you can visit the Laravel documentation [here](https://laravel.com/docs/13.x/migrations).
 
 Let's create a new migration file for your application. We will assume that the package name is "**Example**". Follow these steps:
 

@@ -13,8 +13,8 @@ packages
           └── src
               ├── Config
               │   ├── acl.php                   # Access control list configurations
-              │   ├── exporter.php              # configuration the exporter
-              │   ├── importer.php              # configuration the importer
+              │   ├── exporters.php             # exporter configuration
+              │   ├── importers.php             # importer configuration
               │   └── menu.php                  # Side menu configuration
               ├── Console
               │   └── Commands                  # Console commands for scheduling imports/exports

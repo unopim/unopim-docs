@@ -21,6 +21,20 @@ GET {{url}}/api/v1/rest/families
 
 **Headers:** use the [Common Headers](#common-headers).
 
+The endpoint accepts these query parameters:
+
+| Name      | Info                                                        | Type   | Default |
+|-----------|-------------------------------------------------------------|--------|---------|
+| `limit`   | Records per request. Clamped to a maximum of `100`          | Number | `10`    |
+| `page`    | Page number to retrieve                                     | Number | `1`     |
+| `filters` | Filter by `code` with the `=`, `IN`, or `NOT IN` operators  | JSON   | N/A     |
+
+For example:
+
+```http
+GET {{url}}/api/v1/rest/families?limit=50&filters={"code":[{"operator":"IN","value":["accessories","default"]}]}
+```
+
 ### Response
 
 The response contains the list of attribute families with pagination metadata:

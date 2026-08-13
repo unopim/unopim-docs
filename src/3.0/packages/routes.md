@@ -6,7 +6,7 @@ Routes in Laravel define the entry points of your application, mapping HTTP requ
 
 Routes can be defined to handle various HTTP methods (GET, POST, PUT, DELETE, etc.) and can include parameters and route parameters to capture dynamic values from the URL. Laravel's routing system is powerful and flexible, allowing for easy RESTful routing and middleware application to routes.
 
-For detailed information on Laravel routes, including how to define routes, use route parameters, and apply middleware, refer to the [Laravel Documentation on Routing](https://laravel.com/docs/10.x/routing).
+For detailed information on Laravel routes, including how to define routes, use route parameters, and apply middleware, refer to the [Laravel Documentation on Routing](https://laravel.com/docs/13.x/routing).
 
 ## Create a New Route
 
@@ -38,7 +38,7 @@ Create `routes.php` for admin-specific routes. Add the following code to this fi
 use Illuminate\Support\Facades\Route;
 use Webkul\Example\Http\Controllers\ExampleController;
 
-Route::group(['middleware' => ['web', 'admin'], 'prefix' => config('app.admin_url')], function () {
+Route::group(['middleware' => ['admin'], 'prefix' => config('app.admin_url')], function () {
     /**
      * Example routes for admin.
      */
@@ -51,7 +51,11 @@ Route::group(['middleware' => ['web', 'admin'], 'prefix' => config('app.admin_ur
 
 #### Explanation
 
-Routes inside `routes.php` are prefixed with the admin URL (`config('app.admin_url')`) and apply the `web` and `admin` middleware groups. Adjust the middleware and URL prefix according to your application's configuration.
+Routes inside `routes.php` are prefixed with the admin URL (`config('app.admin_url')`) and apply the `admin` middleware group.
+
+::: warning Use `['admin']`, not `['web', 'admin']`
+The `admin` group already includes the session, CSRF, and cookie middleware that `web` provides. Listing both runs that stack twice, which breaks CSRF token handling on admin forms. Every core route group in UnoPim uses `['admin']` alone.
+:::
 
 ## Loading Routes
 

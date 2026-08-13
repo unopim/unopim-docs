@@ -8,74 +8,87 @@ Laravel offers multiple approaches to validate incoming data in your application
 
 This method is easy to use and integrates seamlessly with Laravel's request lifecycle. By leveraging Laravel's built-in validation rules and custom validation logic, you can ensure your application handles data validation efficiently and effectively.
 
-For detailed information about validation in Laravel, refer to the [Laravel documentation](https://laravel.com/docs/10.x/validation).
+For detailed information about validation in Laravel, refer to the [Laravel documentation](https://laravel.com/docs/13.x/validation).
 
 ### Usage
 
-Laravel provides multiple ways to handle validation in your application, ensuring your data meets specified criteria before processing it. Here are the two most common methods:
+UnoPim validates every write through a **FormRequest** class. Inline `$request->validate()` calls are not used in core and should not be used in packages: a FormRequest keeps rules out of the controller, gives you an `authorize()` hook, and is reusable across the store and update paths.
 
-### Using the validate Method on Request
+### Creating a FormRequest
 
-The simplest and most common way to validate incoming data is to use the `validate` method available on incoming HTTP requests. Here’s an example of how you can use this method to validate data in a controller method:
-
-```php
-/**
- * Store a new example example.
- */
-public function store(Request $request)
-{
-    $validated = $request->validate([
-        'title' => 'required|unique:examples|max:255',
-        'body'  => 'required',
-    ]);
-}
-```
-
-In this example, the validate method takes an array of validation rules. If the validation fails, a ValidationException is thrown, and the user is redirected back to the previous page with error messages.
-
-### Using the Validator Facade
-
-For more complex validation scenarios, you can manually create a validator instance using the `Validator` facade. This approach gives you more control over the validation process and is useful for custom validation messages and handling errors in a more customized way.
-
-Here’s an example of how to use the Validator facade:
+Put the class in your package's `Http/Requests` folder:
 
 ```php
 <?php
- 
-namespace App\Http\Controllers;
-    
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-    
-class ExampleController extends Controller
+
+namespace Webkul\Example\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+use Webkul\Core\Rules\Code;
+
+class ExampleRequest extends FormRequest
 {
     /**
-     * Store a new example example.
+     * Determine if the user is authorized to make this request.
      */
-    public function store(Request $request)
+    public function authorize(): bool
     {
-        $rules = [
-            'name'    => 'required',
-            'email'   => 'required|email',
-            'message' => 'required|max:250',
-        ];
+        return bouncer()->hasPermission('example.create');
+    }
 
-        $customMessages = [
-            'required' => 'The :attribute field is required.',
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, mixed>
+     */
+    public function rules(): array
+    {
+        return [
+            'code'        => ['required', 'unique:examples,code', new Code],
+            'title'       => ['required', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'status'      => ['boolean'],
         ];
+    }
 
-        $this->validate($request, $rules, $customMessages);
+    /**
+     * Custom messages for the rules above.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'code.unique' => trans('example::app.validation.code-taken'),
+        ];
     }
 }
 ```
 
-- `Defining Rules` The $rules array contains the validation rules for each field.
-- `Custom Messages` The $customMessages array allows you to define custom validation messages.
-- `Creating Validator` The Validator::make method creates a validator instance.
-- `Handling Failure` If validation fails, the user is redirected back with the validation errors and input data.
+Messages must come from translation files — never hardcode the English string, or the error will not follow the admin's locale.
 
-Both methods provide a robust way to ensure data integrity and user input validation in your Laravel application.
+### Using It in the Controller
+
+Type-hint the request. Laravel resolves it, runs the rules before your method body, and returns a `422` with the error bag when they fail:
+
+```php
+use Webkul\Example\Http\Requests\ExampleRequest;
+
+public function store(ExampleRequest $request): JsonResponse
+{
+    $example = $this->exampleRepository->create($request->validated());
+
+    return new JsonResponse([
+        'message' => trans('example::app.examples.create-success'),
+    ]);
+}
+```
+
+`$request->validated()` returns only the keys that passed a rule, which keeps unexpected input out of a mass-assignment call.
+
+### Custom Rules
+
+For validation that repeats across requests, write a rule class rather than a closure. UnoPim ships several you can reuse — `Webkul\Core\Rules\Code` for entity codes, and `Webkul\Core\Rules\FileMimeExtensionMatch` for uploads where the extension must match the real MIME type.
 
 ## Validation Using Vue
 
@@ -91,102 +104,15 @@ UnoPim already includes the VeeValidate v4 library, so there is no need to insta
 
 ### Configuration
 
-UnoPim comes with pre-configured settings for `vee-validate`. You can find the configuration in the following path: `unopim/packages/Webkul/Admin/src/Resources/assets/js/app.js`.
+UnoPim ships pre-configured `vee-validate` settings in `packages/Webkul/Admin/src/Resources/assets/js/plugins/vee-validate.js`, registered from `app.js`. The plugin:
 
-```js
-/**
- * This will track all the images and fonts for publishing.
- */
-import.meta.glob(["../images/**", "../fonts/**"]);
+- registers every rule from `@vee-validate/rules` globally,
+- registers UnoPim's own rules — `phone`, `address`, `decimal`, and `required_if`,
+- registers the `VForm`, `VField`, and `VErrorMessage` components,
+- loads the `@vee-validate/i18n` message catalogue for each supported locale, so validation errors appear in the admin's language,
+- and validates on blur, input, and change.
 
-/**
- * Main vue bundler.
- */
-import { createApp } from "vue/dist/vue.esm-bundler";
-
-/**
- * We are defining all the global rules here and configuring
- * all the `vee-validate` settings.
- */
-import { configure, defineRule } from "vee-validate";
-import { localize } from "@vee-validate/i18n";
-import en from "@vee-validate/i18n/dist/locale/en.json";
-import * as AllRules from '@vee-validate/rules';
-
-/**
- * Registration of all global validators.
- */
-Object.keys(AllRules).forEach(rule => {
-    defineRule(rule, AllRules[rule]);
-});
-
-/**
- * This regular expression allows phone numbers with the following conditions:
- * - The phone number can start with an optional "+" sign.
- * - After the "+" sign, there should be one or more digits.
- *
- * This validation is sufficient for global-level phone number validation. If
- * someone wants to customize it, they can override this rule.
- */
-defineRule("phone", (value) => {
-    if (!value || !value.length) {
-        return true;
-    }
-
-    if (!/^\+?\d+$/.test(value)) {
-        return false;
-    }
-
-    return true;
-});
-
-defineRule("decimal", (value, { decimals = '*', separator = '.' } = {}) => {
-    if (value === null || value === undefined || value === '') {
-        return true;
-    }
-
-    if (Number(decimals) === 0) {
-        return /^-?\d*$/.test(value);
-    }
-
-    const regexPart = decimals === '*' ? '+' : `{1,${decimals}}`;
-    const regex = new RegExp(`^[-+]?\\d*(\\${separator}\\d${regexPart})?([eE]{1}[-]?\\d+)?$`);
-
-    return regex.test(value);
-});
-
-defineRule("required_if", (value, { condition = true } = {}) => {
-    if (condition) {
-        if (value === null || value === undefined || value === '') {
-            return false;
-        }
-    }
-
-    return true;
-});
-
-defineRule("", () => true);
-
-configure({
-    /**
-     * Built-in error messages and custom error messages are available. Multiple
-     * locales can be added in the same way.
-     */
-    generateMessage: localize({
-        en: {
-            ...en,
-            messages: {
-                ...en.messages,
-                phone: "This {field} must be a valid phone number",
-            },
-        },
-    }),
-
-    validateOnBlur: true,
-    validateOnInput: true,
-    validateOnChange: true,
-});
-```
+Because the rules are global, a Blade control only needs the `rules` attribute — no imports or per-component setup.
 
 ### Examples
 
@@ -274,4 +200,18 @@ defineRule(
         return regex.test(value);
     }
 );
+```
+
+- `required_if` Makes a field required only when a condition you pass is true — useful for fields that appear conditionally in a form.
+
+```javascript
+defineRule("required_if", (value, { condition = true } = {}) => {
+    if (condition) {
+        if (value === null || value === undefined || value === '') {
+            return false;
+        }
+    }
+
+    return true;
+});
 ```

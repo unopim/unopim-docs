@@ -193,17 +193,23 @@ The `gd` extension must be compiled with JPEG, PNG, and WebP support to avoid is
 
 Open your **`php.ini`** file and modify the following settings.
 
-- **memory_limit**: Set the **`memory_limit`** directive to **`4G`** or higher to ensure sufficient memory allocation for the application.
+- **memory_limit**: `512M` is enough for serving the admin panel — it is what the shipped Docker image uses. Raise it for the CLI (`/etc/php/8.4/cli/php.ini`), where imports, exports, and reindexing run: `2G` or more on large catalogs.
 
-- **max_execution_time**: Adjust the **`max_execution_time`** directive to **`360`** or higher. This value determines the maximum time (in seconds) a script is allowed to run. Increasing this value ensures that longer operations, such as import/export processes, can be completed successfully.
+- **max_execution_time**: `120` seconds covers admin requests. Long-running work belongs on the queue rather than in a web request, so raise this only if you deliberately run imports through the browser.
 
 - **date.timezone**: Set the **`date.timezone`** directive to your specific timezone. For example, **`Asia/Kolkata`**. This ensures that date and time-related functions work accurately based on the specified timezone.
 
 ```ini
-memory_limit = 4G
-max_execution_time = 360
-date.timezone = Asia/Kolkata <- Change this to your own timezone.
+memory_limit = 512M           ; 2G or more for the CLI php.ini
+max_execution_time = 120
+upload_max_filesize = 200M
+post_max_size = 200M
+date.timezone = Asia/Kolkata  ; change this to your own timezone
 ```
+
+::: tip Keep the two limits in step
+`upload_max_filesize` and `post_max_size` must be at least as large as the web server's own limit (`client_max_body_size` on Nginx, `LimitRequestBody` on Apache), or large media and import files are rejected by PHP after the web server has already accepted them.
+:::
 
 ::: tip Remember to restart your web server
 Whenever you make changes to the PHP configuration file, be sure to restart Apache or NGINX to apply the modifications.
@@ -213,10 +219,14 @@ Whenever you make changes to the PHP configuration file, be sure to restart Apac
 
 ### Redis
 
-Redis is recommended for cache, session storage, and queue processing. UnoPim's `.env.docker` defaults to Redis on all three.
+Redis is recommended for cache, session storage, and queue processing. UnoPim's `.env.docker` uses Redis for the cache and the queue; sessions keep Laravel's default driver unless you set one.
 
 - **Version**: Redis 7.x (or newer)
-- **Use cases**: queue driver (`QUEUE_CONNECTION=redis`), cache (`CACHE_DRIVER=redis`), sessions (`SESSION_DRIVER=redis`)
+- **Use cases**: queue driver (`QUEUE_CONNECTION=redis`), cache (`CACHE_STORE=redis`), sessions (`SESSION_DRIVER=redis`)
+
+::: warning `CACHE_DRIVER` no longer exists
+Laravel renamed the variable to `CACHE_STORE`. A leftover `CACHE_DRIVER` line in your `.env` is ignored, and the cache silently falls back to the default store.
+:::
 
 The `database` driver is supported as a fallback but is slower under load. The `sync` driver should be used for development only.
 
@@ -241,7 +251,7 @@ UnoPim supports the following database servers:
 
 - **MySQL**: Version 8.0.32 or higher is recommended for optimal performance and compatibility.
 
-- **MariaDB**: Version 10.3 or higher is recommended for optimal performance and compatibility.
+- **MariaDB**: Version 10.6 or higher. MariaDB is not covered by UnoPim's CI matrix, which tests MySQL 8 and PostgreSQL 16 — prefer one of those for production.
 
 - **PostgreSQL**: Version 16 is recommended, fully supported, and CI-tested. New Docker installations use PostgreSQL by default as of UnoPim v3.0.
 

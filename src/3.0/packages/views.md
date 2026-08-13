@@ -6,7 +6,7 @@ Views in Laravel are responsible for separating the application's logic from the
 
 By using views, you can create reusable templates and components, making your code more maintainable and easier to understand. Blade templates allow you to use control structures like loops and conditionals, as well as to include other templates, which helps to keep your views organized and modular.
 
-To learn in detail about Views, you can visit the Laravel documentation [here](https://laravel.com/docs/10.x/views).
+To learn in detail about Views, you can visit the Laravel documentation [here](https://laravel.com/docs/13.x/views).
 
 Here's a basic example of a Blade template:
 
@@ -21,8 +21,8 @@ To organize the views for our example package, we need to set up a specific dire
 #### Create the `views` Folder
    - Inside the `Resources` folder, create another folder named `views`.
 
-#### Create the `example` Folders
-   - Inside the `views` folder, create two folders named `example`.
+#### Create the `example` Folder
+   - Inside the `views` folder, create a folder named `example`.
 
 The updated directory structure will look like this:
 
@@ -42,18 +42,19 @@ Below is an example of basic HTML content that you can add to the example `index
 
 #### `index.blade.php` in the `example` Folder
 
-```html
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Example</title>
-    </head>
-    <body>
-        <h1>Example</h1>
-        <p>Welcome to the example section for managing example content.</p>
-    </body>
-</html>
+```blade
+<x-admin::layouts>
+    <x-slot:title>
+        @lang('example::app.examples.index.title')
+    </x-slot>
+
+    <x-admin::layouts.page-header :title="trans('example::app.examples.index.title')" />
+
+    <p>@lang('example::app.examples.index.description')</p>
+</x-admin::layouts>
 ```
+
+Admin pages wrap their content in the `x-admin::layouts` component rather than emitting their own `<html>` document — that is what gives the page the sidebar, header, dark-mode handling, and the unsaved-changes bar. Titles and copy come from translation keys, never literal strings.
 
 ## Load Views from Package
 
@@ -110,17 +111,17 @@ In Laravel applications, views are typically rendered from controller methods us
 ```php
   <?php
 
-  namespace Webkul\Example\Http\Controllers\Shop;
+  namespace Webkul\Example\Http\Controllers;
 
   use Webkul\Example\Http\Controllers\Controller;
-  use Webkul\Example\Repository\ExampleRepository;
+  use Webkul\Example\Repositories\ExampleRepository;
 
   class ExampleController extends Controller
   {
       /**
        * Create a controller instance.
        * 
-       * @param  \Webkul\Example\Repository\ExampleRepository  $exampleRepository
+       * @param  \Webkul\Example\Repositories\ExampleRepository  $exampleRepository
        * @return void
        */
       public function __construct(protected ExampleRepository $exampleRepository)

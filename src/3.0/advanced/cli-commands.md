@@ -11,7 +11,7 @@ UnoPim provides a set of Artisan commands for managing your PIM installation. Th
 | `php artisan unopim:install:demo-data` | Seed the sample catalog (`--force` to re-seed, `--scale=large` for a 2,000-product performance dataset) |
 | `php artisan unopim:version` | Display the current UnoPim version |
 | `php artisan unopim:publish` | Publish UnoPim assets and config (`--force` to overwrite) |
-| `php artisan unopim:user:create` | Create an admin user (`--name`, `--email`, password, UI locale, timezone, admin flag) |
+| `php artisan unopim:user:create` | Create a user (`--name=`, `--email=`, `--password=`, `--ui_locale=`, `--timezone=`, `--admin`) |
 | `php artisan unopim:images:purge-unused` | Remove unused images from storage (`--dry-run` to preview) |
 | `php artisan unopim:translations:check` | Audit translation files across all packages against the `en_US` canonical set (`--locale=`, `--package=`) |
 
@@ -27,7 +27,7 @@ UnoPim provides a set of Artisan commands for managing your PIM installation. Th
 
 | Command | Description |
 |---------|-------------|
-| `php artisan unopim:completeness:recalculate` | Recalculate product completeness (`--family=`, `--product=`, or all) |
+| `php artisan unopim:completeness:recalculate` | Recalculate product completeness (`--family=`, `--product=`, repeatable `--products=`, or `--all`) |
 | `php artisan unopim:variants:strip-redundant` | <Badge type="tip" text="3.0" /> Remove child attribute values that duplicate an inherited ancestor value. Dry-run by default — pass `--apply` to write, `--product=` to scope |
 | `php artisan unopim:variants:resync` | <Badge type="tip" text="3.0" /> Rebuild derived data (completeness, search index) for variant subtrees (`--product=`, `--all`) |
 | `php artisan measurement:recalculate` | <Badge type="tip" text="3.0" /> Rebuild the stored base value of every product measurement from current family definitions (`--family=`, `--chunk=200`) |
@@ -65,7 +65,7 @@ See [Digital Product Passport](digital-product-passport) for the preset config s
 | Command | Description |
 |---------|-------------|
 | `php artisan ai-agent:embeddings:index` | <Badge type="tip" text="3.0" /> Queue (re)indexing of product embeddings into the AI vector store (`--since=`, `--batch=`) |
-| `php artisan ai-agent:quality-monitor` | Scan the catalog for data-quality issues (`--channel=`, `--locale=`) |
+| `php artisan ai-agent:quality-monitor` | Scan the catalog for data-quality issues (`--channel=default`, `--locale=en_US`, `--limit=500`) |
 | `php artisan ai-agent:cleanup` | Clean up temporary AI files (`--days=7`, `--dry-run`) |
 
 ## Scheduled Commands
@@ -91,7 +91,7 @@ Make sure the scheduler is running:
 Most heavy work is queued. A production worker should listen on every queue in use:
 
 ```bash
-php artisan queue:work --queue="system,completeness,publication,default"
+php artisan queue:work --queue="system,completeness,publication,webhooks,default"
 ```
 
 The `publication` queue (new in 3.0) carries all Digital Product Passport publishing, bulk transitions, and view-count aggregation. See [Queue Management](queue-management) for Supervisor configuration.

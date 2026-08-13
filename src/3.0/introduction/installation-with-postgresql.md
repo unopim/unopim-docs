@@ -54,7 +54,7 @@ To install UnoPim using Composer, use the following steps:
 - If you have downloaded the zip file from the Git repository, extract the files into your desired directory and run the following command to set up the project:
 
     ```sh
-    composer create-project
+    composer install
     ```
 
 - Otherwise, to directly install UnoPim, run the following command in your terminal:
@@ -73,38 +73,45 @@ To install UnoPim using Composer, use the following steps:
     During the installation process, if the **`.env`** file doesn't exist, the installer will prompt you to provide the necessary information.
     :::
 
-    ::: info Default Port for PostgreSql
+    ::: info Default port for PostgreSQL
     The default port for PostgreSQL is 5432. If you have configured a different port during installation, make sure to update it accordingly in env or when prompted for database port.
     :::
 
     - Follow the prompts during the installation process to provide the following details:
 
     ```
-    - Please Enter the APP URL :
-    - Please Enter the Application Name :
-    - Please select the default locale :
-    - Please enter the default currency :
-    - Please choose the Allowed Locales for your channels :
-    - Please choose the Allowed Currencies for your channels :
-    - Please select the Database Connection :
-    - Please enter the Database Host :
-    - Please enter the Database Port Number :
-    - Please enter the Database Name :
-    - Please enter the Database Prefix :
-    - Please enter the Database Username :
-    - Please enter the Database Password :
+    - Please provide the name of the application
+    - Please provide the application URL
+    - Please select the default application locale
+    - Please select the default currency
+    - Please choose the allowed locales for your channels
+    - Please choose the allowed currencies for your channels
+    - Please select the database connection
+    - Please enter the database host
+    - Please enter the database port
+    - Please enter the database name
+    - Please enter the database prefix
+    - Please enter your database username
+    - Please enter your database password
+    - Do you want to enable Elasticsearch?
+      (if yes: connection, host or Cloud ID, user, password or API key, index prefix)
+    - Select optional packages to install
     ```
 
     ::: info Database Prefix (`DB_PREFIX`)
     The **Database Prefix** is optional. If you provide one, the installer validates and trims the value before applying it, so leading/trailing whitespace is removed automatically. As of UnoPim v2.1.0 this also prevents a double table prefix bug (for example tables being created as `wk_wk_channels`). Leave the prompt blank if you do not need a table prefix.
     :::
 
-    - For Create your admin credentials:
+    - You will then be asked to create your admin credentials:
     ```
-    - Enter the Name of Admin User :
-    - Enter the Email address of the Admin User :
-    - Configure the Password for admin user :
+    - Set the Name for Administrator
+    - Provide Email of Administrator
+    - Input a Password for Administrator
     ```
+
+    ::: tip Command options
+    `unopim:install` accepts `--skip-env-check`, `--skip-admin-creation`, `--with-demo-data`, and `--with-packages=` (comma-separated: `dam`, `shopify`, `bagisto`).
+    :::
 ## Install Using GUI Installer
 
 To install UnoPim using our GUI installer, you can follow any of the following methods:
@@ -136,7 +143,7 @@ To install UnoPim using our GUI installer, you can follow any of the following m
 
 4. Run the following command:
     ```sh
-    composer create
+    composer install
     ```
 
 5. Configure your HTTP server to point to the `public/` directory of the project.
@@ -150,7 +157,7 @@ To install UnoPim using our GUI installer, you can follow any of the following m
 ::: warning Important Prerequisites
 Make sure your system meets these requirements:
 - Composer is installed on your system
-- PHP >= 8.2
+- PHP >= 8.4.1
 - Required PHP extensions are enabled
 - Proper directory permissions are set
 :::
@@ -185,8 +192,8 @@ Follow these steps to install UnoPim on macOS:
    brew install composer
    ```
 
-5. **Install PostgreSql**:
-   To install PostgreSql, run the following command:
+5. **Install PostgreSQL**:
+   To install PostgreSQL, run the following command:
    ```sh
    brew install postgresql@16
    ```
@@ -201,11 +208,11 @@ Follow these steps to install UnoPim on macOS:
      ```sh
      composer create-project unopim/unopim
      ```
-  - Chnage directory to project root directory
+  - Change directory to the project root:
     ```sh
      cd unopim
     ```
-3. **Configure Environment(optional)** :
+3. **Configure the environment (optional)**:
    - Copy the `.env.example` file to `.env`
    ```sh
    cp .env.example .env

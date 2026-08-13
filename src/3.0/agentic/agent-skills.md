@@ -120,8 +120,8 @@ When your request matches a skill's description — for example, "add a credenti
 
 Alongside the skills, the repository ships an `AGENTS.md` that establishes the foundation rules every agent must follow when touching an UnoPim codebase. The critical conventions:
 
-- **Table prefix** — all tables use the `wk_` prefix (e.g. `wk_products`); reference unprefixed names in `DB::table()` (Laravel adds the prefix).
-- **Migration folder** — package migrations live in `Database/Migration/` (singular, no `s`).
+- **Table prefix** — tables are declared unprefixed (`products`, `categories`). An installation may opt into a prefix with `DB_PREFIX`, which defaults to empty, so always reference the unprefixed name in `DB::table()` and let the query builder apply the prefix.
+- **Migration folder** — package migrations live in `src/Database/Migrations/`.
 - **Route middleware** — use `['admin']` only, never `['web', 'admin']`.
 - **Models with history** — implement `PresentableHistoryInterface` and use `HistoryTrait`.
 - **Controllers return JSON** — store/update/delete return `JsonResponse` with `redirect_url` and `message`.
@@ -133,7 +133,7 @@ Alongside the skills, the repository ships an `AGENTS.md` that establishes the f
 - **ACL config** — flat arrays, no nested `children`.
 - **No hardcoded strings** — all user-facing text via `trans('package::file.key')`, propagated to all supported locales.
 
-The file also pins the mandatory development pipeline: write Pest tests → run Laravel Pint → run Playwright E2E for UI flows → verify translations with `php artisan unopim:translations:check`.
+The file also pins the mandatory development pipeline: write Pest tests → run Laravel Pint → run Larastan → run Playwright E2E for UI flows → verify translations with `php artisan unopim:translations:check`.
 
 ---
 
@@ -165,5 +165,5 @@ Step-by-step, opinionated guidance the agent should follow ...
 Keep skills **focused and specific**: a sharp `description` ensures the agent activates the skill at the right moment, and a focused body keeps the loaded context small. Large skills can be split into `@`-tagged reference sections that the agent pulls in only when needed.
 
 ::: tip
-The same `SKILL.md` format is reused by the [MCP Server](./mcp-server.html) — drop a `SKILL.md` into `.ai/skills/` and the MCP bridge auto-registers it as an executable tool, no code required.
+The same `SKILL.md` format works for skills you write yourself — drop a new directory alongside the others and your agent picks it up, no code required.
 :::

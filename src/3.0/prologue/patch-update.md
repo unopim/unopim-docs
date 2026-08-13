@@ -2,10 +2,10 @@
 
 ## Overview
 
-Use this guide as the repeatable checklist for applying patch releases within the **2.1.x line** — for example `2.1.0 → 2.1.1` or any future `2.1.x` release. These releases are backwards compatible: no breaking API changes, no PHP or database engine bumps, and no `bootstrap/app.php` rewrites.
+Use this guide as the repeatable checklist for applying patch releases within the **3.0.x line** — for example `3.0.0 → 3.0.1` or any future `3.0.x` release. These releases are backwards compatible: no breaking API changes, no PHP or database engine bumps, and no `bootstrap/app.php` rewrites.
 
-- Moving up to the **v2.1.0** release from v2.0.x for the first time? Follow the version-specific [Upgrade Guide](upgrade-guide) instead — it lists the exact migrations, queue jobs, and configuration changes that release introduced.
-- Upgrading across a **major version** (for example `1.x → 2.x`)? Use the [2.0.x Upgrade Guide](/2.0/prologue/upgrade-guide) to reach v2.0.x first, then move up to v2.1.0.
+- Moving up to **v3.0.0** from v2.1.x for the first time? Follow the [Upgrade Guide](upgrade-guide) instead — v3.0.0 is a major release with breaking changes, and that guide lists the migrations, queues, and configuration changes it introduces.
+- Upgrading across an older major version (for example `1.x → 2.x`)? Use the [2.0.x Upgrade Guide](/2.0/prologue/upgrade-guide) to reach v2.0.x, then the [2.1 Upgrade Guide](/2.1/prologue/upgrade-guide), and only then move to v3.0.0.
 
 ::: tip
 Always read the [release notes](https://github.com/unopim/unopim/releases) for the target version before applying. Even a patch release may include a new migration, queue, or config key that requires action.
@@ -16,7 +16,13 @@ Always read the [release notes](https://github.com/unopim/unopim/releases) for t
 Even for a patch update, take a database snapshot and archive your project files. Restore is faster than debugging a partial update.
 
 ```bash
+# MySQL
 mysqldump -u your_db_user -p your_db_name > unopim_pre_patch_backup.sql
+
+# PostgreSQL
+pg_dump -U your_db_user your_db_name > unopim_pre_patch_backup.sql
+
+# Project files
 tar -czf unopim_pre_patch_files.tar.gz /path/to/unopim
 ```
 
@@ -39,18 +45,16 @@ php artisan queue:restart
 ```bash
 cd /path/to/unopim
 git fetch --tags
-git checkout v2.1.1   # replace with the target 2.1.x tag
-```
-
-### Composer-based installs
-
-```bash
-composer update unopim/core --with-dependencies
+git checkout v3.0.1   # replace with the target 3.0.x tag
 ```
 
 ### Zip / tarball installs
 
 Download the new release archive, extract it next to your existing install, and copy `.env` and `storage/` into the new directory — the same pattern as a major upgrade, just without breaking changes.
+
+::: tip
+UnoPim is distributed as an application (`unopim/unopim`), not as a library you require into your own project, so a patch update means replacing the application code — there is no single Composer package to bump. `composer create-project unopim/unopim` installs a fresh copy; the steps above update an existing one.
+:::
 
 ## 4. Reinstall Dependencies
 
@@ -103,6 +107,7 @@ Check the release notes — only required when an index mapping changed.
 
 ```bash
 php artisan unopim:product:index
+php artisan unopim:category:index
 ```
 
 ## 9. Restart Services
@@ -117,25 +122,38 @@ sudo supervisorctl start unopim-worker
 
 ## Docker Patch Update
 
-For Docker-based installs the flow collapses into a few commands:
+The flow depends on which stack you run — see [Installation with Docker](../introduction/installation-docker) for the file layout.
+
+### Published image stack (`compose.yaml`)
+
+Pull the new images and re-create the containers:
+
+```bash
+cd /path/to/unopim
+docker compose pull
+docker compose up -d
+docker compose exec unopim php artisan migrate --force
+docker compose exec unopim php artisan optimize:clear
+docker compose exec unopim php artisan queue:restart
+```
+
+### Development stack built from a checkout (`compose.dev.yaml`)
+
+Check out the target tag and rebuild:
 
 ```bash
 cd /path/to/unopim
 git fetch --tags
-git checkout v2.1.1   # replace with the target 2.1.x tag
-docker compose build
-docker compose up -d
-docker compose exec unopim-fpm php artisan migrate --force
-docker compose exec unopim-fpm php artisan optimize:clear
-docker compose exec unopim-fpm php artisan queue:restart
+git checkout v3.0.1   # replace with the target 3.0.x tag
+docker compose -f compose.dev.yaml up -d --build
+docker compose -f compose.dev.yaml exec unopim-fpm php artisan migrate --force
+docker compose -f compose.dev.yaml exec unopim-fpm php artisan optimize:clear
+docker compose -f compose.dev.yaml exec unopim-fpm php artisan queue:restart
 ```
 
-For the Docker Hub setup, simply pull the new image:
-
-```bash
-docker compose -f docker-compose.hub.yml pull
-docker compose -f docker-compose.hub.yml up -d
-```
+::: warning A bare `docker compose` no longer builds
+Since v3.0.0, `docker compose up` in a clone resolves `compose.yaml` and pulls published images. Building from your checkout requires `-f compose.dev.yaml`.
+:::
 
 ---
 
@@ -147,8 +165,11 @@ If a patch update breaks your environment, restore the previous codebase and dat
 # Restore files
 tar -xzf unopim_pre_patch_files.tar.gz -C /
 
-# Restore database
+# Restore database — MySQL
 mysql -u your_db_user -p your_db_name < unopim_pre_patch_backup.sql
+
+# Restore database — PostgreSQL
+psql -U your_db_user your_db_name < unopim_pre_patch_backup.sql
 
 # Restart services
 sudo systemctl restart php8.4-fpm nginx

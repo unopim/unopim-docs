@@ -4,13 +4,37 @@
 
 To ensure optimal user experience in **UnoPim** we have created several separate Blade components for the Admin packages. Now in **`UnoPim`** we have also merged the vue.js code inside the blade component to improve application performance.
 
-Additionally, To learn in detail about blade components, you can visit the Laravel documentation [here](https://laravel.com/docs/10.x/blade#introduction).
+Additionally, To learn in detail about blade components, you can visit the Laravel documentation [here](https://laravel.com/docs/13.x/blade#introduction).
 
 - Here are the list of Blade component that is available in **`UnoPim`**.
 
 ## Component
 
 components are reusable Blade components used to build the Admin.
+
+## Component Index
+
+The admin theme ships **159 Blade components** under `packages/Webkul/Admin/src/Resources/views/components/`. Before writing markup, look for an existing component — hand-rolled HTML drifts from the design system and misses the dark-mode, accessibility, and Vue wiring the components already carry.
+
+| Family | What it covers |
+|---|---|
+| `form` | Control groups, labels, controls, errors, the AJAX form wrapper, the unsaved-changes bar |
+| `layouts` | Page shell, page headers, edit headers, tabs, side rail, the with-history layout, anonymous layout |
+| `datagrid` | The grid itself plus its filters, toolbar, and row templates |
+| `table` | Plain tables: `thead`, `tbody`, `tr`, `th`, `td` |
+| `modal`, `drawer`, `dropdown`, `accordion`, `tabs` | Overlays and disclosure |
+| `media` | `image` and `gallery` upload controls, media cards and fields |
+| `tree` | The category tree browser |
+| `flat-picker` | Date and datetime pickers |
+| `tinymce` | The self-hosted rich-text editor |
+| `shimmer` | Loading placeholders, one per component family |
+| `flash-group`, `pagination`, `search`, `breadcrumbs`, `badge`, `card` | Common page furniture |
+| `history` | The audit-trail panel used by the with-history layout |
+| `catalog`, `categories`, `product`, `products`, `associations`, `bulkedit`, `data-transfer`, `settings`, `sso`, `graphs`, `list` | Domain-specific building blocks |
+
+The sections below document the components you will reach for most often. For anything else, read the component's `@props` block — that is the authoritative prop list.
+
+---
 
 ### Accordion
 
@@ -430,7 +454,7 @@ Let's assume you want to use the **`tagging`** component. You can call it like t
 <x-admin::form.control-group>
   <!-- Label for the Select Element -->
     <x-admin::form.control-group.label>
-        Tags
+        @lang('example::app.admin.form.tags')
     </x-admin::form.control-group.label>
     @php
         // Example data for existing tags
@@ -577,7 +601,7 @@ Let's assume you want to use the **`flat-picker`** component. You can call it li
 
 The `datagrid` component in UnoPim applications provides a flexible and customizable data grid interface for displaying tabular data. It includes features such as `sorting`, `filtering`, `pagination`, and `mass actions` to manage data efficiently.
 
-You can customize the appearance of the `DataGrid` by referring to the [DataGrid Customization](https://devdocs.unopim.com/2.x/packages/datagrid.html#datagrid-customization) documentation.
+You can customize the appearance of the `DataGrid` by referring to the [DataGrid](./datagrid) documentation.
 
 Let's assume you want to use the **`datagrid`** component. You can call it like this.
 
@@ -630,26 +654,6 @@ Let's assume you want to use the **`shimmer`** You can call it like this.
 ```html
 <!-- shimmer -->
 <x-admin::shimmer.datagrid />
-```
-
-### Quantity Changer
-
-The Quantity Changer component, provides a simple interface for users to increase or decrease a quantity value.
-
-| Props          | Type    | Default Value | Description                       |
-| -------------- | ------- | ------------- | --------------------------------- |
-| **`name`**     | String  | `''`          | The name attribute for the hidden input field. |
-| **`value`**    | Number  | `1`           | The initial quantity value.       |
-
-Let's assume you want to use the **`Quantity Changer`** component on shop. You can call it like this.
-
-```html
-<!-- Quantity changer -->
-<x-admin::quantity-changer
-    name="quantity"
-    value="1"
-    class="w-max gap-x-4 rounded-l px-4 py-1"
-/>
 ```
 
 ### Table
@@ -787,33 +791,35 @@ Let's assume you want to use the **`tree`** component, You can call it like this
 
 ### Media(Image/Video)
 
-The Media component in UnoPim provides a user interface for managing and displaying images/videos, allowing users to upload, edit, and delete images.:
+The media components render UnoPim's upload controls. Use `media.image` for a single file and `media.gallery` for a gallery attribute, which accepts images and videos alike.
 
-| Props               | Type        | Default Value | Description                                                      |
-|---------------------|-------------|---------------|------------------------------------------------------------------|
-| **`name`**          | `String`    |               | The name of the input field.                                      |
-| **`allow-multiple`** | `Boolean`   | `false`       | Whether to allow uploading multiple images.                       |
-| **`show-placeholders`** | `Boolean` | `true`        | Whether to show placeholder images when no images are uploaded.   |
-| **`uploaded-images`** | `Array`     | `[]`          | Array of uploaded images.                                         |
-| **`uploaded-videos`** | `Array`     | `[]`          | Array of uploaded videos.                                         |
-| **`width`**         | `String`    | `'100%'`      | Width of the image container.                                     |
-| **`height`**        | `String`    | `'auto'`      | Height of the image container.                                    |
+**`media.gallery`**
 
-Let's assume you want to use the **`Image/Video`** component, You can call it like this.
+| Props                    | Type      | Default Value              | Description                                                    |
+|--------------------------|-----------|----------------------------|----------------------------------------------------------------|
+| **`name`**               | `String`  | `'images'`                 | The name of the input field.                                    |
+| **`allow-multiple`**     | `Boolean` | `false`                    | Whether to allow uploading multiple files.                      |
+| **`show-placeholders`**  | `Boolean` | `false`                    | Whether to show placeholder tiles when nothing is uploaded.     |
+| **`uploaded-images`**    | `Array`   | `[]`                       | Already-stored files.                                           |
+| **`width`** / **`height`** | `String` | `'120px'`                  | Size of each tile.                                              |
+| **`accepted-types`**     | `Array`   | `['image/*', 'video/*']`   | MIME types the picker accepts.                                  |
+| **`accepted-extensions`**| `Array`   | `[]`                       | Restrict to specific extensions.                                |
+| **`instructions`**       | `String`  | `''`                       | Helper text shown under the field.                              |
+
+**`media.image`** takes the same `name`, `uploaded-images`, `width`, `height`, and `instructions`, plus `show-suggestions`, `show-upload-hint`, `object-fit`, `responsive`, `has-context`, and `full-preview`.
 
 ```html
-<!-- Image Component -->
-<x-admin::media.images
-    name="images"
-    allow-multiple="true"
-    show-placeholders="true"
-    :uploaded-images="$product->images"
+<!-- Single image -->
+<x-admin::media.image
+    name="image"
+    :uploaded-images="$uploadedImages"
 />
 
-<!-- Video Component -->
-<x-admin::media.videos
-    name="videos[files]"
+<!-- Gallery: images and videos -->
+<x-admin::media.gallery
+    name="images"
     :allow-multiple="true"
-    :uploaded-videos="$product->videos"
+    :show-placeholders="true"
+    :uploaded-images="$uploadedImages"
 />
 ```

@@ -71,14 +71,20 @@ To control which fields should or should not be tracked in the history, you can 
 To display the history of a model, use the following layout in the model's edit page:
 
 ```blade
-<x-admin::layouts.with-history>
+<x-admin::layouts.with-history :history-id="$attributeFamily->id">
     <x-slot:entityName>
         attributeFamily
     </x-slot>
+
+    <x-slot:title>
+        @lang('example::app.admin.edit.title')
+    </x-slot>
+
+    {{-- form content --}}
 </x-admin::layouts.with-history>
 ```
 
-The `entityName` slot defines the history tag to group the related records.
+The `entityName` slot carries the history tag that groups the related records, and `history-id` is the record whose trail the History tab loads — it falls back to `request()->id` when omitted. The component also accepts `active-tab`, `general-url`, `history-url`, and `tab-items` for pages with more tabs than General and History. See [Layouts](./layouts#edit-pages-with-history).
 
 ## Handling Translatable Fields
 

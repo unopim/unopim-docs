@@ -30,7 +30,7 @@ To ensure that the side menu includes the necessary configuration, follow these 
 Open `menu.php` and define your menu items using an array structure. Each item should include:
 
 - `key` Unique identifier for the menu item.
-- `name` Display name of the menu item.
+- `name` Translation key for the label — never a literal string, so the menu follows the admin's locale.
 - `route` Laravel route name corresponding to the menu item.
 - `sort` Optional. Sort order for menu items.
 - `icon` Optional. CSS class for an icon associated with the menu item.
@@ -41,7 +41,7 @@ Open `menu.php` and define your menu items using an array structure. Each item s
 return [
     [
         'key'   => 'examples',
-        'name'  => 'Examples',
+        'name'  => 'example::app.components.layouts.sidebar.menu.examples',
         'route' => 'example.menu.index',
         'sort'  => 2,
         'icon'  => 'icon-example',

@@ -2,7 +2,7 @@
 
 ## Introduction
 
-UnoPim v2.0.0 introduced the **AI Agent** — a conversational interface for managing your product catalog using natural language. Built on [prism-php/prism](https://github.com/prism-php/prism) for multi-provider AI tool calling, the agent provides 38+ PIM tools that let you search, create, update, delete, bulk edit, export, categorize, generate content and images, plan multi-step workflows, and more — all from a single chat widget.
+UnoPim ships an **AI Agent** — a conversational interface for managing your product catalog using natural language. Built on [`laravel/ai`](https://github.com/laravel/ai) for multi-provider AI tool calling, the agent provides 35 PIM tools that let you search, create, update, delete, bulk edit, export, categorize, generate content and images, plan multi-step workflows, and more — all from a single chat widget.
 
 The agent is accessible from any page in the admin panel via the floating chat widget. It supports Server-Sent Events (SSE) streaming for real-time progress feedback and persists conversation history in the database.
 
@@ -16,12 +16,12 @@ The AI Agent package (`Webkul\AiAgent`) follows UnoPim's modular Concord archite
 packages/Webkul/AiAgent/
 ├── src/
 │   ├── Chat/               # Agent runner, tool registry, tools, context
-│   │   ├── AgentRunner.php       # Prism-based orchestration loop
+│   │   ├── AgentRunner.php       # laravel/ai orchestration loop
 │   │   ├── ChatContext.php        # Immutable request-scoped DTO
 │   │   ├── ToolRegistry.php       # Singleton tool collection
 │   │   ├── Contracts/PimTool.php  # Interface all tools implement
 │   │   ├── Concerns/             # Reusable traits (ACL, approval)
-│   │   └── Tools/                # 38+ individual tool classes
+│   │   └── Tools/                # 35 individual tool classes
 │   ├── Http/Controllers/   # Chat, Conversation, Approval, Dashboard
 │   ├── Jobs/               # Auto-enrichment, translation, batch jobs
 │   ├── Console/Commands/   # Quality monitor, temp cleanup
@@ -30,7 +30,7 @@ packages/Webkul/AiAgent/
 │   ├── Repositories/       # Data access layer
 │   ├── Services/           # ProductWriterService, EnrichmentService, etc.
 │   └── Providers/          # Service provider, tool registration
-├── Database/Migration/     # Database schema
+├── Database/Migration/     # Database schema (legacy singular folder in this package)
 └── Routes/                 # Admin routes
 ```
 
@@ -39,9 +39,9 @@ packages/Webkul/AiAgent/
 1. User sends a message via the chat widget (POST to `/chat/stream`).
 2. `ChatController` builds an immutable `ChatContext` DTO from the request.
 3. The session lock is released before the LLM call to prevent blocking other requests.
-4. `AgentRunner` constructs a Prism request with all registered tools and the system prompt.
+4. `AgentRunner` constructs a `laravel/ai` request with all registered tools and the system prompt.
 5. The LLM autonomously decides which tools to call based on user intent.
-6. Prism executes each tool, feeds results back, and iterates until a final text response.
+6. `laravel/ai` executes each tool, feeds results back, and iterates until a final text response.
 7. SSE events stream progress (tool invocations) and the final response to the client.
 8. Token usage is recorded for budget tracking.
 
@@ -96,13 +96,13 @@ Every tool must implement this contract:
 ```php
 namespace Webkul\AiAgent\Chat\Contracts;
 
-use Prism\Prism\Tool;
+use Laravel\Ai\Contracts\Tool;
 use Webkul\AiAgent\Chat\ChatContext;
 
 interface PimTool
 {
     /**
-     * Return a configured Prism Tool instance.
+     * Return a configured laravel/ai Tool instance.
      */
     public function register(ChatContext $context): Tool;
 }
@@ -110,7 +110,7 @@ interface PimTool
 
 ### Available Tools
 
-The agent ships with 38+ tools organized by category:
+The agent ships 35 tools organized by category:
 
 | Category | Tools |
 |----------|-------|
@@ -188,7 +188,7 @@ To add a new tool, create a class that implements `PimTool` and register it with
 ```php
 namespace App\AiAgent\Tools;
 
-use Prism\Prism\Tool;
+use Laravel\Ai\Contracts\Tool;
 use Webkul\AiAgent\Chat\ChatContext;
 use Webkul\AiAgent\Chat\Concerns\ChecksPermission;
 use Webkul\AiAgent\Chat\Contracts\PimTool;
@@ -406,32 +406,6 @@ TranslateProductValuesJob::dispatch(
     channel: $context->channel,
 );
 ```
-
----
-
-## AI Translation Command
-
-The `unopim:translate` Artisan command provides a CLI alternative for bulk translating product attribute values across all configured locales using AI providers.
-
-### Running the Command
-
-```bash
-php artisan unopim:translate
-```
-
-### When to Use
-
-While the Auto-Translation feature (above) handles translations automatically when products are created or updated through the agent, the `unopim:translate` command is designed for:
-
-- **Retroactive translation** — Translate existing products that were created before auto-translation was enabled.
-- **Bulk operations** — Translate large batches of products without going through the chat interface.
-- **CI/CD pipelines** — Integrate translation into automated deployment or data migration workflows.
-
-The command uses the same AI provider configured under **Magic AI** settings and translates the same locale-dependent fields (`name`, `description`, `meta_title`, `meta_description`, `meta_keywords`).
-
-::: tip
-This command is especially useful after a large CSV import where products were loaded in a single locale and need to be translated to all active locales in bulk.
-:::
 
 ---
 
@@ -698,7 +672,7 @@ Task planning and decomposition.
 
 ### ACL on Every Tool
 
-All 38+ tools check user permissions via the `ChecksPermission` trait before executing write operations. Read-only tools like `SearchProducts` check `catalog.products`, while write tools check specific permissions like `catalog.products.create` or `catalog.products.edit`.
+All tools check user permissions via the `ChecksPermission` trait before executing write operations. Read-only tools like `SearchProducts` check `catalog.products`, while write tools check specific permissions like `catalog.products.create` or `catalog.products.edit`.
 
 ### Rate Limiting
 
@@ -830,11 +804,9 @@ eventSource.addEventListener('done', (e) => {
 
 ## Friendly Error Messages
 
-::: info Added in v2.1.0
-The `PrismErrorResolver` (`Webkul\AiAgent\Chat\PrismErrorResolver`) translates raw provider and Prism exceptions into clear, user-friendly messages before they reach the chat widget.
-:::
+The `AiErrorResolver` (`Webkul\AiAgent\Chat\AiErrorResolver`) translates raw provider exceptions into clear, user-friendly messages before they reach the chat widget.
 
-When a chat request fails, `AgentRunner` catches the exception and passes it to `PrismErrorResolver::resolve()`. This is the single public method on the class, and it returns an array with three keys:
+When a chat request fails, `AgentRunner` catches the exception and passes it to `AiErrorResolver::resolve()`. This is the single public method on the class, and it returns an array with three keys:
 
 | Key | Description |
 |-----|-------------|
@@ -847,12 +819,13 @@ The resolver maps common failure types to meaningful responses:
 | Exception | HTTP Status | Message |
 |-----------|-------------|---------|
 | `DecryptException` | 422 | The stored API key is corrupted and must be re-entered (typically after an `APP_KEY` change) |
-| `PrismRateLimitedException` | 429 | The provider rate limit was hit, including retry timing when the provider supplies it |
-| `PrismProviderOverloadedException` | 503 | The provider is temporarily overloaded |
-| `PrismRequestTooLargeException` | 413 | The request exceeds the provider's size limits |
+| `RateLimitedException` | 429 | The provider rate limit was hit, including retry timing when the provider supplies it |
+| `ProviderOverloadedException` | 503 | The provider is temporarily overloaded |
+| `InsufficientCreditsException` | 402 | The provider account needs topping up; the provider-tagged message is passed through |
+| A request that exceeds the provider's size limit | 413 | Detected from the HTTP status, since `laravel/ai` raises a plain `RequestException` here |
 | Unrecognised exception | 500 | The raw upstream message, or a generic fallback when none is available |
 
-Before returning, the resolver also cleans the message — it extracts the structured `error.message` field from JSON error bodies, collapses whitespace, strips Prism's empty `Details: []` suffix, and truncates to 500 characters.
+Before returning, the resolver also cleans the message — it extracts the structured `error.message` field from JSON error bodies, collapses whitespace, strips the empty `Details: []` suffix, and truncates to 500 characters.
 
 The `is_known` flag lets `AgentRunner` log appropriately: recognised provider errors are logged as warnings, while unexpected exceptions are logged as errors. Either way, only the friendly `message` is streamed to the client via the SSE `error` event.
 

@@ -155,9 +155,9 @@ class Importer extends AbstractImporter
 
 Now that the importer is created and the logic is defined, you need to register the importer so that UnoPim recognizes and can use it.
 
-### Step 1: Create `importer.php`
+### Step 1: Create `importers.php`
 
-In the `Config` directory of your plugin, create a new configuration file named `importer.php`. This file will contain the configuration for your importers.
+In the `Config` directory of your plugin, create a new configuration file named `importers.php`. This file will contain the configuration for your importers.
 
 Directory structure:
 
@@ -168,12 +168,12 @@ Directory structure:
             ├── ...
             └── src
                 └── Config
-                    └── importer.php
+                    └── importers.php
 ```
 
 ### Step 2: Define the Importer Configuration
 
-In the `importer.php` file, define the configuration for your importer, specifying the importer class and other important settings like the title and sample file path.
+In the `importers.php` file, define the configuration for your importer, specifying the importer class and other important settings like the title and sample file path.
 
 ```php
 <?php
@@ -409,12 +409,12 @@ To make sure the configuration is loaded into the system, register it in your se
 public function register()
 {
     $this->mergeConfigFrom(
-        dirname(__DIR__) . '/Config/importer.php', 'importers'
+        dirname(__DIR__) . '/Config/importers.php', 'importers'
     );
 }
 ```
 
-This ensures that the `importer.php` configuration is merged into the system, allowing UnoPim to recognize the importer.
+This ensures that the `importers.php` configuration is merged into the system, allowing UnoPim to recognize the importer.
 
 ## Step 4: Queue Operations
 

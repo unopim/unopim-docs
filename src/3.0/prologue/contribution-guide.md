@@ -29,7 +29,7 @@ We welcome proposals for new features and enhancements to the existing UnoPim ap
 Before submitting a pull request, it's important to consider the following points to help you choose the appropriate branch:
 
 - **Bug Fixes**: If you're fixing a bug, send the fix to the `master` branch.
-- **Critical Bug Fixes**: If you're fixing a critical bug, also port the fix to the latest stable release branch (currently **v3.0.0**) so it can ship in the next patch release.
+- **Critical Bug Fixes**: If you're fixing a critical bug, also port the fix to the latest stable release branch (currently **3.0**) so it can ship in the next patch release.
 - **Feature Requests**: If your request involves a feature with potential breaking changes, send it to the `master` branch, which corresponds to the upcoming release.
 
 ## Compiled Assets
@@ -78,16 +78,43 @@ php artisan unopim:translations:check
 This command verifies that every supported locale contains all required keys and reports any missing translations. The same command runs in CI — pull requests with missing translations will fail the build.
 
 ::: tip
-Treat the translation check as part of the standard pre-commit cycle: write code → run Pint → run translation check → run Pest tests → submit PR.
+Treat the translation check as part of the standard pre-commit cycle: write code → run Pint → run the translation check → run Pest → submit the pull request.
 :::
 
-## Pint Tests
+## Before You Submit
 
-Pint tests are an essential part of ensuring the quality and reliability of code changes in UnoPim. When making changes to the code, ensure that all Pint tests pass before submitting your pull request.Before submitting your changes, run the Pint tests locally to verify that all test cases pass. It is important to confirm that the modifications do not cause any Pint test failures or regressions.
+Four checks run in CI. Run them locally first — a pull request that fails any of them cannot be merged.
 
-* To run the Pint tests locally, execute the following command in your terminal:
-```php
+**Format the code with Pint.** Pint rewrites your files to match the project's style; `--test` reports without changing anything.
+
+```bash
 vendor/bin/pint
+vendor/bin/pint --test
+```
+
+**Run the tests with Pest.** Run the whole suite before submitting, or a single file while you work.
+
+```bash
+vendor/bin/pest
+vendor/bin/pest --filter=ProductTest
+```
+
+**Analyse types with Larastan.** Fix the underlying type or logic problem rather than suppressing the error with a baseline entry or an inline annotation.
+
+```bash
+vendor/bin/phpstan analyse --memory-limit=1G
+```
+
+**Check translations**, as described above:
+
+```bash
+php artisan unopim:translations:check
+```
+
+If your change touches admin screens, also run the relevant Playwright specs:
+
+```bash
+cd tests/e2e-pw && npx playwright test
 ```
 
 ## Security Vulnerabilities
@@ -96,7 +123,7 @@ If you discover a security vulnerability within UnoPim, please notify us immedia
 
 ## Coding Style
 
-UnoPim follows the [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md) coding standard and the [PSR-4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md) autoloading standard. These standards ensure consistency and readability in the codebase, similar to Laravel.
+UnoPim follows the [PSR-12](https://www.php-fig.org/psr/psr-12/) coding standard and the [PSR-4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md) autoloading standard, applied through Laravel Pint's `laravel` preset. These standards ensure consistency and readability in the codebase, similar to Laravel.
 
 In addition to PSR-2 and PSR-4, here are some Laravel and UnoPim-specific coding practices that should be followed:
 

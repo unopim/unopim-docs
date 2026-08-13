@@ -4,7 +4,7 @@
 
 In Laravel, controllers are responsible for handling the request logic of an application. They act as intermediaries between the models and views, processing user input, interacting with the data layer, and returning the appropriate responses. By organizing related request handling logic into separate classes, controllers make it easier to manage and maintain the application's codebase.
 
-To learn in detail about Controllers, you can visit the Laravel documentation [here](https://laravel.com/docs/10.x/controllers).
+To learn in detail about Controllers, you can visit the Laravel documentation [here](https://laravel.com/docs/13.x/controllers).
 
 ## How to create Controllers
 
@@ -66,15 +66,14 @@ In `packages/Webkul/Example/src/Http/Controllers/ExampleController.php`, define 
   namespace Webkul\Example\Http\Controllers;
 
   use Illuminate\Http\Request;
-  use Webkul\Example\Http\Controllers\Controller;
-  use Webkul\Example\Repository\ExampleRepository;
+  use Webkul\Example\Repositories\ExampleRepository;
 
   class ExampleController extends Controller
   {
       /**
        * Create a controller instance.
        * 
-       * @param  \Webkul\Example\Repository\ExampleRepository  $exampleRepository
+       * @param  \Webkul\Example\Repositories\ExampleRepository  $exampleRepository
        * @return void
        */
       public function __construct(protected ExampleRepository $exampleRepository)
