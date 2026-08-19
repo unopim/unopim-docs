@@ -18,8 +18,10 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vitepress'
 import { computed } from 'vue'
+import { data as pages } from '../pages.data.mjs'
 
 const LATEST = '3.0'
+const VERSION_PATH = /^\/(\d+\.\d+)(\/.*)?$/
 
 const versions = [
   { label: 'master', value: 'master' },
@@ -35,22 +37,42 @@ const versions = [
 const route = useRoute()
 const router = useRouter()
 
-const currentVersion = computed(() => {
-  const match = route.path.match(/^\/(0\.1|0\.2|0\.3|1\.0|2\.0|2\.1)(\/.*)?$/)
-  return match ? match[1] : LATEST
-})
+const knownPages = new Set(pages)
 
-const restPath = computed(() => {
-  const match = route.path.match(/^\/(0\.1|0\.2|0\.3|1\.0|2\.0|2\.1)(\/.*)?$/)
-  return match && match[2] ? match[2] : '/'
-})
+const match = computed(() => route.path.match(VERSION_PATH))
+
+const currentVersion = computed(() => match.value ? match.value[1] : LATEST)
+
+const restPath = computed(() => match.value && match.value[2] ? match.value[2] : '/')
+
+function exists(path: string) {
+  return knownPages.has(path) || knownPages.has(path.replace(/\.html$/, ''))
+}
+
+/**
+ * The same page in another version, or that version's landing page when the
+ * page does not exist there — switching versions must never land on a 404.
+ */
+function resolveTarget(version: string) {
+  const candidate = `/${version}${restPath.value}`
+
+  if (restPath.value !== '/' && exists(candidate)) {
+    return candidate
+  }
+
+  const landing = `/${version}/prologue/`
+
+  if (exists(landing)) {
+    return landing
+  }
+
+  return pages.find((url) => url.startsWith(`/${version}/`)) ?? landing
+}
 
 function onChange(e: Event) {
-  const newVersion = (e.target as HTMLSelectElement).value
+  const selected = (e.target as HTMLSelectElement).value
   // 'master' is an alias that always sends users to the latest version.
-  const target = newVersion === 'master' ? LATEST : newVersion
-  const newPath = `/${target}${restPath.value}`
-  router.go(newPath)
+  router.go(resolveTarget(selected === 'master' ? LATEST : selected))
 }
 </script>
 
