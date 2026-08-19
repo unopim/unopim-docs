@@ -61,6 +61,14 @@ export default defineConfig({
               window.location.replace('/' + m[1] + rest2 + search + hash);
               return;
             }
+
+            // Bare /<X.Y> or /<X.Y>/ -> that version's landing page; no
+            // version ships an index page of its own.
+            m = path.match(/^\\/(\\d+\\.\\d+)\\/?$/);
+            if (m) {
+              window.location.replace('/' + m[1] + LANDING + search + hash);
+              return;
+            }
           } catch (e) { /* no-op */ }
         })();
       `
