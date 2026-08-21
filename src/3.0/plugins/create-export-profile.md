@@ -252,136 +252,167 @@ class ProductJobValidator extends JobValidator
 
 ####  Filters for Exporters
 
-Filters allow users to customize export behavior by offering configurable options. All filters should be defined inside the `filters['fields']` array. These will automatically appear in the UnoPim admin panel under:
+Filters let the user customize an export run. Every filter is one entry in the `filters['fields']` array of your exporter config, and UnoPim renders it automatically in the admin panel under:
 
 > **Data Transfer > Export > Create Export**
 
-Below are examples of supported filter types — **add each one inside the `fields` array as shown**:
+Each entry is a plain array. Only `name` and `type` are required:
 
-- **Boolean**: A toggle switch to enable or disable the feature.
- ```php
+```php
+[
+    'name'  => 'my_filter',   // key you read back from $this->getFilters()
+    'type'  => 'select',      // how it renders — see the table below
+    'title' => 'example::app.exporters.fields.my-filter',  // translation key or literal string
+]
+```
 
- 'filters' => [
-    'fields' => [
-        [
-            'name'       => 'is_active',
-            'title'      => 'data_transfer::app.exporters.products.is_active',
-            'type'       => 'boolean',
-            'required'   => false,
-        ],
-    ],
-],
-```
-- **Select**: A dropdown menu to choose one option from a list.
+##### Common Keys
+
+These apply to filters of any type:
+
+| Key | Purpose |
+|---|---|
+| `name` | **Required.** The key stored on the job's `filters` payload and read back in your exporter. |
+| `type` | **Required.** The control to render — see [Filter Types](#filter-types). |
+| `title` | Label shown above the control. Pass a translation key (`package::app.path.to.key`) or a literal string. |
+| `info` | Help text rendered as a tooltip next to the label. Also accepts a translation key. |
+| `required` | Marks the field as required in the UI. Defaults to `false`. |
+| `validation` | Laravel validation rules applied to the submitted value, e.g. `'required'`. |
+| `default` | Value pre-filled when the form first opens. |
+| `placeholder` | Placeholder text for text, number, and select controls. |
+| `full_width` | `true` makes the control span both columns of the two-column filter grid. Use it for controls with long values, such as attribute or category pickers. |
+
+##### Filter Types
+
+| `type` | Renders |
+|---|---|
+| `text` | Single-line text input. |
+| `number` | Numeric input. |
+| `boolean` | Toggle switch. |
+| `select` | Single-choice dropdown. |
+| `multiselect` | Multi-choice dropdown. |
+| `date` | Date picker. |
+| `datetime` | Date and time picker. |
+| `date-range` | <Badge type="tip" text="3.0" /> Paired from/to date pickers. |
+| `datetime-range` | <Badge type="tip" text="3.0" /> Paired from/to date and time pickers. |
+| `price` | Amount input with a currency selector. |
+| `textarea` | Multi-line text input. |
+| `tags` | <Badge type="tip" text="3.0" /> Free-form tag input for a list of values. The core product exporter uses this for its SKU identifier list. |
+| `category-tree` | <Badge type="tip" text="3.0" /> Hierarchical category picker. |
+| `attribute-conditions` | <Badge type="tip" text="3.0" /> Attribute/operator/value condition builder — the control behind the product exporter's **custom attributes** filter. |
+
+##### Static Options — `select` and `multiselect`
+
+Provide the choices inline with `options`. Each option is a `value`/`label` pair, and `label` may be a translation key:
+
 ```php
-'filters' => [
-    'fields' => [
-        [
-            'name'       => 'file_format',
-            'title'      => 'data_transfer::app.exporters.products.file_format',
-            'type'       => 'select',
-            'required'   => true,
-            'validation' => 'required',
-            'options'    => [
-                [
-                    'value' => 'csv',
-                    'label' => 'CSV',
-                ],
-                [
-                    'value' => 'xlsx',
-                    'label' => 'XLSX',
-                ],
-            ],
-        ],
-    ],
-],
-```
-- **Multiselect**: A dropdown menu allowing multiple selections.
-```php
-'filters' => [
-    'fields' => [
-        [
-            'name'       => 'categories',
-            'title'      => 'data_transfer::app.exporters.products.categories',
-            'type'       => 'multiselect',
-            'required'   => true,
-            'validation' => 'required',
-            'options'    => [
-                [
-                    'value' => 1,
-                    'label' => 'Electronics',
-                ],
-                [
-                    'value' => 2,
-                    'label' => 'Books',
-                ],
-            ],
-        ],
-    ],
-],
-```
-- **Async-Select**: A dynamic dropdown that loads options asynchronously via API.
-```php
-'filters' => [
-    'fields' => [
-        [
-            'name'       => 'channel',
-            'title'      => 'Channel',
-            'type'       => 'select',
-            'required'   => true,
-            'validation' => 'required',
-            'async'      => true,
-            'track_by'   => 'id',      // Field to use as value
-            'label_by'   => 'label',   // Field to display as label
-            'list_route' => 'admin.channel.fetch-all', // Route name for fetching options
-        ],
+[
+    'name'       => 'file_format',
+    'title'      => 'data_transfer::app.exporters.fields.file-format',
+    'type'       => 'select',
+    'required'   => true,
+    'validation' => 'required',
+    'options'    => [
+        ['value' => 'Csv',  'label' => 'CSV'],
+        ['value' => 'Xls',  'label' => 'XLS'],
+        ['value' => 'Xlsx', 'label' => 'XLSX'],
     ],
 ],
 ```
 
-> **Note**: When using async-select, make sure the specified `list_route` exists in your application and returns data in the expected format with the defined `track_by` and `label_by` fields.
+##### Async Options — Loading Choices from a Route
 
-- **Date**: A date picker for selecting a specific date.
+For lists that are too large or too dynamic to hard-code, set `async => true` and point the control at a route that returns the options.
+
+| Key | Purpose |
+|---|---|
+| `async` | `true` to load options over HTTP instead of from `options`. |
+| `list_route` | **Required when `async`.** Route *name* that returns the option list. |
+| `track_by` | Field in each returned record used as the stored value, e.g. `code`. |
+| `label_by` | Field in each returned record shown to the user, e.g. `label`. |
+| `query_params` | Extra query parameters sent with every request to `list_route`. |
+
 ```php
-'filters' => [
-    'fields' => [
-        [
-            'name'       => 'start_date',
-            'title'      => 'data_transfer::app.exporters.products.start_date',
-            'type'       => 'date',
-            'required'   => true,
-            'validation' => 'required|date',
-        ],
+[
+    'name'       => 'channels',
+    'title'      => 'data_transfer::app.exporters.products.filters.channels',
+    'info'       => 'data_transfer::app.exporters.products.filters.channels-info',
+    'type'       => 'multiselect',
+    'required'   => false,
+    'async'      => true,
+    'list_route' => 'admin.settings.data_transfer.exports.filters.channels',
+    'track_by'   => 'code',
+    'label_by'   => 'label',
+],
+```
+
+::: warning
+The route named in `list_route` must exist and must return records containing the `track_by` and `label_by` fields, or the control renders empty with no error.
+:::
+
+##### Conditional Filters
+
+Two keys let filters react to what the user has already chosen. Both are new in v3.0.
+
+**`visible_when`** — show the filter only while another field holds one of the listed values. The control is hidden entirely otherwise:
+
+```php
+[
+    'name'         => 'time_value',
+    'title'        => 'data_transfer::app.exporters.products.filters.time-value',
+    'type'         => 'number',
+    'required'     => false,
+    'visible_when' => [
+        'field'  => 'time_condition',
+        'values' => ['last_n_days'],
     ],
 ],
 ```
-- **Datetime**: A date and time picker for selecting a specific date and time.
+
+**`depends_on`** — narrow an async filter's options by the value of another field. UnoPim re-requests `list_route` whenever the parent field changes, passing the parent's selected codes as the query parameter named in `as`:
+
 ```php
-'filters' => [
-    'fields' => [
-        [
-            'name'       => 'export_time',
-            'title'      => 'data_transfer::app.exporters.products.export_time',
-            'type'       => 'datetime',
-            'required'   => true,
-            'validation' => 'required|date',
-        ],
-    ],
+[
+    'name'       => 'locales',
+    'title'      => 'data_transfer::app.exporters.products.filters.locales',
+    'type'       => 'multiselect',
+    'full_width' => true,
+    'async'      => true,
+    'list_route' => 'admin.settings.data_transfer.exports.filters.locales',
+    'track_by'   => 'code',
+    'label_by'   => 'label',
+    'depends_on' => ['field' => 'channels', 'as' => 'channels'],
 ],
 ```
-- **Textarea**: A larger text input for multi-line text.
-```php
-'filters' => [
-    'fields' => [
-        [
-            'name'       => 'comments',
-            'title'      => 'data_transfer::app.exporters.products.comments',
-            'type'       => 'textarea',
-            'required'   => false,
-        ],
-    ],
-],
-```
+
+Here, selecting channels first restricts the locale list to the locales those channels actually carry.
+
+##### Reference: The Product Exporter's Filters
+
+The built-in product exporter is the fullest worked example of everything above. Its filters ship in `packages/Webkul/DataTransfer/src/Config/exporters.php`, and their names are mirrored in the `Webkul\DataTransfer\Enums\ProductFilter` enum — reference the enum rather than string literals when you extend or override the exporter.
+
+| Filter | Type | Notes |
+|---|---|---|
+| `file_format` | `select` | CSV, XLS, or XLSX. Required. |
+| `with_media` | `boolean` | Include media files in the export. |
+| `with_associations` | `boolean` | Include product associations. |
+| `header_row` | `boolean` | Write a header row. Defaults to on. |
+| `use_labels` | `boolean` | Write attribute labels instead of codes. |
+| `date_format` | `select` | `Y-m-d`, `d-m-Y`, `d/m/Y`, or `m/d/Y`. |
+| `file_path` | `text` | Output path pattern. Placeholder `[code]_[date]`. |
+| `channels` | `multiselect`, async | Scope the export to specific channels. |
+| `locales` | `multiselect`, async | Depends on `channels`. |
+| `currencies` | `multiselect`, async | Depends on `channels`. |
+| `attributes` | `multiselect`, async | Restrict the exported columns. |
+| `attribute_families` | `multiselect`, async | Restrict to products in these families. |
+| `categories` | `multiselect`, async | Restrict to products in these categories. |
+| `completeness` | `select` | `none`, `at_least_one`, or `all`. |
+| `time_condition` | `select` | `none`, `last_n_days`, `since_last_export`, or `between_dates`. |
+| `time_value` | `number` | Visible when `time_condition` is `last_n_days`. |
+| `time_date` / `time_date_end` | `date` | Visible when `time_condition` is `between_dates`. |
+| `status` | `select` | `enable`, `disable`, or `all`. |
+| `sku` | `tags` | An explicit list of SKUs to export. |
+| `custom_attributes` | `attribute-conditions` | Attribute-value conditions. Excludes `sku` from its attribute list via `query_params`. |
 
 ### Step 3: Load the Configuration in the Service Provider
 

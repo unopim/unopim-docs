@@ -394,3 +394,116 @@ $safeContent = clean_content($userInput);
 ```
 
 Use this helper whenever you accept rich-text or HTML input from users — for example, product descriptions or other free-form attribute values — instead of echoing the raw input.
+
+## Global Helper Functions
+
+Alongside `core()`, UnoPim registers a handful of global functions from its packages. They are available anywhere in the application — controllers, Blade views, and your own packages — with no import.
+
+### `themes()`
+
+Resolves the theme manager (`Webkul\Theme\Themes`), which locates view and asset paths for the active theme.
+
+```php
+themes()->url('images/logo.svg');
+```
+
+### `unopim_asset()`
+
+Builds a URL to an asset published by a theme or package. It is a thin wrapper over `themes()->url()`. Pass a namespace as the second argument to resolve an asset shipped by a specific package rather than the active theme.
+
+```php
+unopim_asset('images/logo.svg');
+unopim_asset('css/example.css', 'example');
+```
+
+Use this instead of Laravel's `asset()` for anything a theme is allowed to override.
+
+### `view_render_event()`
+
+Fires a view render event so packages can inject markup into a core view without editing it. See [Render Event](render-event) for the full list of available event points.
+
+```blade
+{!! view_render_event('unopim.admin.catalog.products.list.before') !!}
+```
+
+### `bouncer()`
+
+Resolves the ACL gate (`Webkul\User\Bouncer`). Use it to check whether the current admin user holds a permission before rendering a control or running an action. See [Create ACL](../packages/create-acl).
+
+```php
+if (bouncer()->hasPermission('catalog.products.edit')) {
+    // ...
+}
+```
+
+### `product_image()`
+
+Resolves `Webkul\Product\ProductImage`, which builds product image URLs and generates the cached small/medium/large variants.
+
+```php
+$urls = product_image()->getProductBaseImage($product);
+```
+
+### `product_video()`
+
+Resolves `Webkul\Product\ProductVideo`, the equivalent helper for product video assets.
+
+```php
+$videos = product_video()->getVideos($product);
+```
+
+### `product_toolbar()`
+
+Resolves `Webkul\Product\Helpers\Toolbar`, which supplies the sort, order, and per-page options for product listings.
+
+```php
+$limit = product_toolbar()->getLimit();
+```
+
+### `image_manager()`
+
+Resolves the shared [Intervention Image](https://image.intervention.io/) manager instance, configured with UnoPim's driver. Use it rather than constructing your own `ImageManager` so that image handling stays consistent across packages.
+
+```php
+$image = image_manager()->read($path);
+```
+
+### `magic_ai()`
+
+Resolves `Webkul\MagicAI\MagicAI`, the entry point to the AI provider adapter that powers content generation. See [MagicAI Platform](../agentic/magic-ai-platform).
+
+```php
+$result = magic_ai()->ask($prompt);
+```
+
+### `form_control_id()`
+
+Builds the DOM id that a form control renders for a given field name, so a `<label>` can point its `for` attribute at it. Field names carry array syntax such as `values[common][sku]`, which is not a valid CSS selector — this helper normalizes it.
+
+```php
+form_control_id('values[common][sku]');        // values_common_sku
+form_control_id('values[common][sku]', 'en');  // values_common_sku_en
+```
+
+### `unique_form_control_id()`
+
+Reserves a DOM id for the current request, suffixing repeats. Use it when a page may render the same field name in more than one form — a page form plus its modals, for example — so the markup does not emit duplicate ids.
+
+```php
+unique_form_control_id('values_common_sku');  // values_common_sku
+unique_form_control_id('values_common_sku');  // values_common_sku_2
+```
+
+Pass `false` as the second argument to reserve the id without ever suffixing it.
+
+### `array_permutation()`
+
+Returns every combination of the supplied keyed value lists — the cartesian product, keyed rather than positional. Useful when you need to enumerate variant axis combinations.
+
+```php
+array_permutation([
+    'color' => ['red', 'blue'],
+    'size'  => ['s', 'm'],
+]);
+// [['color' => 'red', 'size' => 's'], ['color' => 'red', 'size' => 'm'], ...]
+```
