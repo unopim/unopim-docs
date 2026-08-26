@@ -84,109 +84,239 @@ class ProductRepository extends Repository
 
 ## Events Fired in UnoPim
 
-In UnoPim, there are several events fired throughout its operations, allowing developers to hook into specific points in the application's lifecycle to customize behavior or add functionality. Here's a list of events that are fired in UnoPim, which you can listen to and handle as needed by creating event listeners:
+UnoPim fires events throughout its operations, letting you hook into specific points in the application's lifecycle to customize behavior or add functionality. The tables below group every event by the subsystem that fires it.
 
-| Events name                                 | Functionality                                  |
-|---------------------------------------------|-----------------------------------------------|
-| admin.password.update.after                 | This event will be fired after admin password gets updated. |
-| catalog.attribute.create.before             | This event is fired before an attribute is created. |
-| catalog.attribute.create.after              | This event is fired after an attribute is created.  |
-| catalog.attribute.delete.before             | This event is fired before an attribute is deleted. |
-| catalog.attribute.delete.after              | This event is fired after an attribute is deleted.  |
-| catalog.attribute.update.before             | This event is fired before an attribute is updated. |
-| catalog.attribute.update.after              | This event is fired after an attribute is updated.  |
-| catalog.attribute_family.create.before      | This event is fired before an attribute family is created. |
-| catalog.attribute_family.create.after       | This event is fired after an attribute family is created.  |
-| catalog.attribute_family.delete.before      | This event is fired before an attribute family is deleted. |
-| catalog.attribute_family.delete.after       | This event is fired after an attribute family is deleted.  |
-| catalog.attribute_family.update.before      | This event is fired before an attribute family is updated. |
-| catalog.attribute_family.update.after       | This event is fired after an attribute family is updated.  |
-| catalog.attribute.group.create.before       | This event is fired before an attribute group is created. |
-| catalog.attribute.group.create.after        | This event is fired after an attribute group is created.  |
-| catalog.attribute.group.delete.before       | This event is fired before an attribute group is deleted. |
-| catalog.attribute.group.delete.after        | This event is fired after an attribute group is deleted.  |
-| catalog.attribute.group.update.before       | This event is fired before an attribute group is updated. |
-| catalog.attribute.group.update.after        | This event is fired after an attribute group is updated.  |
-| catalog.categories.mass-update.before       | This event is fired before a bulk category update. |
-| catalog.categories.mass-update.after        | This event is fired after a bulk category update.  |
-| catalog.category.create.before              | This event is fired before a category is created. |
-| catalog.category.create.after               | This event is fired after a category is created.  |
-| catalog.category.delete.before              | This event is fired before a category is deleted. |
-| catalog.category.delete.after               | This event is fired after a category is deleted.  |
-| catalog.category.update.before              | This event is fired before a category is updated. |
-| catalog.category.update.after               | This event is fired after a category is updated.  |
-| catalog.category_field.create.before        | This event is fired before a category_field is created. |
-| catalog.category_field.create.after         | This event is fired after a category_field is created.  |
-| catalog.category_field.delete.before        | This event is fired before a category_field is deleted. |
-| catalog.category_field.delete.after         | This event is fired after a category_field is deleted.  |
-| catalog.category_field.update.before        | This event is fired before a category_field is updated. |
-| catalog.category_field.update.after         | This event is fired after a category_field is updated.  |
-| catalog.product.create.before               | This event is fired before a product is created.  |
-| catalog.product.create.after                | This event is fired after a product is created.   |
-| catalog.product.delete.before               | This event is fired before a product is deleted.  |
-| catalog.product.delete.after                | This event is fired after a product is deleted.   |
-| catalog.product.update.before               | This event is fired before a product is updated.  |
-| catalog.product.update.after                | This event is fired after a product is updated.   |
-| core.channel.create.before                  | This event will be fired before a channel gets created. |
-| core.channel.create.after                   | This event will be fired after a channel gets created. |
-| core.channel.delete.before                  | This event will be fired before a channel gets deleted. |
-| core.channel.delete.after                   | This event will be fired after a channel gets deleted. |
-| core.channel.update.before                  | This event will be fired before a channel gets updated. |
-| core.channel.update.after                   | This event will be fired after a channel gets updated. |
-| core.configuration.save.before              | This event will be fired before configuration save. |
-| core.configuration.save.after               | This event will be fired after configuration save. |
-| core.currency.create.before                 | This event will be fired before currency gets created. |
-| core.currency.create.after                  | This event will be fired after currency gets created. |
-| core.currency.delete.before                 | This event will be fired before currency gets deleted. |
-| core.currency.delete.after                  | This event will be fired after currency gets deleted. |
-| core.currency.update.before                 | This event will be fired before currency gets updated. |
-| core.currency.update.after                  | This event will be fired after currency gets updated. |
-| core.locale.create.before                   | This event will be fired before a locale gets created. |
-| core.locale.create.after                    | This event will be fired after a locale gets created. |
-| core.locale.delete.before                   | This event will be fired before a locale gets deleted. |
-| core.locale.delete.after                    | This event will be fired after a locale gets deleted. |
-| core.locale.update.before                   | This event will be fired before a locale gets updated. |
-| core.locale.update.after                    | This event will be fired after a locale gets updated. |
-| data_transfer.exports.batch.export.after    | This event will be fired after batch exports data_transfer. |
-| data_transfer.exports.batch.export.before   | This event will be fired before batch exports data_transfer. |
-| data_transfer.exports.completed             | This event will be fired if exports completed. |
-| data_transfer.exports.create.after          | This event will be fired after exports data_transfer is created. |
-| data_transfer.exports.create.before         | This event will be fired before exports data_transfer is created. |
-| data_transfer.exports.export.now.before     | This event will be fired before export data_transfer is updated. |
-| data_transfer.exports.started               | This event will be fired if exports started. |
-| data_transfer.exports.update.after          | This event will be fired after export data_transfer is updated. |
-| data_transfer.exports.update.before         | This event will be fired before export data_transfer is updated. |
-| data_transfer.imports.batch.export.after    | This event will be fired after batch imports data_transfer. |
-| data_transfer.imports.batch.export.before   | This event will be fired before batch imports data_transfer. |
-| data_transfer.imports.completed             | This event will be fired if imports completed. |
-| data_transfer.imports.create.after          | This event will be fired after imports data_transfer is created. |
-| data_transfer.imports.create.before         | This event will be fired before imports data_transfer is created. |
-| data_transfer.imports.indexing              | This event will be fired if imports indexing. |
-| data_transfer.imports.linking               | This event will be fired if imports linking. |
-| data_transfer.imports.started               | This event will be fired if imports started. |
-| data_transfer.imports.update.after          | This event will be fired after imports data_transfer is updated. |
-| data_transfer.imports.update.before         | This event will be fired before imports data_transfer is updated. |
-| data_transfer.imports.validate.after        | This event will be fired after imports validate. |
-| data_transfer.imports.validate.before       | This event will be fired before imports validate. |
-| products.datagrid.sync                      | This event is fired to sync the product datagrid. |
-| user.admin.create.after                     | This event will be fired after admin gets created. |
-| user.admin.create.before                    | This event will be fired before admin gets created. |
-| user.admin.delete.after                     | This event will be fired after admin gets deleted. |
-| user.admin.delete.before                    | This event will be fired before admin gets deleted. |
-| user.admin.update.after                     | This event will be fired after admin gets updated. |
-| user.admin.update.before                    | This event will be fired before admin gets updated. |
-| user.api_integration.create.after           | This event will be fired after API integration is created. |
-| user.api_integration.create.before          | This event will be fired before API integration is created. |
-| user.api_integration.update.after           | This event will be fired after API integration is updated. |
-| user.api_integration.update.before          | This event will be fired before API integration is updated. |
-| user.api_key.delete.after                   | This event will be fired after API key is deleted. |
-| user.api_key.delete.before                  | This event will be fired before API key is deleted. |
-| user.role.create.after                      | This event will be fired after role gets created. |
-| user.role.create.before                     | This event will be fired before role gets created. |
-| user.role.delete.after                      | This event will be fired after role gets deleted. |
-| user.role.delete.before                     | This event will be fired before role gets deleted. |
-| user.role.update.after                      | This event will be fired after role gets updated. |
-| user.role.update.before                     | This event will be fired before role gets updated. |
+::: tip Event names are matched literally
+`Event::listen()` matches the string exactly. A typo in an event name fails silently — the listener is registered, but nothing ever calls it. Copy the names from this page rather than guessing at the pattern, because a few of them do not follow it (`catalog.attributegroup.update.after` and `data_transfer.export.completed` in particular).
+:::
+
+### Catalog — Products
+
+| Event name | Fired |
+|---|---|
+| `catalog.product.create.before` | Before a product is created. |
+| `catalog.product.create.after` | After a product is created. |
+| `catalog.product.update.before` | Before a product is updated. |
+| `catalog.product.update.after` | After a product is updated. |
+| `catalog.product.delete.before` | Before a product is deleted. |
+| `catalog.product.delete.after` | After a product is deleted. |
+| `catalog.product.bulk.edit.after` | <Badge type="tip" text="3.0" /> After a bulk edit is applied to a selection of products. |
+| `products.datagrid.sync` | Fired to sync the product datagrid. |
+
+### Catalog — Attributes
+
+| Event name | Fired |
+|---|---|
+| `catalog.attribute.create.before` | Before an attribute is created. |
+| `catalog.attribute.create.after` | After an attribute is created. |
+| `catalog.attribute.update.before` | Before an attribute is updated. |
+| `catalog.attribute.update.after` | After an attribute is updated. |
+| `catalog.attribute.delete.before` | Before an attribute is deleted. |
+| `catalog.attribute.delete.after` | After an attribute is deleted. |
+| `catalog.attribute.option.create.before` | Before an attribute option is created. |
+| `catalog.attribute.option.create.after` | After an attribute option is created. |
+| `catalog.attribute.option.update.before` | Before an attribute option is updated. |
+| `catalog.attribute.option.update.after` | After an attribute option is updated. |
+| `catalog.attribute.option.delete.before` | Before an attribute option is deleted. |
+| `catalog.attribute.option.delete.after` | After an attribute option is deleted. |
+
+### Catalog — Attribute Groups
+
+| Event name | Fired |
+|---|---|
+| `catalog.attribute.group.create.before` | Before an attribute group is created. |
+| `catalog.attribute.group.create.after` | After an attribute group is created. |
+| `catalog.attribute.group.update.before` | Before an attribute group is updated. |
+| `catalog.attributegroup.update.after` | After an attribute group is updated. **Note the missing dot** — this name is inconsistent with the others in the group and is kept for backward compatibility. |
+| `catalog.attribute.group.delete.before` | Before an attribute group is deleted. |
+| `catalog.attribute.group.delete.after` | After an attribute group is deleted. |
+
+### Catalog — Attribute Families
+
+| Event name | Fired |
+|---|---|
+| `catalog.attribute_family.create.before` | Before an attribute family is created. |
+| `catalog.attribute_family.create.after` | After an attribute family is created. |
+| `catalog.attribute_family.update.before` | Before an attribute family is updated. |
+| `catalog.attribute_family.update.after` | After an attribute family is updated. |
+| `catalog.attribute_family.delete.before` | Before an attribute family is deleted. |
+| `catalog.attribute_family.delete.after` | After an attribute family is deleted. |
+| `catalog.attribute_family.attributes.changed` | <Badge type="tip" text="3.0" /> After a family's attribute set changes. Downstream completeness recalculation hangs off this. |
+| `catalog.attribute_family.copied` | <Badge type="tip" text="3.0" /> After a family is duplicated from an existing one. |
+
+### Catalog — Categories and Category Fields
+
+| Event name | Fired |
+|---|---|
+| `catalog.category.create.before` | Before a category is created. |
+| `catalog.category.create.after` | After a category is created. |
+| `catalog.category.update.before` | Before a category is updated. |
+| `catalog.category.update.after` | After a category is updated. |
+| `catalog.category.delete.before` | Before a category is deleted. |
+| `catalog.category.delete.after` | After a category is deleted. |
+| `catalog.category_field.create.before` | Before a category field is created. |
+| `catalog.category_field.create.after` | After a category field is created. |
+| `catalog.category_field.update.before` | Before a category field is updated. |
+| `catalog.category_field.update.after` | After a category field is updated. |
+| `catalog.category_field.delete.before` | Before a category field is deleted. |
+| `catalog.category_field.delete.after` | After a category field is deleted. |
+
+### Catalog — Association Types
+
+<Badge type="tip" text="3.0" /> Configurable association types are new in v3.0. See [Configurable Associations](../packages/configurable-associations).
+
+| Event name | Fired |
+|---|---|
+| `catalog.association_type.create.before` | Before an association type is created. |
+| `catalog.association_type.create.after` | After an association type is created. |
+| `catalog.association_type.update.before` | Before an association type is updated. |
+| `catalog.association_type.update.after` | After an association type is updated. |
+| `catalog.association_type.delete.before` | Before an association type is deleted. |
+| `catalog.association_type.delete.after` | After an association type is deleted. |
+| `product_association.sync.before` | Before a product's associations are synchronized. |
+| `product_association.sync.after` | After a product's associations are synchronized. |
+
+### Catalog — Passport Templates
+
+<Badge type="tip" text="3.0" /> See [Digital Product Passport](digital-product-passport).
+
+| Event name | Fired |
+|---|---|
+| `catalog.passport_template.create.before` | Before a passport template is created. |
+| `catalog.passport_template.create.after` | After a passport template is created. |
+| `catalog.passport_template.update.before` | Before a passport template is updated. |
+| `catalog.passport_template.update.after` | After a passport template is updated. |
+| `catalog.passport_template.delete.before` | Before a passport template is deleted. |
+| `catalog.passport_template.delete.after` | After a passport template is deleted. |
+
+### Core — Channels, Locales, Currencies, Configuration
+
+| Event name | Fired |
+|---|---|
+| `core.channel.create.before` | Before a channel is created. |
+| `core.channel.create.after` | After a channel is created. |
+| `core.channel.update.before` | Before a channel is updated. |
+| `core.channel.update.after` | After a channel is updated. |
+| `core.channel.delete.before` | Before a channel is deleted. |
+| `core.channel.delete.after` | After a channel is deleted. |
+| `core.locale.create.before` | Before a locale is created. |
+| `core.locale.create.after` | After a locale is created. |
+| `core.locale.update.before` | Before a locale is updated. |
+| `core.locale.update.after` | After a locale is updated. |
+| `core.locale.delete.before` | Before a locale is deleted. |
+| `core.locale.delete.after` | After a locale is deleted. |
+| `core.locale.activation.synced` | <Badge type="tip" text="3.0" /> After the set of active locales changes (activation or deactivation). |
+| `core.currency.create.before` | Before a currency is created. |
+| `core.currency.create.after` | After a currency is created. |
+| `core.currency.update.before` | Before a currency is updated. |
+| `core.currency.update.after` | After a currency is updated. |
+| `core.currency.delete.before` | Before a currency is deleted. |
+| `core.currency.delete.after` | After a currency is deleted. |
+| `core.currency.activation.synced` | <Badge type="tip" text="3.0" /> After the set of active currencies changes. |
+| `core.configuration.save.before` | Before configuration is saved. |
+| `core.configuration.save.after` | After configuration is saved. |
+
+### Core — Model Proxy Sync
+
+These fire when a proxied core model's dataset is rebuilt. They are primarily an internal cache-invalidation hook, but you may listen to them if a package derives its own state from these tables.
+
+| Event name | Fired |
+|---|---|
+| `core.model.proxy.sync.locales` | After the locales dataset is synchronized. |
+| `core.model.proxy.sync.currencies` | After the currencies dataset is synchronized. |
+| `core.model.proxy.sync.variantStructure` | <Badge type="tip" text="3.0" /> After a family's variant structure is synchronized. |
+| `core.model.proxy.sync.AttributeFamilyGroupMapping` | After the family-to-group mapping is synchronized. |
+
+### Data Transfer — Exports
+
+| Event name | Fired |
+|---|---|
+| `data_transfer.exports.create.before` | Before an export profile is created. |
+| `data_transfer.exports.create.after` | After an export profile is created. |
+| `data_transfer.exports.update.before` | Before an export profile is updated. |
+| `data_transfer.exports.update.after` | After an export profile is updated. |
+| `data_transfer.exports.create.validate.before` | <Badge type="tip" text="3.0" /> Before an export profile's filters are validated on create. |
+| `data_transfer.exports.create.validate.after` | <Badge type="tip" text="3.0" /> After an export profile's filters are validated on create. |
+| `data_transfer.exports.update.validate.before` | <Badge type="tip" text="3.0" /> Before an export profile's filters are validated on update. |
+| `data_transfer.exports.update.validate.after` | <Badge type="tip" text="3.0" /> After an export profile's filters are validated on update. |
+| `data_transfer.exports.export.now.before` | Before an export is triggered from the profile screen. |
+| `data_transfer.exports.started` | When an export run starts. |
+| `data_transfer.exports.batch.export.before` | Before each export batch is processed. |
+| `data_transfer.exports.batch.export.after` | After each export batch is processed. |
+| `data_transfer.export.completed` | When an export run completes. **Note the singular `export`** — this name is inconsistent with its siblings and is kept for backward compatibility. |
+| `data_transfer.exports.paused` | <Badge type="tip" text="3.0" /> When a running export is paused from the tracker. |
+| `data_transfer.exports.resumed` | <Badge type="tip" text="3.0" /> When a paused export is resumed. |
+| `data_transfer.exports.cancelled` | <Badge type="tip" text="3.0" /> When an export is cancelled. |
+
+### Data Transfer — Imports
+
+| Event name | Fired |
+|---|---|
+| `data_transfer.imports.create.before` | Before an import profile is created. |
+| `data_transfer.imports.create.after` | After an import profile is created. |
+| `data_transfer.imports.update.before` | Before an import profile is updated. |
+| `data_transfer.imports.update.after` | After an import profile is updated. |
+| `data_transfer.imports.import.now.before` | <Badge type="tip" text="3.0" /> Before an import is triggered from the profile screen. |
+| `data_transfer.imports.validate.before` | Before the uploaded file is validated. |
+| `data_transfer.imports.validate.after` | After the uploaded file is validated. |
+| `data_transfer.import.validate.state_failed` | <Badge type="tip" text="3.0" /> When validation fails and the job moves to the failed state. |
+| `data_transfer.imports.started` | When an import run starts. |
+| `data_transfer.imports.batch.import.before` | Before each import batch is processed. |
+| `data_transfer.imports.batch.import.after` | After each import batch is processed. |
+| `data_transfer.imports.batch.product.save.before` | <Badge type="tip" text="3.0" /> Before a product row is written during an import batch. |
+| `data_transfer.imports.batch.product.save.after` | <Badge type="tip" text="3.0" /> After a product row is written during an import batch. |
+| `data_transfer.imports.batch.product.created.after` | <Badge type="tip" text="3.0" /> After a product row is created (as opposed to updated) during an import batch. |
+| `data_transfer.imports.batch.product.updated.after` | <Badge type="tip" text="3.0" /> After an existing product row is updated during an import batch. |
+| `data_transfer.imports.linking` | When the import enters the linking stage. |
+| `data_transfer.imports.indexing` | When the import enters the indexing stage. |
+| `data_transfer.imports.completed` | When an import run completes. |
+| `data_transfer.imports.paused` | <Badge type="tip" text="3.0" /> When a running import is paused from the tracker. |
+| `data_transfer.imports.resumed` | <Badge type="tip" text="3.0" /> When a paused import is resumed. |
+| `data_transfer.imports.cancelled` | <Badge type="tip" text="3.0" /> When an import is cancelled. |
+
+### Users, Roles, and API Integrations
+
+| Event name | Fired |
+|---|---|
+| `user.admin.create.before` | Before an admin user is created. |
+| `user.admin.create.after` | After an admin user is created. |
+| `user.admin.update.before` | Before an admin user is updated. |
+| `user.admin.update.after` | After an admin user is updated. |
+| `user.admin.delete.before` | Before an admin user is deleted. |
+| `user.admin.delete.after` | After an admin user is deleted. |
+| `admin.password.update.after` | After an admin password is updated. |
+| `user.role.create.before` | Before a role is created. |
+| `user.role.create.after` | After a role is created. |
+| `user.role.update.before` | Before a role is updated. |
+| `user.role.update.after` | After a role is updated. |
+| `user.role.delete.before` | Before a role is deleted. |
+| `user.role.delete.after` | After a role is deleted. |
+| `user.api_integration.create.before` | Before an API integration is created. |
+| `user.api_integration.create.after` | After an API integration is created. |
+| `user.api_integration.update.before` | Before an API integration is updated. |
+| `user.api_integration.update.after` | After an API integration is updated. |
+| `user.api_key.delete.before` | Before an API key is deleted. |
+| `user.api_key.delete.after` | After an API key is deleted. |
+
+### Authentication (Microsoft SSO)
+
+<Badge type="tip" text="3.0" /> See [Microsoft SSO](microsoft-sso).
+
+| Event name | Fired |
+|---|---|
+| `unopim.admin.sso.login.before` | Before an SSO login is completed. |
+| `unopim.admin.sso.identity.resolved` | After the external identity is resolved to a local admin user. Useful for just-in-time provisioning or role mapping. |
+| `unopim.admin.sso.login.after` | After an SSO login is completed. |
+
+### Installation
+
+| Event name | Fired |
+|---|---|
+| `unopim.installed` | <Badge type="tip" text="3.0" /> After `unopim:install` finishes. Use it to seed package-specific data on a fresh installation. |
+
+::: tip View render events are listed separately
+The `unopim.admin.*` names you see in Blade templates (for example `unopim.admin.catalog.products.list.before`) are **view render events** fired through the `view_render_event()` helper, not application events. They are documented in [Render Event](render-event).
+:::
 
 ## Listening to Existing Events
 

@@ -73,13 +73,13 @@ UnoPim provides a Postman collection and environment to simplify API testing and
    - Download the following files to your system:
      - [The Postman collection](https://www.postman.com/unopim/unopim-apis/collection/kzy03uh/official-unopim-apis)
 
-     - [Download collection file](../../postman_collection.json)
+     - [Download collection file](/postman_collection.json)
 
     ![Postman collection export](/assets/2.1/images/postman-collection-export.png)
 
      - [A pre-configured Postman environment](https://www.postman.com/unopim/unopim-apis/environment/37137259-33153010-2118-486f-bafe-2ed0b75ad39d)
 
-     - [Download environment file](../../postman_environment.json)
+     - [Download environment file](/postman_environment.json)
 
     ![Postman environment export](/assets/2.1/images/postman-environment-export.png)
 
