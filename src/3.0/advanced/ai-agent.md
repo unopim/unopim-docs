@@ -7,10 +7,10 @@ search: false
 head:
   - - meta
     - http-equiv: refresh
-      content: 0; url=/2.1/agentic/ai-agent.html
+      content: 0; url=/3.0/agentic/ai-agent.html
   - - link
     - rel: canonical
-      href: https://devdocs.unopim.com/2.1/agentic/ai-agent.html
+      href: https://devdocs.unopim.com/3.0/agentic/ai-agent.html
   - - meta
     - name: robots
       content: noindex, follow
@@ -25,6 +25,6 @@ head:
 <script setup>
 import { onMounted } from 'vue'
 onMounted(() => {
-  window.location.replace('/2.1/agentic/ai-agent.html')
+  window.location.replace('/3.0/agentic/ai-agent.html')
 })
 </script>

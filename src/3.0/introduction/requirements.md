@@ -234,7 +234,7 @@ The `database` driver is supported as a fallback but is slower under load. The `
 
 UnoPim uses Elasticsearch for product search, filtering, and listing in the admin panel.
 
-- **Version**: Elasticsearch 8.19+
+- **Version**: Elasticsearch 8.17+ (UnoPim's own Docker stack pins `elasticsearch:8.17.0`)
 - **Disk space**: Elasticsearch stops allocating shards when disk usage exceeds 85% — keep at least 15% free.
 - **Heap**: 1–2 GB for small catalogs; tune based on document count and concurrent queries.
 
@@ -271,7 +271,7 @@ Finally, if you plan to extend UnoPim or verify compatibility with your own pack
 | **laravel/sanctum** | ^4.0 | API token authentication |
 | **laravel/passport** | ^13.7 | OAuth 2.0 server |
 | **laravel/octane** | ^2.3 | Optional high-performance server |
-| **laravel/ai** | ^0.9 | Multi-provider AI adapter (powers MagicAI) |
+| **laravel/ai** | ^0.10.3 | Multi-provider AI adapter (powers MagicAI) |
 | **laravel/boost** | ^2.1 | Developer tooling (dev/CI) |
 | **laravel/pint** | ^1.29 | Code style fixer (dev) |
 | **pestphp/pest** | ^5.0 | Test runner |

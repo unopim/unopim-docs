@@ -104,7 +104,7 @@ If you have already installed UnoPim and want to add demo data later, run the st
 php artisan unopim:install:demo-data
 ```
 
-This seeds demo extras, demo categories, and sample products into an existing UnoPim database. See [CLI Commands](../advanced/cli-commands.html#demo-data-seeding) for full details, including the `--force` option for re-seeding.
+This seeds demo extras, demo categories, and sample products into an existing UnoPim database. See [CLI Commands](../advanced/cli-commands#installation-system) for full details, including the `--force` option for re-seeding.
 
 After seeding demo data, rebuild the Elasticsearch indexes so the new products and categories appear in search and listings:
 
