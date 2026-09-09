@@ -11,13 +11,11 @@ const { Layout } = DefaultTheme
 
 const route = useRoute()
 
-// Versions still receiving bug or security fixes; everything older gets
-// the unmaintained banner.
-const MAINTAINED = ['3.0', '2.1', '2.0']
+const DEPRECATED_VERSIONS = ['1.0', '0.3', '0.2', '0.1']
 
 const unmaintainedVersion = computed(() => {
   const match = route.path.match(/^\/(\d+\.\d+)(\/|$)/)
-  return match && !MAINTAINED.includes(match[1]) ? match[1] : null
+  return match && DEPRECATED_VERSIONS.includes(match[1]) ? match[1] : null
 })
 
 // VersionSelect hides itself on the root path — mirror that here so the
