@@ -8,7 +8,7 @@ Before you install UnoPim, take a few minutes to confirm that your server, PHP b
 
 - **Server**: Apache 2 or NGINX
 - **RAM**: 8GB or higher
-- **Node**: 20.x LTS or higher
+- **Node**: 22 LTS recommended (used in CI)
 - **PHP**: 8.4.1 or higher
 - **Composer**: 2.6.0 or higher
 
@@ -26,7 +26,7 @@ Ensure the following extensions are installed and enabled. You can check using t
 - **mbstring**: Required for multibyte string operations and non-ASCII character handling.
 - **openssl**: Bundled with PHP on most distributions. Enables SSL/TLS for secure communication.
 - **pdo**: Required for database interactions.
-- **pdo_mysql**: Required when using MySQL or MariaDB.
+- **pdo_mysql**: Required by UnoPim’s Composer dependencies on every database engine, including PostgreSQL.
 - **pdo_pgsql**: Required when using PostgreSQL.
 - **redis**: Required when using Redis for cache, sessions, or queues (recommended).
 - **tokenizer**: Bundled with PHP. Required by Laravel for code parsing.
@@ -247,23 +247,29 @@ php artisan unopim:category:index
 
 ## Supported Database Servers
 
-::: warning These requirements describe UnoPim 3.0
-UnoPim 3.1.0 added first-class MariaDB support. For new deployments, see the [3.1 database requirements](/3.1/introduction/requirements#supported-database-servers) and [MariaDB installation guide](/3.1/introduction/installation-with-mariadb). MariaDB Community Server 10.6 and 10.10 are now end of life; the historical minimum below is not a current production recommendation.
+UnoPim supports MariaDB as a primary application datastore, alongside MySQL and PostgreSQL. First-class MariaDB support was added in **UnoPim 3.1.0**. Choose one database engine for an installation.
+
+| Database | Version guidance | Laravel connection |
+| --- | --- | --- |
+| MariaDB | Use the latest patch of **10.11 LTS** or **11.8 LTS** | `DB_CONNECTION=mariadb` |
+| MySQL | 8.0.32 or higher | `DB_CONNECTION=mysql` |
+| PostgreSQL | 16 | `DB_CONNECTION=pgsql` |
+
+The [MariaDB CI workflow](https://github.com/unopim/unopim/blob/3.x/.github/workflows/pest_tests_mariadb.yml) targets MariaDB 10.11 and 11.8, with installation, migrations, and Pest tests using the dedicated `mariadb` driver and a table prefix. The existing workflows also cover MySQL 8 and PostgreSQL 16. Consult the workflow results for the release or commit you deploy; a configured job is not a guarantee that a particular run passed.
+
+Composer installations default to MySQL in `.env.example`. The supplied Docker stack defaults to PostgreSQL. MariaDB can serve as the primary database of an installation, but it is not the universal default.
+
+For MariaDB and MySQL, use `utf8mb4` with `utf8mb4_unicode_ci`. PostgreSQL uses UTF-8 database encoding and its own locale/collation settings.
+
+::: warning Choose a maintained MariaDB series
+MariaDB Community Server 10.6 reached end of life on **July 6, 2026**, and 10.10 is also end of life. Do not use the older 10.6 or 10.10 requirements as guidance for a new deployment. MariaDB 10.11 is maintained until **February 16, 2028**. Check the [MariaDB maintenance policy](https://mariadb.org/about/#maintenance-policy) when planning an installation or upgrade.
 :::
 
-UnoPim supports the following database servers:
-
-- **MySQL**: Version 8.0.32 or higher is recommended for optimal performance and compatibility.
-
-- **MariaDB**: Version 10.6 or higher. MariaDB is not covered by UnoPim's CI matrix, which tests MySQL 8 and PostgreSQL 16 — prefer one of those for production.
-
-- **PostgreSQL**: Version 16 is recommended, fully supported, and CI-tested. New Docker installations use PostgreSQL by default as of UnoPim v3.0.
-
-- **Database Collation**: The recommended collation for the database is **`utf8mb4_unicode_ci`**, which ensures proper handling of Unicode characters and multilingual support.
+See [Installation with MariaDB](installation-with-mariadb) for prerequisites, database setup, and the required `.env` settings.
 
 ## Key Dependencies
 
-Finally, if you plan to extend UnoPim or verify compatibility with your own packages, the following table lists the core dependencies that UnoPim 3.0.x ships with (from `composer.json`).
+Finally, if you plan to extend UnoPim or verify compatibility with your own packages, the following table lists the core dependencies that UnoPim 3.1.x ships with (from `composer.json`).
 
 | Package | Version | Notes |
 |---|---|---|
@@ -271,7 +277,7 @@ Finally, if you plan to extend UnoPim or verify compatibility with your own pack
 | **laravel/sanctum** | ^4.0 | API token authentication |
 | **laravel/passport** | ^13.7 | OAuth 2.0 server |
 | **laravel/octane** | ^2.3 | Optional high-performance server |
-| **laravel/ai** | ^0.10.3 | Multi-provider AI adapter (powers MagicAI) |
+| **laravel/ai** | ^0.11.0 | Multi-provider AI adapter (powers MagicAI) |
 | **laravel/boost** | ^2.1 | Developer tooling (dev/CI) |
 | **laravel/pint** | ^1.29 | Code style fixer (dev) |
 | **pestphp/pest** | ^5.0 | Test runner |
