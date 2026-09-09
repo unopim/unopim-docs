@@ -20,11 +20,12 @@ import { useRoute, useRouter } from 'vitepress'
 import { computed } from 'vue'
 import { data as pages } from '../pages.data.mjs'
 
-const LATEST = '3.0'
+const LATEST = '3.1'
 const VERSION_PATH = /^\/(\d+\.\d+)(\/.*)?$/
 
 const versions = [
   { label: 'master', value: 'master' },
+  { label: '3.1', value: '3.1' },
   { label: '3.0', value: '3.0' },
   { label: '2.1', value: '2.1' },
   { label: '2.0', value: '2.0' },

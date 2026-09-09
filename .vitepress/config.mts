@@ -8,6 +8,7 @@ import v1 from './version-configs/1.0'
 import v2 from './version-configs/2.0'
 import v21 from './version-configs/2.1'
 import v30 from './version-configs/3.0'
+import v31 from './version-configs/3.1'
 
 
 export default defineConfig({
@@ -40,7 +41,7 @@ export default defineConfig({
             var path = window.location.pathname;
             var search = window.location.search || '';
             var hash = window.location.hash || '';
-            var LATEST = '3.0';
+            var LATEST = '3.1';
             var LANDING = '/prologue/';
             var m;
 
@@ -115,6 +116,7 @@ export default defineConfig({
     ],
 
     sidebar: {
+      '/3.1/': v31,
       '/3.0/': v30,
       '/2.1/': v21,
       '/2.0/': v2,
