@@ -71,6 +71,7 @@ A few examples of what these tools unlock:
 
 - **"I want to manage my catalog by chatting."** → Use the [AI Agent](./ai-agent.html).
 - **"I'm coding an UnoPim plugin and want my AI assistant to write correct UnoPim code."** → Install the [Agentic Skills](./agent-skills.html).
+- **"I want my IDE agent or claude.ai to work with my catalog."** → Install the [MCP Server](./mcp-server.html) package.
 - **"I want an external system to read and write my catalog."** → Use the [REST API](../api/).
 
 The first two are complementary: the AI Agent works inside the admin panel for catalog work, while the skills make your coding agent fluent in UnoPim when you are building on the platform.
@@ -82,6 +83,7 @@ The first two are complementary: the AI Agent works inside the admin panel for c
 - **[AI Agent Integration](./ai-agent.html)** — The in-app conversational assistant: chat widget, tool system, approval queues, auto-enrichment, semantic search.
 - **[MagicAI Platform Management](./magic-ai-platform.html)** — Multi-provider AI configuration powering the agent and content generation.
 - **[Agentic Skills](./agent-skills.html)** — The UnoPim skill packs, how to install them, and how to author your own.
+- **[MCP Server](./mcp-server.html)** — The separate `unopim/mcp` package that connects external AI assistants to your catalog over the Model Context Protocol.
 - **[Building an Integration with AI](./building-integrations.html)** — End-to-end walkthrough: scaffold a connector with the skills, from credentials to export profile to review.
 - **[Building Custom Agent Tools](./building-agent-tools.html)** — Extend the AI Agent with your own `PimTool` classes: ACL, approval, registration, and testing.
 - **[Agentic Recipes](./recipes.html)** — End-to-end playbooks for building, enriching, and maintaining your catalog with AI.

@@ -121,6 +121,7 @@ export default [
             ['agentic/ai-agent', 'AI Agent Integration'],
             ['agentic/magic-ai-platform', 'MagicAI Platform Management'],
             ['agentic/agent-skills', 'Agentic Skills'],
+            ['agentic/mcp-server', 'MCP Server'],
             ['agentic/building-integrations', 'Building an Integration with AI'],
             ['agentic/building-agent-tools', 'Building Custom Agent Tools'],
             ['agentic/recipes', 'Agentic Recipes'],
