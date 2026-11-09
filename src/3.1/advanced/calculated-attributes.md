@@ -185,7 +185,7 @@ A formula is validated on the REST write endpoints exactly as it is in the admin
 
 - **No circular dependencies.** `a` referring to `b` while `b` refers to `a` is rejected on save, with the cycle named in the message (`a -> b -> a`). Chains of any length are checked, not just direct pairs.
 - **No arbitrary code.** Only the functions listed above are callable; anything else is refused at save time. A formula cannot reach PHP functions, constants or objects.
-- **Length limit** of 2000 characters, and any length or repeat argument is clamped to 1000 characters.
+- **Length limit** of 2000 characters per formula. Every text a function produces is capped at 10,000 characters (longer results are cut off), `number_format` uses at most 20 decimals, and `pad_left`/`pad_right` never pad beyond the same 10,000-character ceiling. This keeps a short formula such as a nested `replace()` from exhausting a worker's memory.
 - **One formula per attribute**, evaluated once per channel/locale. If you need a different *structure* per locale, branch inside the formula on `locale`.
 - An attribute code that is not a valid identifier — one starting with a digit, say — cannot be referenced from a formula.
 - An attribute that a formula reads **cannot be deleted** until the formula stops referring to it. The error names the attributes that stand in the way.
