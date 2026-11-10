@@ -112,7 +112,7 @@ The value is resolved in the current scope automatically, following that attribu
 
 **Categories** — `category_path(sep)`, `category_label_path(sep)`, `category_codes()`, `category_labels()`
 
-Operators `+ - * / %`, comparisons, `and` / `or` / `not` and the ternary `a ? b : c` all work as expected. The regular-expression operator `matches` and the range operator `..` are deliberately **not** allowed: both let a short formula cost an unbounded amount of time or memory inside an export worker.
+Operators `+ - * / %`, comparisons, `and` / `or` / `not` and the ternary `a ? b : c` all work as expected. The regular-expression operator `matches`, the range operator `..` and the string operator `~` are deliberately **not** allowed: each lets a short formula cost an unbounded amount of time or memory inside an export worker. Use `concat()` to join values.
 
 ### Recipes
 
