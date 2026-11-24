@@ -23,6 +23,8 @@ Go to **Catalog → Attributes → Create Attribute** and choose the type **Calc
 | Value per locale | on, when the result depends on the locale |
 | Value per channel | on, when the result depends on the channel |
 
+*Is required*, *Is unique* and *Is filterable* must stay off: a calculated value is never entered or stored, so it can neither be demanded from an editor nor indexed for the product grid filter. Saving a calculated attribute with any of them switched on is refused.
+
 The formula is checked when you save. A syntax error, an unknown attribute code, a function outside the whitelist and a circular dependency each produce a message on the field rather than failing silently later.
 
 Add the attribute to an attribute family under **Catalog → Families → (your family) → Attributes**, the same as any other attribute. Until you do, it will not appear on the product form.
@@ -154,6 +156,8 @@ Calculated attributes do not appear in the completeness attribute picker. A requ
 
 Calculated attributes behave like any other attribute in an export profile's attribute selection, and their values are written per channel/locale row.
 
+Only the calculated attributes the profile selects are computed (all of them when the selection is empty). A value is computed once per scope it can differ in: an attribute with neither *value per locale* nor *value per channel* is evaluated once per product and the same value is written to every row of that product. Turn on *value per locale* (or *per channel*) if the formula reads `locale` (or `channel`) and the result should differ per row.
+
 ### REST API
 
 The product endpoints compute calculated values only when asked, with `with_calculated`:
@@ -186,7 +190,8 @@ A formula is validated on the REST write endpoints exactly as it is in the admin
 - **No circular dependencies.** `a` referring to `b` while `b` refers to `a` is rejected on save, with the cycle named in the message (`a -> b -> a`). Chains of any length are checked, not just direct pairs.
 - **No arbitrary code.** Only the functions listed above are callable; anything else is refused at save time. A formula cannot reach PHP functions, constants or objects.
 - **Length limit** of 2000 characters per formula. Every text a function produces is capped at 10,000 characters (longer results are cut off), `number_format` uses at most 20 decimals, and `pad_left`/`pad_right` never pad beyond the same 10,000-character ceiling. This keeps a short formula such as a nested `replace()` from exhausting a worker's memory.
-- **One formula per attribute**, evaluated once per channel/locale. If you need a different *structure* per locale, branch inside the formula on `locale`.
+- **One formula per attribute**, evaluated once per scope the attribute varies by. If you need a different *structure* per locale, turn on *value per locale* and branch inside the formula on `locale`.
+- **Not required, unique or filterable.** These flags are refused for a calculated attribute.
 - An attribute code that is not a valid identifier — one starting with a digit, say — cannot be referenced from a formula.
 - An attribute that a formula reads **cannot be deleted** until the formula stops referring to it. The error names the attributes that stand in the way.
 
