@@ -111,6 +111,7 @@ export default [
             ['advanced/cli-commands', 'CLI Commands'],
             ['advanced/queue-management', 'Queue Management'],
             ['advanced/elasticsearch-configuration', 'Elasticsearch Configuration'],
+            ['advanced/calculated-attributes', 'Calculated Attributes'],
             ['advanced/digital-product-passport', 'Digital Product Passport'],
         ])
     },
