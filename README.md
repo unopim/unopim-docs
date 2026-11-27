@@ -49,3 +49,7 @@ Make sure your PR follows all these points,
   ~~~sh
   npm run docs:preview
   ~~~
+
+## License
+
+The UnoPim documentation is open-source software licensed under the [MIT License](LICENSE).
